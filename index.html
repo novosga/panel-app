@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Painel Web | Novo SGA</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/default.css" />
+    </head>
+    <body>
+        <div id="unidade-config" class="config">
+            <div class="config-body">
+                <h2 class="title">Unidades</h2>
+                <ul id="unidades">
+                </ul>
+            </div>
+        </div>
+        <div id="servico-config" class="config">
+            <div class="config-body">
+                <h2 class="title">Serviços</h2>
+                <ul id="servicos">
+                </ul>
+                <button class="salvar">Salvar</button>
+            </div>
+        </div>
+
+        <div id="layout">
+            <div>
+                <div id="video-container">
+                    <video id="video" autoplay="autoplay" loop="loop">
+                        <!--<source src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" type="video/mp4">-->
+                    </video>
+                </div>
+                <div id="senha-container">
+                    <div class="top">
+                        <div id="mensagem">
+                            <span>Atendimento</span>
+                        </div>
+                    </div>
+                    <div class="middle">
+                        <div class="left">
+                            <div id="senha">
+                                <span>A000</span>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div id="guiche" class="guiche">
+                                <span>Guichê</span>
+                            </div>
+                            <div id="guiche-numero" class="numero-guiche">
+                                <span>0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom">
+                <div id="historico">
+                    <div class="senhas">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <audio id="alert" src="media/audio/ekiga-vm.wav"></audio>
+
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/buzz.js"></script>
+        <script type="text/javascript" src="js/painel.js"></script>
+        <script type="text/javascript" src="js/painel-web.js"></script>
+    </body>
+</html>
