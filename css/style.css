@@ -1,36 +1,32 @@
 @font-face {
     font-family: "Ubuntu";
-    src: url('../../css/fonts/Ubuntu-R.ttf');
+    src: url('../fonts/Ubuntu-R.ttf');
 }
 
 @font-face {
     font-family: "Ubuntu";
-    src: url('../../css/fonts/Ubuntu-B.ttf');
+    src: url('../fonts/Ubuntu-B.ttf');
     font-weight : bold;
 }
 
 @font-face  {
     font-family: "Ubuntu";
-    src: url('../../css/fonts/Ubuntu-RI.ttf');
+    src: url('../fonts/Ubuntu-RI.ttf');
     font-style : italic;
 }
 
 @font-face {
     font-family: "Ubuntu";
-    src: url('../../css/fonts/Ubuntu-BI.ttf');
+    src: url('../fonts/Ubuntu-BI.ttf');
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
     font-family: "UbuntuMono";
-    src: url('../../css/fonts/UbuntuMono-R.ttf');
+    src: url('../fonts/UbuntuMono-R.ttf');
 }
 
-* {
-    padding: 0;
-    margin: 0;
-}
 
 html, body { 
     overflow: hidden;
@@ -47,12 +43,19 @@ html, body, #layout {
     top: 10px;
     right: 10px;
     height: 50px;
+    padding: 0;
+    margin: 0;
     background: #000;
     position: fixed;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     box-shadow: 1px 1px 5px #333;
+}
+
+#menu ul {
+    padding: 0;
+    margin: 0;
 }
 
 #menu li {
@@ -70,22 +73,22 @@ html, body, #layout {
 
 #menu li a:hover { color: #fff; }
 
-/* config */
-.config {
-    top: 0;
-    left: -500px;
-    width: 500px;
-    height: 100%;
-    color: #fff;
-    position: fixed;
-    background: rgba(0, 0, 0, .9);
-}
-
-.config .config-body {
-    padding: 10px;
+#servicos {
+    width: 100%;
+    height: 280px;
     overflow: auto;
+    padding: 0;
+    margin: 0;
+    list-style-position: inside;
+    background: #f1f1f1;
 }
 
-.config .config-body .title {
-    font-size: 30px;
+#servicos li {
+    padding: 5px 10px;
+    display: block;
+    list-style: none;
+}
+
+#servicos li input {
+    margin: 0 10px 0 0;
 }

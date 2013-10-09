@@ -3,7 +3,7 @@
  * @author rogeriolino
  */
 ;(function($) {
-    "use strict"
+    "use strict";
     var setup = false;
     var defaults = {
         url: "",
@@ -18,16 +18,20 @@
             this.intervalId = 0;
             this.started = false;
             
+            this.unidades = function(url) {
+                this.options.url = url;
+                loadUnidades(this.options.url, this.options.onunidades);
+            };
+            
             this.servicos = function(unidade) {
                 this.options.unidade = unidade;
                 loadServicos(this.options.url, unidade, this.options.onservicos);
             };
             
-            this.start = function(opts) {
+            this.start = function() {
                 if (!this.started) {
                     var self = this;
                     this.started = true;
-                    this.options = $.extend(this.options, opts);
                     setInterval(function() {
                         if (self.started) {
                             loadSenhas(
@@ -61,13 +65,16 @@
             };
             
             // init
-            if (!this.options.unidade) {
-                loadUnidades(this.options.url, this.options.onunidades);
-            } else {
+            loadUnidades(this.options.url, this.options.onunidades);
+            if (this.options.unidade > 0) {
+                loadServicos(this.options.url, this.options.unidade, this.options.onservicos);
                 if (this.options.servicos.length > 0) {
                     this.start();
                 }
             }
+        } else {
+            // updating options
+            this.options = $.extend(this.options, opts);
         }
         return this;
     };

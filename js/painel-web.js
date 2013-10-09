@@ -5,79 +5,112 @@
 var SGA = SGA || {};
 
 SGA.PainelWeb = {
-    
-    started: false,
+
     lang: 'pt',
-    unidade: 0,
-    servicos: [],
+    layout: 'default',
     senhas: [],
     historico: [],
     ultimoId: 0,
-    
+    primeira: true,
+            
     init: function() {
-        SGA.PainelWeb.unidade = SGA.PainelWeb.Storage.get('unidade') || 0;
-        SGA.PainelWeb.servicos = (SGA.PainelWeb.Storage.get('servicos') || '').split(',');
+        SGA.PainelWeb.Config.load();
         SGA.PainelWeb.started = (SGA.PainelWeb.unidade > 0 && SGA.PainelWeb.servicos.length > 0);
         
-        $.painel({ 
-            url: 'http://localhost/novosga-branchv1/src/public',
+        $.painel({
+            url: SGA.PainelWeb.url,
             unidade: SGA.PainelWeb.unidade,
             servicos: SGA.PainelWeb.servicos,
             onunidades: function(unidades) {
                 var list = $('#unidades');
-                list.html('');
+                list.html('<option value="">Selecione</option>');
                 for (var i = 0; i < unidades.length; i++) {
                     var unidade = unidades[i];
-                    list.append('<li><label><input type="radio" name="unidade" value="' + unidade.id + '">' + unidade.nome + '</label></li>');
+                    list.append('<option value="' + unidade.id + '">' + unidade.nome + '</option>');
                 }
-                list.find('input').on('click', function() {
-                    $('#unidade-config').animate({ left: -$('#unidade-config').width() });
-                    SGA.PainelWeb.unidade = $(this).val();
-                    $.painel().servicos(SGA.PainelWeb.unidade);
-                });
-                $('#unidade-config').animate({ left: 0 });
+                if (SGA.PainelWeb.unidade > 0) {
+                    list.val(SGA.PainelWeb.unidade);
+                }
             },
             onservicos: function(servicos) {
                 var list = $('#servicos');
                 list.html('');
                 for (var i = 0; i < servicos.length; i++) {
                     var servico = servicos[i];
-                    list.append('<li><label><input type="checkbox" value="' + servico.id + '">' + servico.nome + '</label></li>');
+                    var checked = SGA.PainelWeb.servicos.contains(servico.id) ? 'checked="checked"' : '';
+                    list.append('<li><label><input type="checkbox" value="' + servico.id + '" ' + checked +'>' + servico.nome + '</label></li>');
                 }
-                $('#servico-config').animate({ left: 0 });
             },
             onsenhas: function(senhas) {
-                if (senhas && senhas.length > 0) {
+                if (SGA.PainelWeb.started && senhas && senhas.length > 0) {
                     // as senhas estao em ordem decrescente
                     for (var i = senhas.length - 1; i >= 0; i--) {
                         var senha = senhas[i];
                         if (senha.id > SGA.PainelWeb.ultimoId) {
-                            SGA.PainelWeb.senhas.push(senha);
+                            if (SGA.PainelWeb.primeira && i > 0) {
+                                SGA.PainelWeb.historico.push(senha);
+                            } else {
+                                SGA.PainelWeb.senhas.push(senha);
+                            }
                             SGA.PainelWeb.ultimoId = senha.id;
                         }
                     }
                     if (SGA.PainelWeb.Speech.queue.length === 0) {
                         SGA.PainelWeb.chamar();
                     }
+                    SGA.PainelWeb.primeira = false;
                 }
             }
         });
-        $('#servico-config .salvar').on('click', function() {
-            
-            SGA.PainelWeb.servicos = [];
-            $('#servico-config input:checked').each(function(i,e) { 
-                SGA.PainelWeb.servicos.push($(e).val()) 
-            });
-            
-            SGA.PainelWeb.Storage.set('servicos', SGA.PainelWeb.servicos.join(','));
-            SGA.PainelWeb.Storage.set('unidade', SGA.PainelWeb.unidade);
-            
-            $.painel().start({
+        $('#config').on('shown.bs.modal hidden.bs.modal', function(e) {
+            if (e.type === 'shown') {
+                // para de chamar quando abre a janela de configuracao
+                SGA.PainelWeb.started = false;
+            } else if (e.type === 'hidden') {
+                SGA.PainelWeb.started = (SGA.PainelWeb.unidade > 0 && SGA.PainelWeb.servicos.length > 0);
+            }
+        });
+        $('#url').on('change', function() {
+            SGA.PainelWeb.url = $(this).val();
+            SGA.PainelWeb.unidade = 0;
+            $.painel().unidades(SGA.PainelWeb.url);
+            $('#servicos, #unidades').html('');
+        });
+        $('#unidades').on('change', function() {
+            SGA.PainelWeb.unidade = $(this).val();
+            $.painel().servicos(SGA.PainelWeb.unidade);
+        });
+        $('#vocalizar-status').on('click', function() {
+            var checked = $(this).prop('checked');
+            setTimeout(function() { 
+                $('.vocalizar').prop('disabled', !checked);
+            }, 100);
+        });
+        $('#config-save').on('click', function() {
+            SGA.PainelWeb.Config.save();
+            $.painel({
+                url: SGA.PainelWeb.url,
                 servicos: SGA.PainelWeb.servicos
             });
-            $('#servico-config').animate({ left: -$('#servico-config').width() });
-            SGA.PainelWeb.started = true;
+            if (!SGA.PainelWeb.started) {
+                $.painel().start();
+                SGA.PainelWeb.started = true;
+            }
+            $('#config').modal('hide');
         });
+        // ocultando e adicionando animacao ao menu
+        setTimeout(function() {
+            $('#menu').fadeTo("slow", 0, function() {
+                $('#menu').hover(
+                    function() {
+                        $('#menu').fadeTo("fast", 1);
+                    }, 
+                    function() {
+                        $('#menu').fadeTo("slow", 0);
+                    }
+                );
+            });
+        }, 3000);
     },
             
     chamar: function() {
@@ -94,7 +127,7 @@ SGA.PainelWeb = {
             container.find('#guiche-numero span').text(senha.numeroLocal);
             // som e animacao
             document.getElementById('alert').play();
-            SGA.PainelWeb.Speech.play(s);
+            SGA.PainelWeb.Speech.play(senha);
             // evita adicionar ao historico senha rechamada
             if (atual !== s) {
                 // guardando historico das 10 ultimas senhas
@@ -116,22 +149,47 @@ SGA.PainelWeb = {
 
     Speech: {
         queue: [],
-
-        play: function(text) {
-            if (this.queue === undefined) {
-                this.queue = [];
-            }
-            if (text === "senha") {
-                this.queue.push({name: text, lang: SGA.PainelWeb.lang});
-                this.processQueue();
-                return;
-            }
-            for (var i = text.length - 1, chr; i >= 0; i--) {
-                chr = text.charAt(i).toLowerCase();
-                if (chr === '') {
-                    continue;
+                
+        test: function() {
+            this.play(
+                {
+                    mensagem: 'Convencional',
+                    sigla: 'A',
+                    numero: 1,
+                    length: 3,
+                    local: 'Guichê',
+                    numeroLocal: '1',
+                },
+                {
+                    vocalizar: $('#vocalizar-status').prop('checked'),
+                    zeros: $('#vocalizar-zero').prop('checked'),
+                    local: $('#vocalizar-local').prop('checked')
                 }
-                this.queue.push({name: chr, lang: SGA.PainelWeb.lang});
+            );
+        },
+
+        play: function(senha, params) {
+            params = params || {};
+            params.vocalizar = params.vocalizar || SGA.PainelWeb.vocalizar;
+            if (params.vocalizar) {
+                params.zeros = params.zeros || SGA.PainelWeb.vocalizarZero;
+                params.local = params.local || SGA.PainelWeb.vocalizarLocal;
+                if (params.local) {
+                    // numero do local
+                    var num = senha.numeroLocal + '';
+                    for (var i = num.length - 1; i >= 0; i--) {
+                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: SGA.PainelWeb.lang});
+                    }
+                    // "guiche"
+                    this.queue.push({name: "guiche", lang: SGA.PainelWeb.lang});
+                }
+                // sigla + numero
+                var text = (params.zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
+                for (var i = text.length - 1; i >= 0; i--) {
+                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: SGA.PainelWeb.lang});
+                }
+                // "senha"
+                this.queue.push({name: "senha", lang: SGA.PainelWeb.lang});
             }
             this.processQueue();
         },
@@ -139,7 +197,7 @@ SGA.PainelWeb = {
         playFile: function(filename) {
             var self = this;
             var bz = new buzz.sound(filename, {
-                formats: ["ogg", "mp3"],
+                formats: ["mp3"],
                 autoplay: true
             });
 
@@ -150,7 +208,7 @@ SGA.PainelWeb = {
         },
 
         processQueue: function() {
-            if (this.queue !== undefined && this.queue.length === 0) {
+            if (this.queue.length === 0) {
                 return;
             }
             if (buzz.sounds.length > 0) {
@@ -199,8 +257,83 @@ SGA.PainelWeb = {
             return null;
         }
 
-    }
+    },
+            
+    Config: {
+
+        load: function() {
+            SGA.PainelWeb.url = SGA.PainelWeb.Storage.get('url');
+            SGA.PainelWeb.unidade = SGA.PainelWeb.Storage.get('unidade') || 0;
+            var servicos = $.trim(SGA.PainelWeb.Storage.get('servicos'));
+            SGA.PainelWeb.servicos = (servicos.length > 0) ? servicos.split(',') : [];
+            SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
+            SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
+            SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
+            // atualizando interface
+            $('#url').val(SGA.PainelWeb.url);
+            $('#unidades').val(SGA.PainelWeb.unidade);
+            $('#servicos input').each(function(i, e) {
+                var value = $(e).val();
+                $(e).prop('checked', SGA.PainelWeb.servicos.contains(value));
+            });
+            $('.vocalizar').prop('disabled', !SGA.PainelWeb.vocalizar);
+            $('#vocalizar-status').prop('checked', SGA.PainelWeb.vocalizar);
+            $('#vocalizar-zero').prop('checked', SGA.PainelWeb.vocalizarZero);
+            $('#vocalizar-local').prop('checked', SGA.PainelWeb.vocalizarLocal);
+        },
+                
+        save: function() {
+            // pegando da interface
+            SGA.PainelWeb.url = $('#url').val();
+            SGA.PainelWeb.servicos = [];
+            $('#servicos input:checked').each(function(i,e) { 
+                SGA.PainelWeb.servicos.push($(e).val()) 
+            });
+            SGA.PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
+            SGA.PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
+            SGA.PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
+            // salvando valores
+            SGA.PainelWeb.Storage.set('url', SGA.PainelWeb.url);
+            SGA.PainelWeb.Storage.set('unidade', SGA.PainelWeb.unidade);
+            SGA.PainelWeb.Storage.set('servicos', SGA.PainelWeb.servicos.join(','));
+            SGA.PainelWeb.Storage.set('vocalizar', SGA.PainelWeb.vocalizar ? '1' : '0');
+            SGA.PainelWeb.Storage.set('vocalizarZero', SGA.PainelWeb.vocalizarZero ? '1' : '0');
+            SGA.PainelWeb.Storage.set('vocalizarLocal', SGA.PainelWeb.vocalizarLocal ? '1' : '0');
+        }
+    },
+    
+    fullscreen: function() {
+        var elem = document.body;
+        if (elem.requestFullScreen) {
+            elem.requestFullScreen();
+        }
+        if (elem.webkitRequestFullScreen) {
+            elem.webkitRequestFullScreen();
+        }
+        if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        }
+        if (elem.msRequestFullScreen) {
+            elem.msRequestFullScreen();
+        }
+    },
  
 };
 
-SGA.PainelWeb.init();
+Array.prototype.contains = function(elem) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == elem) {
+            return true;
+        }
+    }
+    return false;
+};
+
+$(function() {
+    // carregando layout
+    var layoutDir = 'layout/' + SGA.PainelWeb.layout;
+    $('head').append('<link rel="stylesheet" type="text/css" href="' + layoutDir + '/style.css" />');
+    $('#layout').load(layoutDir + '/index.html', function() {
+        SGA.PainelWeb.init();
+    });
+});

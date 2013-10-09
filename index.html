@@ -3,67 +3,103 @@
     <head>
         <meta charset="utf-8" />
         <title>Painel Web | Novo SGA</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
         <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <link rel="stylesheet" type="text/css" href="css/default.css" />
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="{{ baseUrl() }}/js/html5shiv.js"></script>
+        <script src="{{ baseUrl() }}/js/respond.min.js"></script>
+        <![endif]-->
     </head>
-    <body>
-        <div id="unidade-config" class="config">
-            <div class="config-body">
-                <h2 class="title">Unidades</h2>
-                <ul id="unidades">
-                </ul>
-            </div>
+    <body>        
+        <!-- menu retratil -->
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="#config" data-toggle="modal">
+                        <span class="glyphicon glyphicon-cog"></span>&nbsp;
+                        Configuração
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="SGA.PainelWeb.fullscreen()">
+                        <span class="glyphicon glyphicon-fullscreen"></span>&nbsp;
+                        Fullscreen
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div id="servico-config" class="config">
-            <div class="config-body">
-                <h2 class="title">Serviços</h2>
-                <ul id="servicos">
-                </ul>
-                <button class="salvar">Salvar</button>
-            </div>
-        </div>
-
-        <div id="layout">
-            <div>
-                <div id="video-container">
-                    <video id="video" autoplay="autoplay" loop="loop">
-                        <!--<source src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" type="video/mp4">-->
-                    </video>
-                </div>
-                <div id="senha-container">
-                    <div class="top">
-                        <div id="mensagem">
-                            <span>Atendimento</span>
-                        </div>
+        
+        <div id="config" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Configuração</h4>
                     </div>
-                    <div class="middle">
-                        <div class="left">
-                            <div id="senha">
-                                <span>A000</span>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#unidade" data-toggle="tab">Serviços</a></li>
+                            <li><a href="#som" data-toggle="tab">Som</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="unidade" class="tab-pane active">
+                                <div class="form-group">
+                                    <label for="url">URL</label>
+                                    <input id="url" type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="unidades">Unidades</label>
+                                    <select id="unidades" class="form-control">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Serviços</label>
+                                    <ul id="servicos">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="som" class="tab-pane">
+                                <fieldset>
+                                    <legend>Vocalizar</legend>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="vocalizar-status" type="checkbox" value="1"> Ativo
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="vocalizar-zero" type="checkbox" value="1" class="vocalizar"> Zero a esquerda
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="vocalizar-local" type="checkbox" value="1" class="vocalizar"> Local de atendimento
+                                        </label>
+                                    </div>
+                                </fieldset>
+                                <div class="form-group">
+                                    <button class="btn btn-default vocalizar" onclick="SGA.PainelWeb.Speech.test();">Testar</button>
+                                    <code>Senha: A001 / Guichê: 1</code>
+                                </div>
                             </div>
                         </div>
-                        <div class="right">
-                            <div id="guiche" class="guiche">
-                                <span>Guichê</span>
-                            </div>
-                            <div id="guiche-numero" class="numero-guiche">
-                                <span>0</span>
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="bottom">
-                <div id="historico">
-                    <div class="senhas">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        <button id="config-save" type="button" class="btn btn-primary">Salvar</button>
                     </div>
                 </div>
             </div>
         </div>
-
+        
+        <div id="layout"></div>
+        
         <audio id="alert" src="media/audio/ekiga-vm.wav"></audio>
 
         <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/buzz.js"></script>
         <script type="text/javascript" src="js/painel.js"></script>
         <script type="text/javascript" src="js/painel-web.js"></script>
