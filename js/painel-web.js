@@ -6,7 +6,6 @@ var SGA = SGA || {};
 
 SGA.PainelWeb = {
 
-    lang: 'pt',
     layout: 'default',
     senhas: [],
     historico: [],
@@ -163,7 +162,8 @@ SGA.PainelWeb = {
                 {
                     vocalizar: $('#vocalizar-status').prop('checked'),
                     zeros: $('#vocalizar-zero').prop('checked'),
-                    local: $('#vocalizar-local').prop('checked')
+                    local: $('#vocalizar-local').prop('checked'),
+                    lang: $('#idioma').val()
                 }
             );
         },
@@ -174,22 +174,23 @@ SGA.PainelWeb = {
             if (params.vocalizar) {
                 params.zeros = params.zeros || SGA.PainelWeb.vocalizarZero;
                 params.local = params.local || SGA.PainelWeb.vocalizarLocal;
+                params.lang = params.lang || SGA.PainelWeb.lang;
                 if (params.local) {
                     // numero do local
                     var num = senha.numeroLocal + '';
                     for (var i = num.length - 1; i >= 0; i--) {
-                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: SGA.PainelWeb.lang});
+                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: params.lang});
                     }
                     // "guiche"
-                    this.queue.push({name: "guiche", lang: SGA.PainelWeb.lang});
+                    this.queue.push({name: "guiche", lang: params.lang});
                 }
                 // sigla + numero
                 var text = (params.zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
                 for (var i = text.length - 1; i >= 0; i--) {
-                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: SGA.PainelWeb.lang});
+                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: params.lang});
                 }
                 // "senha"
-                this.queue.push({name: "senha", lang: SGA.PainelWeb.lang});
+                this.queue.push({name: "senha", lang: params.lang});
             }
             this.processQueue();
         },
@@ -269,6 +270,7 @@ SGA.PainelWeb = {
             SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
             SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
             SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
+            SGA.PainelWeb.lang = SGA.PainelWeb.Storage.get('lang') || 'pt';
             // atualizando interface
             $('#url').val(SGA.PainelWeb.url);
             $('#unidades').val(SGA.PainelWeb.unidade);
@@ -280,6 +282,7 @@ SGA.PainelWeb = {
             $('#vocalizar-status').prop('checked', SGA.PainelWeb.vocalizar);
             $('#vocalizar-zero').prop('checked', SGA.PainelWeb.vocalizarZero);
             $('#vocalizar-local').prop('checked', SGA.PainelWeb.vocalizarLocal);
+            $('#idioma').val(SGA.PainelWeb.lang);
         },
                 
         save: function() {
@@ -292,6 +295,7 @@ SGA.PainelWeb = {
             SGA.PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
             SGA.PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
             SGA.PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
+            SGA.PainelWeb.lang = $('#idioma').val();
             // salvando valores
             SGA.PainelWeb.Storage.set('url', SGA.PainelWeb.url);
             SGA.PainelWeb.Storage.set('unidade', SGA.PainelWeb.unidade);
@@ -299,6 +303,7 @@ SGA.PainelWeb = {
             SGA.PainelWeb.Storage.set('vocalizar', SGA.PainelWeb.vocalizar ? '1' : '0');
             SGA.PainelWeb.Storage.set('vocalizarZero', SGA.PainelWeb.vocalizarZero ? '1' : '0');
             SGA.PainelWeb.Storage.set('vocalizarLocal', SGA.PainelWeb.vocalizarLocal ? '1' : '0');
+            SGA.PainelWeb.Storage.set('lang', SGA.PainelWeb.lang);
         }
     },
     
