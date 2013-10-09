@@ -61,6 +61,19 @@
                                 </div>
                             </div>
                             <div id="som" class="tab-pane">
+                                <div class="form-group">
+                                    <label for="alert-file">Alerta</label>
+                                    <select id="alert-file" class="form-control">
+                                        <option value="ekiga-vm.wav">Ekiga</option>
+                                        <option value="doorbell-bingbong.wav">Doorbell bingbong</option>
+                                        <option value="toydoorbell.wav">Toy doorbell</option>
+                                        <option value="airport-bingbong.wav">Airport bingbong.wav</option>
+                                        <option value="ding-dong.wav">ding-dong</option>
+                                        <option value="infobleep.wav">Info bleep</option>
+                                        <option value="quito-mariscal-sucre.wav">Quito mariscal sucre</option>
+                                    </select>
+                                    <button class="btn btn-default" onclick="SGA.PainelWeb.Alert.test();">Testar</button>
+                                </div>
                                 <fieldset>
                                     <legend>Vocalizar</legend>
                                     <div class="checkbox">
@@ -104,7 +117,8 @@
         
         <div id="layout"></div>
         
-        <audio id="alert" src="media/alert/ekiga-vm.wav"></audio>
+        <!-- Sounds by http://www.freesound.org -->
+        <audio id="alert"></audio>
 
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>

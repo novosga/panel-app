@@ -42,11 +42,12 @@ SGA.PainelWeb = {
             onsenhas: function(senhas) {
                 if (SGA.PainelWeb.started && senhas && senhas.length > 0) {
                     // as senhas estao em ordem decrescente
+                    var primeiro = SGA.PainelWeb.ultimoId === 0;
                     for (var i = senhas.length - 1; i >= 0; i--) {
                         var senha = senhas[i];
                         if (senha.id > SGA.PainelWeb.ultimoId) {
                             // se na primeira exibição tiver mais de um, joga no historico e chama só a última
-                            if (SGA.PainelWeb.ultimoId === 0 && i > 0) {
+                            if (primeiro && i > 0) {
                                 // remove duplicada (em caso de rechamada)
                                 SGA.PainelWeb.historico.remove(senha);
                                 SGA.PainelWeb.historico.push(senha);
@@ -128,7 +129,7 @@ SGA.PainelWeb = {
             container.find('#local span').text(senha.local);
             container.find('#local-numero span').text(senha.numeroLocal);
             // som e animacao
-            document.getElementById('alert').play();
+            SGA.PainelWeb.Alert.play();
             SGA.PainelWeb.Speech.play(senha);
             // evita adicionar ao historico senha rechamada
             if (atual !== s) {
@@ -148,6 +149,19 @@ SGA.PainelWeb = {
                     senhas.append('<div class="senha-chamada"><div class="senha"><span>' + s + '</span></div><div class="local"><span>' + local + '</span></div></div>');
                 }
             }
+        }
+    },
+            
+    Alert: {
+
+        test: function() {
+            this.play($('#alert-file').val());
+        },
+
+        play: function(filename) {
+            filename = filename || SGA.PainelWeb.alert;
+            document.getElementById('alert').src = 'media/alert/' + filename;
+            document.getElementById('alert').play();
         }
     },
 
@@ -272,6 +286,7 @@ SGA.PainelWeb = {
             SGA.PainelWeb.unidade = SGA.PainelWeb.Storage.get('unidade') || 0;
             var servicos = $.trim(SGA.PainelWeb.Storage.get('servicos'));
             SGA.PainelWeb.servicos = (servicos.length > 0) ? servicos.split(',') : [];
+            SGA.PainelWeb.alert = SGA.PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
             SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
             SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
             SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
@@ -283,6 +298,7 @@ SGA.PainelWeb = {
                 var value = $(e).val();
                 $(e).prop('checked', SGA.PainelWeb.servicos.contains(value));
             });
+            $('#alert-file').val(SGA.PainelWeb.alert);
             $('.vocalizar').prop('disabled', !SGA.PainelWeb.vocalizar);
             $('#vocalizar-status').prop('checked', SGA.PainelWeb.vocalizar);
             $('#vocalizar-zero').prop('checked', SGA.PainelWeb.vocalizarZero);
@@ -297,6 +313,7 @@ SGA.PainelWeb = {
             $('#servicos input:checked').each(function(i,e) { 
                 SGA.PainelWeb.servicos.push($(e).val()) 
             });
+            SGA.PainelWeb.alert = $('#alert-file').val();
             SGA.PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
             SGA.PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
             SGA.PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
@@ -305,6 +322,7 @@ SGA.PainelWeb = {
             SGA.PainelWeb.Storage.set('url', SGA.PainelWeb.url);
             SGA.PainelWeb.Storage.set('unidade', SGA.PainelWeb.unidade);
             SGA.PainelWeb.Storage.set('servicos', SGA.PainelWeb.servicos.join(','));
+            SGA.PainelWeb.Storage.set('alert', SGA.PainelWeb.alert);
             SGA.PainelWeb.Storage.set('vocalizar', SGA.PainelWeb.vocalizar ? '1' : '0');
             SGA.PainelWeb.Storage.set('vocalizarZero', SGA.PainelWeb.vocalizarZero ? '1' : '0');
             SGA.PainelWeb.Storage.set('vocalizarLocal', SGA.PainelWeb.vocalizarLocal ? '1' : '0');
