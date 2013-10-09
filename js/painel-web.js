@@ -10,7 +10,6 @@ SGA.PainelWeb = {
     senhas: [],
     historico: [],
     ultimoId: 0,
-    primeira: true,
             
     init: function() {
         SGA.PainelWeb.Config.load();
@@ -46,9 +45,14 @@ SGA.PainelWeb = {
                     for (var i = senhas.length - 1; i >= 0; i--) {
                         var senha = senhas[i];
                         if (senha.id > SGA.PainelWeb.ultimoId) {
-                            if (SGA.PainelWeb.primeira && i > 0) {
+                            // se na primeira exibição tiver mais de um, joga no historico e chama só a última
+                            if (SGA.PainelWeb.ultimoId === 0 && i > 0) {
+                                // remove duplicada (em caso de rechamada)
+                                SGA.PainelWeb.historico.remove(senha);
                                 SGA.PainelWeb.historico.push(senha);
                             } else {
+                                // remove duplicada (em caso de rechamada)
+                                SGA.PainelWeb.senhas.remove(senha);
                                 SGA.PainelWeb.senhas.push(senha);
                             }
                             SGA.PainelWeb.ultimoId = senha.id;
@@ -57,7 +61,6 @@ SGA.PainelWeb = {
                     if (SGA.PainelWeb.Speech.queue.length === 0) {
                         SGA.PainelWeb.chamar();
                     }
-                    SGA.PainelWeb.primeira = false;
                 }
             }
         });
@@ -122,13 +125,15 @@ SGA.PainelWeb = {
             var s = $.painel().format(senha);
             container.find('#mensagem span').text(senha.mensagem);
             container.find('#senha span').text(s);
-            container.find('#guiche span').text(senha.local);
-            container.find('#guiche-numero span').text(senha.numeroLocal);
+            container.find('#local span').text(senha.local);
+            container.find('#local-numero span').text(senha.numeroLocal);
             // som e animacao
             document.getElementById('alert').play();
             SGA.PainelWeb.Speech.play(senha);
             // evita adicionar ao historico senha rechamada
             if (atual !== s) {
+                // removendo duplicada
+                painel.historico.remove(senha);
                 // guardando historico das 10 ultimas senhas
                 painel.historico.push(senha); 
                 painel.historico = painel.historico.slice(Math.max(0, painel.historico.length - 10), painel.historico.length);
@@ -139,8 +144,8 @@ SGA.PainelWeb = {
                 for (var i = painel.historico.length - 2, j = 0; i >= 0 && j < 5; i--, j++) {
                     var senha = painel.historico[i];
                     var s = $.painel().format(senha);
-                    var guiche = senha.local + ': ' + senha.numeroLocal;
-                    senhas.append('<div class="senha-chamada"><div class="senha"><span>' + s + '</span></div><div class="guiche"><span>' + guiche + '</span></div></div>');
+                    var local = senha.local + ': ' + senha.numeroLocal;
+                    senhas.append('<div class="senha-chamada"><div class="senha"><span>' + s + '</span></div><div class="local"><span>' + local + '</span></div></div>');
                 }
             }
         }
@@ -181,8 +186,8 @@ SGA.PainelWeb = {
                     for (var i = num.length - 1; i >= 0; i--) {
                         this.queue.push({name: num.charAt(i).toLowerCase(), lang: params.lang});
                     }
-                    // "guiche"
-                    this.queue.push({name: "guiche", lang: params.lang});
+                    // "local"
+                    this.queue.push({name: "local", lang: params.lang});
                 }
                 // sigla + numero
                 var text = (params.zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
@@ -327,11 +332,31 @@ SGA.PainelWeb = {
 
 Array.prototype.contains = function(elem) {
     for (var i = 0; i < this.length; i++) {
-        if (this[i] == elem) {
+        if (
+            // se for senha
+            (elem.sigla && this[i].sigla === elem.sigla && this[i].numero === elem.numero)
+            || 
+            // qualquer outro objeto
+            (this[i] == elem)
+            ) {
             return true;
         }
     }
     return false;
+};
+
+Array.prototype.remove = function(elem) {
+    for (var i = 0; i < this.length; i++) {
+        if (
+            // se for senha
+            (elem.sigla && this[i].sigla === elem.sigla && this[i].numero === elem.numero)
+            ||
+            // qualquer outro objeto
+            (this[i] == elem)
+            ) {
+            this.splice(i, 1);
+        }
+    }
 };
 
 $(function() {

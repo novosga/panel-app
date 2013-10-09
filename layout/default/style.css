@@ -40,8 +40,8 @@ Resoluções testadas:
     float: right;
 }
 
-#layout .middle .right .guiche { line-height: 1; }
-#layout .middle .right .numero-guiche { line-height: 1; }
+#layout .middle .right .local { line-height: 1; }
+#layout .middle .right .numero-local { line-height: 1; }
 
 /* 
  * Senha Atual - Ultima senha chamada
@@ -53,22 +53,22 @@ Resoluções testadas:
 }
 
 
-/* guiche */
+/* local */
 #senha {
     color: #eeff00;
     font-weight: bold;
     text-align: center;
 }
 
-/* guiche */
+/* local */
 
-#guiche {
+#local {
     color: #fff;
     text-align: center;
     margin: 0 auto;
 }
 
-#guiche-numero {
+#local-numero {
     color: #fff;
     font-weight: bold;
     text-align: center;
@@ -79,6 +79,7 @@ Resoluções testadas:
  * Ultimas senhas chamadas
  */
 #historico {
+    width: 100%;
     position: fixed;
     bottom: 0;
 }
@@ -102,7 +103,7 @@ Resoluções testadas:
     text-align: center; 
 }
 
-#historico .senhas div.senha-chamada div.guiche {
+#historico .senhas div.senha-chamada div.local {
     text-align: center;
 }
 
@@ -116,7 +117,7 @@ Resoluções testadas:
         padding-top: 0 !important;
     }
     
-    .middle .right .guiche, .middle .right .numero-guiche { display: inline-block; }
+    .middle .right .local, .middle .right .numero-local { display: inline-block; }
     
     #mensagem {
         height: 150px;
@@ -134,11 +135,11 @@ Resoluções testadas:
         height: 200px; 
     }
     
-    #guiche span {
+    #local span {
         font-size: 6em;
     }
     
-    #guiche-numero span {
+    #local-numero span {
         font-size: 10em !important;
         padding-left: 60px !important;
     }
@@ -147,7 +148,7 @@ Resoluções testadas:
         font-size: 8em;
     }
     
-    .senha-chamada .guiche span {
+    .senha-chamada .local span {
         font-size: 4em;
     }
     
@@ -190,11 +191,11 @@ Resoluções testadas:
         height: 200px; 
     }
     
-    #guiche span {
+    #local span {
         font-size: 6em;
     }
     
-    #guiche-numero span {
+    #local-numero span {
         font-size: 14em;
     }
     
@@ -202,7 +203,7 @@ Resoluções testadas:
         font-size: 8em;
     }
     
-    .senha-chamada .guiche span {
+    .senha-chamada .local span {
         font-size: 4em;
     }
     
@@ -227,11 +228,11 @@ Resoluções testadas:
         height: 200px; 
     }
     
-    #guiche span {
+    #local span {
         font-size: 4em;
     }
     
-    #guiche-numero span {
+    #local-numero span {
         font-size: 12em;
     }
     
@@ -239,7 +240,7 @@ Resoluções testadas:
         font-size: 6em;
     }
     
-    .senha-chamada .guiche span {
+    .senha-chamada .local span {
         font-size: 3em;
     }
 }
@@ -263,11 +264,11 @@ Resoluções testadas:
         font-size: 14em;
     }
     
-    #guiche span {
+    #local span {
         font-size: 3em;
     }
     
-    #guiche-numero span {
+    #local-numero span {
         font-size: 10em;
     }
     
@@ -275,7 +276,7 @@ Resoluções testadas:
         font-size: 4em;
     }
     
-    .senha-chamada .guiche span {
+    .senha-chamada .local span {
         font-size: 2em;
     }
 }

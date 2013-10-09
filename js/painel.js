@@ -65,11 +65,13 @@
             };
             
             // init
-            loadUnidades(this.options.url, this.options.onunidades);
-            if (this.options.unidade > 0) {
-                loadServicos(this.options.url, this.options.unidade, this.options.onservicos);
-                if (this.options.servicos.length > 0) {
-                    this.start();
+            if (this.options.url) {
+                loadUnidades(this.options.url, this.options.onunidades);
+                if (this.options.unidade > 0) {
+                    loadServicos(this.options.url, this.options.unidade, this.options.onservicos);
+                    if (this.options.servicos.length > 0) {
+                        this.start();
+                    }
                 }
             }
         } else {
