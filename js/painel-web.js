@@ -121,6 +121,11 @@ SGA.PainelWeb = {
         if (painel.started && painel.senhas.length > 0) {
             var senha = painel.senhas.shift();
             // atualizando a senha atual
+            if (senha.peso > 0) {
+                $('#layout').addClass('prioridade');
+            } else {
+                $('#layout').removeClass('prioridade');
+            }
             var container = $('#senha-container');
             var atual = container.find('#senha span').text();
             var s = $.painel().format(senha);
@@ -145,8 +150,9 @@ SGA.PainelWeb = {
                 for (var i = painel.historico.length - 2, j = 0; i >= 0 && j < 5; i--, j++) {
                     var senha = painel.historico[i];
                     var s = $.painel().format(senha);
+                    var styleClass = (senha.peso > 0) ? 'prioridade' : 'normal';
                     var local = senha.local + ': ' + senha.numeroLocal;
-                    senhas.append('<div class="senha-chamada"><div class="senha"><span>' + s + '</span></div><div class="local"><span>' + local + '</span></div></div>');
+                    senhas.append('<div class="senha-chamada ' + styleClass + '"><div class="senha"><span>' + s + '</span></div><div class="local"><span>' + local + '</span></div></div>');
                 }
             }
         }
@@ -188,28 +194,35 @@ SGA.PainelWeb = {
         },
 
         play: function(senha, params) {
-            params = params || {};
-            params.vocalizar = params.vocalizar || SGA.PainelWeb.vocalizar;
-            if (params.vocalizar) {
-                params.zeros = params.zeros || SGA.PainelWeb.vocalizarZero;
-                params.local = params.local || SGA.PainelWeb.vocalizarLocal;
-                params.lang = params.lang || SGA.PainelWeb.lang;
-                if (params.local) {
+            var vocalizar, zeros, local, lang;
+            if (params) {
+                vocalizar = params.vocalizar;
+                zeros = params.zeros;
+                local = params.local;
+                lang = params.lang;
+            } else {
+                vocalizar = SGA.PainelWeb.vocalizar;
+                zeros = SGA.PainelWeb.vocalizarZero;
+                local = SGA.PainelWeb.vocalizarLocal;
+                lang = SGA.PainelWeb.lang;
+            }
+            if (vocalizar) {
+                if (local) {
                     // numero do local
                     var num = senha.numeroLocal + '';
                     for (var i = num.length - 1; i >= 0; i--) {
-                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: params.lang});
+                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: lang});
                     }
                     // "local"
-                    this.queue.push({name: "local", lang: params.lang});
+                    this.queue.push({name: "local", lang: lang});
                 }
                 // sigla + numero
-                var text = (params.zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
+                var text = (zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
                 for (var i = text.length - 1; i >= 0; i--) {
-                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: params.lang});
+                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: lang});
                 }
                 // "senha"
-                this.queue.push({name: "senha", lang: params.lang});
+                this.queue.push({name: "senha", lang: lang});
             }
             this.processQueue();
         },

@@ -11,8 +11,6 @@ Resoluções testadas:
 
 */
 
-#layout { background-color: #0055a3; }
-
 #layout, #layout * { 
     padding: 0;
     margin: 0;
@@ -47,15 +45,11 @@ Resoluções testadas:
  * Senha Atual - Ultima senha chamada
  */
 #mensagem span {
-    color: #fff;
     padding: 10px 29px;
     display: inline-block;
 }
 
-
-/* local */
 #senha {
-    color: #eeff00;
     font-weight: bold;
     text-align: center;
 }
@@ -63,13 +57,11 @@ Resoluções testadas:
 /* local */
 
 #local {
-    color: #fff;
     text-align: center;
     margin: 0 auto;
 }
 
-#local-numero {
-    color: #fff;
+#local-numero {    
     font-weight: bold;
     text-align: center;
     margin: 0 auto;
@@ -87,10 +79,7 @@ Resoluções testadas:
 #historico .senhas {
     height: 100%;
     overflow: hidden;
-    background: rgba(0, 0, 0, .4);
 }
-
-#historico .senhas * { color: #fff; }
 
 #historico .senhas div.senha-chamada {
     width: 33%;
@@ -106,6 +95,25 @@ Resoluções testadas:
 #historico .senhas div.senha-chamada div.local {
     text-align: center;
 }
+
+
+/* cores - atendimento normal */
+#layout.normal { background-color: #0055a3; }
+#layout.normal #mensagem span { color: #fff; }
+#layout.normal #senha { color: #eeff00; }
+#layout.normal #local { color: #fff; }
+#layout.normal #local-numero { color: #fff; }
+#layout.prioridade #historico .senhas { background: rgba(0, 0, 0, .4); }
+#layout.normal #historico .senhas * { color: #fff; }
+
+/* cores - atendimento prioritario */
+#layout.prioridade { background-color: #fff; }
+#layout.prioridade #senha-container span { color: #d2322d; }
+#layout.prioridade #historico .senhas { background-color: #f1f1f1; }
+#layout.prioridade #historico .senhas * { color: #333; }
+
+/* cores - atendimento prioritario quando no historico */
+#historico .senhas .prioridade * { color: #d2322d !important; }
 
 
 /* 1920x1080 */
