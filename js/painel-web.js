@@ -123,10 +123,13 @@ SGA.PainelWeb = {
             // atualizando a senha atual
             if (senha.peso > 0) {
                 $('#layout').addClass('prioridade');
+                $('#layout').removeClass('normal');
             } else {
+                $('#layout').addClass('normal');
                 $('#layout').removeClass('prioridade');
             }
             var container = $('#senha-container');
+            SGA.PainelWeb.blink(container.find('#senha'));
             var atual = container.find('#senha span').text();
             var s = $.painel().format(senha);
             container.find('#mensagem span').text(senha.mensagem);
@@ -156,6 +159,19 @@ SGA.PainelWeb = {
                 }
             }
         }
+    },
+            
+    blink: function(elem) {
+        setTimeout(function() {
+            var count = elem.data('bcount') || 0;
+            elem.toggle();
+            if (count < 5) {
+                elem.data('bcount', count + 1);
+                SGA.PainelWeb.blink(elem);
+            } else {
+                elem.data('bcount', 0);
+            }
+        }, 200);
     },
             
     Alert: {

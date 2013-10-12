@@ -103,7 +103,7 @@ Resoluções testadas:
 #layout.normal #senha { color: #eeff00; }
 #layout.normal #local { color: #fff; }
 #layout.normal #local-numero { color: #fff; }
-#layout.prioridade #historico .senhas { background: rgba(0, 0, 0, .4); }
+#layout.normal #historico .senhas { background: rgba(0, 0, 0, .4); }
 #layout.normal #historico .senhas * { color: #fff; }
 
 /* cores - atendimento prioritario */
