@@ -80,6 +80,22 @@
         }
         return this;
     };
+    
+    var apiRequest = function(url, args) {
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            data: args.data || {},
+            success: function(response) {
+                if (typeof(args.complete) === 'function') {
+                    args.complete(response);
+                }
+            },
+            error: function() {
+            }
+        });
+    };
+    
     /**
      * Carrega as unidades disponiveis
      * @param string url
@@ -87,9 +103,8 @@
      * @returns undefined
      */
     var loadUnidades = function(url, complete) {
-        $.ajax({
-            url: url + '/api/unidades',
-            success: function(unidades) {
+        apiRequest(url + '/api/unidades', {
+            complete: function(unidades) {
                 if (typeof(complete) === 'function') {
                     complete(unidades);
                 }
@@ -104,9 +119,8 @@
      * @returns undefined
      */
     var loadServicos = function(url, unidade, complete) {
-        $.ajax({
-            url: url + '/api/servicos/' + unidade,
-            success: function(servicos) {
+        apiRequest(url + '/api/servicos/' + unidade, {
+            complete: function(servicos) {
                 if (typeof(complete) === 'function') {
                     complete(servicos);
                 }
@@ -121,10 +135,9 @@
      * @returns {undefined}
      */
     var loadSenhas = function(url, unidade, servicos, complete) {
-        $.ajax({
-            url: encodeURI(url + '/api/painel/' + unidade),
+        apiRequest(url + '/api/painel/' + unidade, {
             data: { servicos: servicos.join(',') },
-            success: function(senhas) {
+            complete: function(senhas) {
                 if (typeof(complete) === 'function') {
                     complete(senhas);
                 }
