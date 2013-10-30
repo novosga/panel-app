@@ -49,6 +49,7 @@ html, body, #layout {
     position: fixed;
     border-radius: 5px;
     box-shadow: 1px 1px 5px #333;
+    z-index: 99999;
 }
 
 #menu ul {
