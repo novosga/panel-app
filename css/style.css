@@ -92,3 +92,12 @@ html, body, #layout {
 #servicos li input {
     margin: 0 10px 0 0;
 }
+
+/* cores - inativo */
+#layout {
+    background: #f1f1f1;
+}
+
+#layout span {
+    color: #ccc;
+}

@@ -1,6 +1,6 @@
 /**
- * SGA Painel Web
- * @author rogeriolino
+ * Novo SGA Painel Web
+ * @author Rogerio Lino <rogeriolino@gmail.com>
  */
 var SGA = SGA || {};
 
@@ -160,11 +160,14 @@ SGA.PainelWeb = {
             }
         }
     },
-            
+
     blink: function(elem) {
+        if (!elem.css('visibility')) {
+            elem.css('visibility', 'visible');
+        }
         setTimeout(function() {
             var count = elem.data('bcount') || 0;
-            elem.toggle();
+            elem.css('visibility', elem.css('visibility') === 'visible' ? 'hidden' : 'visible');
             if (count < 5) {
                 elem.data('bcount', count + 1);
                 SGA.PainelWeb.blink(elem);
@@ -277,11 +280,6 @@ SGA.PainelWeb = {
             } else {
                 // cookie
                 var expires = "";
-                if (days) {
-                    var date = new Date();
-                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                    expires = "; expires=" + date.toGMTString();
-                }
                 document.cookie = name + "=" + value + expires + "; path=/";
             }
         },
@@ -409,8 +407,22 @@ Array.prototype.remove = function(elem) {
 $(function() {
     // carregando layout
     var layoutDir = 'layout/' + SGA.PainelWeb.layout;
-    $('head').append('<link rel="stylesheet" type="text/css" href="' + layoutDir + '/style.css" />');
+    $('head').append('<link rel="stylesheet" type="text/css" href="' + layoutDir + '/style.css" />')
+            .append('<script type="text/javascript" src="' + layoutDir + '/script.js" />');
     $('#layout').load(layoutDir + '/index.html', function() {
         SGA.PainelWeb.init();
+        // loading manifest
+        $.ajax({
+            url: layoutDir + '/manifest.json',
+            dataType: 'json',
+            success: function(manifest) {
+                if (manifest && manifest.events) {
+                    eval('var fn = ' + manifest.events.onload + ';');
+                    if (fn && typeof(fn) === 'function') {
+                        fn(manifest.config || {});
+                    }
+                }
+            }
+        });
     });
 });

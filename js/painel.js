@@ -1,6 +1,6 @@
 /**
  * Painel.js
- * @author rogeriolino
+ * @author Rogerio Lino <rogeriolino@gmail.com>
  */
 ;(function($) {
     "use strict";
