@@ -66,6 +66,13 @@
     text-align: center;
 }
 
+.right {
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
 
 /*
  * Ultimas senhas chamadas
@@ -135,7 +142,7 @@
 #historico .senhas .prioridade * { color: #d2322d !important; }
 
 /* not supported resolution */
-@media only screen and (max-width: 790px) {
+@media only screen and (max-width: 780px) {
     #layout-content { display: none; }
     #error { display: block; }
 }
