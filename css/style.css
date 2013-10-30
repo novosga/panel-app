@@ -48,8 +48,6 @@ html, body, #layout {
     background: #000;
     position: fixed;
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
     box-shadow: 1px 1px 5px #333;
 }
 

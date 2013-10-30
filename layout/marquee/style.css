@@ -101,12 +101,12 @@
 }
 
 /* marque anim */
-@-webkit-keyframes toleft {
+@keyframes toleft {
     0% {
-        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
     }
     100% {
-        -webkit-transform: translateX(-200%);
+        transform: translateX(-200%);
     }
 }
 
@@ -117,7 +117,7 @@
 #marquee p {
     width: 100%;
     white-space: nowrap;
-    -webkit-animation: toleft 20s linear infinite;
+    animation: toleft 20s linear infinite;
     display: inline-block;
 }
 
