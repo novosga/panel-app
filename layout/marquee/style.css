@@ -8,6 +8,8 @@
     line-height: 1;
 }
 
+#layout-content, #senha-container { height: 100%; }
+
 #error {
     color: #ccc;
     display: none;
@@ -100,25 +102,18 @@
     text-align: center;
 }
 
-/* marque anim */
-@keyframes toleft {
-    0% {
-        transform: translateX(100%);
-    }
-    100% {
-        transform: translateX(-200%);
-    }
-}
-
 #marquee { 
-    overflow: hidden; 
+    bottom: 5px;
+    width: 100%;
+    overflow: hidden;
+    position: absolute;
 }
 
 #marquee p {
-    width: 100%;
+    top: 0;
     white-space: nowrap;
-    animation: toleft 20s linear infinite;
     display: inline-block;
+    position: absolute;
 }
 
 /* cores - atendimento normal */
@@ -127,7 +122,7 @@
 #layout.normal #senha span { color: #eeff00; }
 #layout.normal #local span { color: #fff; }
 #layout.normal #local-numero span { color: #fff; }
-#layout.normal #historico .senhas { background: rgba(0, 0, 0, .4); }
+#layout.normal #historico .senhas { background: #003261; }
 #layout.normal #historico .senhas * { color: #fff; }
 #layout.normal #marquee p { color: #fff; }
 
@@ -186,11 +181,11 @@
         font-size: 4em;
     }
     
-    .left #marquee {
+    #marquee {
         padding-top: 60px !important;
     }
     
-    .left #marquee p {
+    #marquee p {
         font-size: 4em;
     }
     
@@ -235,11 +230,11 @@
         font-size: 2em;
     }
     
-    .left #marquee {
+    #marquee {
         padding-top: 60px !important;
     }
     
-    .left #marquee p {
+    #marquee p {
         font-size: 3em;
     }
     
@@ -279,11 +274,11 @@
         font-size: 2em;
     }
     
-    .left #marquee {
+    #marquee {
         padding-top: 60px !important;
     }
     
-    .left #marquee p {
+    #marquee p {
         font-size: 3em;
     }
     

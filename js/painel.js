@@ -9,76 +9,128 @@
         url: "",
         unidade: 0,
         servicos: [],
-        interval: 3
+        interval: 3,
+        events: {}
     };
     $.painel = function(opts) {
-        if (!setup) {
-            setup = true;
-            this.options = $.extend(defaults, opts);
-            this.intervalId = 0;
-            this.started = false;
-            
-            this.unidades = function(url) {
-                this.options.url = url;
-                loadUnidades(this.options.url, this.options.onunidades);
-            };
-            
-            this.servicos = function(unidade) {
-                this.options.unidade = unidade;
-                loadServicos(this.options.url, unidade, this.options.onservicos);
-            };
-            
-            this.start = function() {
-                if (!this.started) {
-                    var self = this;
-                    this.started = true;
-                    setInterval(function() {
-                        if (self.started) {
-                            loadSenhas(
-                                self.options.url, 
-                                self.options.unidade, 
-                                self.options.servicos, 
-                                self.options.onsenhas
-                            );
-                        }
-                    }, self.options.interval * 1000);
-                    loadSenhas(
-                        self.options.url, 
-                        self.options.unidade, 
-                        self.options.servicos, 
-                        self.options.onsenhas
-                    );
-                }
-            };
-            
-            this.pause = function() {
-                this.started = false;
-            };
-            
-            this.format = function(senha) {
-                var numero = senha.numero + "";
-                var length = parseInt(senha.length || 3);
-                while (numero.length < length) {
-                    numero = "0" + numero;
-                }
-                return senha.sigla + numero;
-            };
-            
-            // init
-            if (this.options.url) {
-                loadUnidades(this.options.url, this.options.onunidades);
-                if (this.options.unidade > 0) {
-                    loadServicos(this.options.url, this.options.unidade, this.options.onservicos);
-                    if (this.options.servicos.length > 0) {
-                        this.start();
+        var self = this;
+        if (setup) {
+            // updating options
+            self.options = $.extend(self.options, opts);
+            return self;
+        }
+        setup = true;
+
+        self.options = $.extend(defaults, opts);
+        self.intervalId = 0;
+        self.started = false;
+
+        self.unidades = function(url) {
+            self.options.url = url;
+            loadUnidades(self);
+        };
+
+        self.servicos = function(unidade) {
+            self.options.unidade = unidade;
+            loadServicos(self);
+        };
+
+        self.start = function() {
+            if (!self.started) {
+                self.started = true;
+                setInterval(function() {
+                    if (self.started) {
+                        loadSenhas(self);
                     }
+                }, self.options.interval * 1000);
+                loadSenhas(this);
+            }
+        };
+
+        self.pause = function() {
+            self.started = false;
+        };
+
+        self.format = function(senha) {
+            var numero = senha.numero + "";
+            var length = parseInt(senha.length || 3);
+            while (numero.length < length) {
+                numero = "0" + numero;
+            }
+            return senha.sigla + numero;
+        };
+
+        // init
+        if (self.options.url) {
+            loadUnidades(this);
+            if (self.options.unidade > 0) {
+                loadServicos(self);
+                if (self.options.servicos.length > 0) {
+                    self.start();
                 }
             }
-        } else {
-            // updating options
-            this.options = $.extend(this.options, opts);
         }
-        return this;
+        
+        self.on = function(eventName, fn) {
+            if (typeof(fn) === 'function') {
+                self.options.events[eventName] = fn;
+            }
+            return self;
+        };
+        
+        self.trigger = function(eventName, params) {
+            var fn = self.options.events[eventName];
+            if (typeof(fn) === 'function') {
+                fn.apply(self, params);
+            }
+        };
+
+        return self;
+    };
+    
+    /**
+     * Carrega as unidades disponiveis
+     * 
+     * @param object painel
+     */
+    var loadUnidades = function(painel) {
+        var url = painel.options.url;
+        apiRequest(url + '/api/unidades', {
+            complete: function(unidades) {
+                painel.trigger('unidades', [unidades]);
+            }
+        });
+    };
+    
+    /**
+     * Carrega os servicos disponiveis para a unidade
+     * 
+     * @param object painel
+     */
+    var loadServicos = function(painel) {
+        var url = painel.options.url;
+        var unidade = painel.options.unidade;
+        apiRequest(url + '/api/servicos/' + unidade, {
+            complete: function(servicos) {
+                painel.trigger('servicos', [servicos]);
+            }
+        });
+    };
+    
+    /**
+     * 
+     * @param object painel
+     */
+    var loadSenhas = function(painel) {
+        var url = painel.options.url;
+        var unidade = painel.options.unidade;
+        var servicos = painel.options.servicos;
+        apiRequest(url + '/api/painel/' + unidade, {
+            data: { servicos: servicos.join(',') },
+            complete: function(senhas) {
+                painel.trigger('senhas', [senhas]);
+            }
+        });
     };
     
     var apiRequest = function(url, args) {
@@ -96,53 +148,4 @@
         });
     };
     
-    /**
-     * Carrega as unidades disponiveis
-     * @param string url
-     * @param function complete
-     * @returns undefined
-     */
-    var loadUnidades = function(url, complete) {
-        apiRequest(url + '/api/unidades', {
-            complete: function(unidades) {
-                if (typeof(complete) === 'function') {
-                    complete(unidades);
-                }
-            }
-        });
-    };
-    /**
-     * Carrega os servicos disponiveis para a unidade
-     * @param string url
-     * @param integer unidade
-     * @param function complete
-     * @returns undefined
-     */
-    var loadServicos = function(url, unidade, complete) {
-        apiRequest(url + '/api/servicos/' + unidade, {
-            complete: function(servicos) {
-                if (typeof(complete) === 'function') {
-                    complete(servicos);
-                }
-            }
-        });
-    };
-    /**
-     * 
-     * @param {type} url
-     * @param {type} unidade
-     * @param {type} servicos
-     * @returns {undefined}
-     */
-    var loadSenhas = function(url, unidade, servicos, complete) {
-        apiRequest(url + '/api/painel/' + unidade, {
-            data: { servicos: servicos.join(',') },
-            complete: function(senhas) {
-                if (typeof(complete) === 'function') {
-                    complete(senhas);
-                }
-            }
-        });
-    };
-    
-})($);
+})(jQuery);

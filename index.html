@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
     <head>
         <meta charset="utf-8" />
         <title>Painel Web | Novo SGA</title>
@@ -11,8 +11,10 @@
         <script src="js/html5shiv.js"></script>
         <script src="js/respond.min.js"></script>
         <![endif]-->
+        <script type="text/javascript" src="js/angular.min.js"></script>
+        <script type="text/javascript" src="layout/marquee/script.js"></script>
     </head>
-    <body>        
+    <body ng-controller="PainelCtrl" ng-init="init()">
         <!-- menu retratil -->
         <div id="menu">
             <ul>
@@ -31,6 +33,8 @@
             </ul>
         </div>
         
+        <link rel="stylesheet" type="text/css" ng-href="layout/{{ layout }}/style.css" />
+
         <div id="config" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -47,16 +51,26 @@
                             <div id="unidade" class="tab-pane active">
                                 <div class="form-group">
                                     <label for="url">URL</label>
-                                    <input id="url" type="text" class="form-control">
+                                    <input id="url" type="text" class="form-control" 
+                                           ng-model="url"
+                                           ng-change="changeUrl()">
                                 </div>
                                 <div class="form-group">
                                     <label for="unidades">Unidades</label>
-                                    <select id="unidades" class="form-control">
+                                    <select id="unidades" class="form-control" ng-model="unidade" ng-change="changeUnidade()" ng-options="u.nome for u in unidades">
+                                        <option value="">Selecione</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>Serviços</label>
                                     <ul id="servicos">
+                                        <li ng-repeat="servico in servicosUnidade">
+                                            <label>
+                                                <input type="checkbox"
+                                                        ng-checked="indexServico(servico) > -1"
+                                                        ng-click="checkServico(servico)"> {{ servico.nome }}
+                                            </label>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -109,14 +123,16 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                        <button id="config-save" type="button" class="btn btn-primary">Salvar</button>
+                        <button id="config-save" type="button" class="btn btn-primary" ng-click="save()">Salvar</button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div id="layout"></div>
-        
+
+        <div id="layout" class="{{ ultima.styleClass }}">
+            <div ng-include="'layout/' + layout + '/index.html'" onload="layoutResources()"></div>
+        </div>
+            
         <!-- Sounds by http://www.freesound.org -->
         <audio id="alert"></audio>
 

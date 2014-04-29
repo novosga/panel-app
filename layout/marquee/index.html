@@ -3,17 +3,17 @@
     <div id="senha-container">
         <div class="left">
             <div id="mensagem">
-                <span>Atendimento</span>
+                <span>{{ ultima.mensagem }}</span>
             </div>
-            <div id="senha">
-                <span>A000</span>
+            <div id="senha" class="blink">
+                <span>{{ ultima.texto }}</span>
             </div>
             <div class="senha-local">
                 <div id="local" class="local">
-                    <span>Guichê</span>
+                    <span>{{ ultima.local }}</span>
                 </div>
                 <div id="local-numero" class="numero-local">
-                    <span>0</span>
+                    <span>{{ ultima.numeroLocal }}</span>
                 </div>
             </div>
             <div id="marquee">
@@ -23,6 +23,14 @@
         <div class="right">
             <div id="historico">
                 <div class="senhas">
+                    <div class="senha-chamada {{ senha.styleClass }}" ng-repeat="senha in anteriores">
+                        <div class="senha">
+                            <span>{{ senha.texto }}</span>
+                        </div>
+                        <div class="local">
+                            <span>{{ senha.local }}: {{ senha.numeroLocal }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

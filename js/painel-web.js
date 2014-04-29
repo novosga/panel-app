@@ -2,165 +2,195 @@
  * Novo SGA Painel Web
  * @author Rogerio Lino <rogeriolino@gmail.com>
  */
+
+angular.module('app', [])
+    .controller('PainelCtrl', function($scope) {
+        "use strict";
+        
+        $scope.layout = 'default';
+
+        $scope.ultima = {
+            texto: 'A000',
+            local: 'Guichê',
+            numeroLocal: 0,
+            mensagem: 'Atendimento',
+            styleClass: ''
+        };
+        $scope.senhas = [];
+        $scope.historico = [];
+        $scope.servicosUnidade = [];
+        $scope.ultimoId = 0;
+        
+        $scope.changeUnidade = function(){
+            $.painel().servicos($scope.unidade.id);
+        };
+                
+        $scope.changeUrl = function() {
+            $scope.unidade = 0;
+            $.painel().unidades($scope.url);
+        };
+        
+        $scope.checkServico = function(servico) {
+            var idx = $scope.indexServico(servico);
+            if (idx > -1) {
+              $scope.servicos.splice(idx, 1);
+            } else {
+              $scope.servicos.push(servico);
+            }
+        };
+        
+        $scope.indexServico = function(servico) {
+            var idx = $scope.servicos.length - 1;
+            for (; idx >= 0; idx--) {
+                if ($scope.servicos[idx].id === servico.id) {
+                    break;
+                }
+            }
+            return idx;
+        };
+            
+        $scope.save = function() {
+            SGA.PainelWeb.Config.save($scope);
+            $.painel({
+                url: $scope.url,
+                servicos: $scope.servicos
+            });
+            if (!SGA.PainelWeb.started) {
+                SGA.PainelWeb.started = true;
+                $.painel().start();
+            }
+            $('#config').modal('hide');
+        };
+        
+        $scope.chamar = function() {
+            if (SGA.PainelWeb.started && $scope.senhas.length > 0) {
+                var senha = $scope.senhas.shift();
+
+                // som e animacao
+                SGA.PainelWeb.Alert.play();
+                SGA.PainelWeb.Speech.play(senha);
+                SGA.PainelWeb.blink($('.blink'));
+                
+                // evita adicionar ao historico senha rechamada
+                if ($scope.ultima.texto !== senha.texto) {
+                    // removendo duplicada
+                    $scope.historico.remove(senha);
+                    // guardando historico das 10 ultimas senhas
+                    $scope.historico.push(senha); 
+                    $scope.historico = $scope.historico.slice(Math.max(0, $scope.historico.length - 10), $scope.historico.length);
+                    // atualizando ultimas senhas chamadas
+                    $scope.anteriores = [];
+                    // -2 porque nao exibe a ultima (senha principal). E limitando exibicao em 5
+                    for (var i = $scope.historico.length - 2, j = 0; i >= 0 && j < 5; i--, j++) {
+                        $scope.anteriores.push($scope.historico[i]);
+                    }
+                }
+                
+                $scope.ultima = senha;
+            }
+        };
+
+        $scope.init = function() {
+            SGA.PainelWeb.Config.load($scope);
+            SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
+
+            $.painel({
+                url: $scope.url,
+                unidade: ($scope.unidade.id > 0) ? $scope.unidade.id : 0,
+                servicos: $scope.servicos.map(function(s) {
+                    return s.id;
+                })
+            })
+            .on('unidades', function(unidades) {
+                $scope.$apply(function() {
+                    $scope.unidades = unidades;
+                });
+            })
+            .on('servicos', function(servicos) {
+                $scope.$apply(function() {
+                    $scope.servicosUnidade = servicos;
+                });    
+            })
+            .on('senhas', function(senhas) {
+                $scope.$apply(function() {
+                    if (SGA.PainelWeb.started && senhas && senhas.length > 0) {
+                        // as senhas estao em ordem decrescente
+                        var primeiro = $scope.ultimoId === 0;
+                        for (var i = senhas.length - 1; i >= 0; i--) {
+                            var senha = senhas[i];
+                            senha.texto = $.painel().format(senha);
+                            senha.styleClass = (senha.peso > 0) ? 'prioridade' : 'normal';
+                            if (senha.id > $scope.ultimoId) {
+                                // se na primeira exibição tiver mais de um, joga no historico e chama só a última
+                                if (primeiro && i > 0) {
+                                    // remove duplicada (em caso de rechamada)
+                                    $scope.historico.remove(senha);
+                                    $scope.historico.push(senha);
+                                } else {
+                                    // remove duplicada (em caso de rechamada)
+                                    $scope.senhas.remove(senha);
+                                    $scope.senhas.push(senha);
+                                }
+                                $scope.ultimoId = senha.id;
+                            }
+                        }
+                        if (SGA.PainelWeb.Speech.queue.length === 0) {
+                            $scope.chamar();
+                        }
+                    }
+                });
+            });
+            $('#config').on('shown.bs.modal hidden.bs.modal', function(e) {
+                if (e.type === 'shown') {
+                    // para de chamar quando abre a janela de configuracao
+                    SGA.PainelWeb.started = false;
+                } else if (e.type === 'hidden') {
+                    SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
+                }
+            });
+            // ocultando e adicionando animacao ao menu
+            setTimeout(function() {
+                $('#menu').fadeTo("slow", 0, function() {
+                    $('#menu').hover(
+                        function() {
+                            $('#menu').fadeTo("fast", 1);
+                        }, 
+                        function() {
+                            $('#menu').fadeTo("slow", 0);
+                        }
+                    );
+                });
+            }, 3000);
+            
+        };
+        
+        $scope.layoutResources = function() {
+            var layoutDir = 'layout/' + $scope.layout;
+            $.getScript(layoutDir + '/script.js', function( data, textStatus, jqxhr ) {
+                $.ajax({
+                    url: layoutDir + '/manifest.json',
+                    dataType: 'json',
+                    success: function(manifest) {
+                        if (manifest && manifest.events) {
+                            var fn = window[manifest.events.onload];
+                            if (fn && typeof(fn) === 'function') {
+                                fn(manifest.config || {});
+                            }
+                        }
+                    }
+                });
+            });
+        };
+
+    });
+
+
+
+
 var SGA = SGA || {};
 
 SGA.PainelWeb = {
-
-    layout: 'default',
-    senhas: [],
-    historico: [],
-    ultimoId: 0,
-            
-    init: function() {
-        SGA.PainelWeb.Config.load();
-        SGA.PainelWeb.started = (SGA.PainelWeb.unidade > 0 && SGA.PainelWeb.servicos.length > 0);
-        
-        $.painel({
-            url: SGA.PainelWeb.url,
-            unidade: SGA.PainelWeb.unidade,
-            servicos: SGA.PainelWeb.servicos,
-            onunidades: function(unidades) {
-                var list = $('#unidades');
-                list.html('<option value="">Selecione</option>');
-                for (var i = 0; i < unidades.length; i++) {
-                    var unidade = unidades[i];
-                    list.append('<option value="' + unidade.id + '">' + unidade.nome + '</option>');
-                }
-                if (SGA.PainelWeb.unidade > 0) {
-                    list.val(SGA.PainelWeb.unidade);
-                }
-            },
-            onservicos: function(servicos) {
-                var list = $('#servicos');
-                list.html('');
-                for (var i = 0; i < servicos.length; i++) {
-                    var servico = servicos[i];
-                    var checked = SGA.PainelWeb.servicos.contains(servico.id) ? 'checked="checked"' : '';
-                    list.append('<li><label><input type="checkbox" value="' + servico.id + '" ' + checked +'>' + servico.nome + '</label></li>');
-                }
-            },
-            onsenhas: function(senhas) {
-                if (SGA.PainelWeb.started && senhas && senhas.length > 0) {
-                    // as senhas estao em ordem decrescente
-                    var primeiro = SGA.PainelWeb.ultimoId === 0;
-                    for (var i = senhas.length - 1; i >= 0; i--) {
-                        var senha = senhas[i];
-                        if (senha.id > SGA.PainelWeb.ultimoId) {
-                            // se na primeira exibição tiver mais de um, joga no historico e chama só a última
-                            if (primeiro && i > 0) {
-                                // remove duplicada (em caso de rechamada)
-                                SGA.PainelWeb.historico.remove(senha);
-                                SGA.PainelWeb.historico.push(senha);
-                            } else {
-                                // remove duplicada (em caso de rechamada)
-                                SGA.PainelWeb.senhas.remove(senha);
-                                SGA.PainelWeb.senhas.push(senha);
-                            }
-                            SGA.PainelWeb.ultimoId = senha.id;
-                        }
-                    }
-                    if (SGA.PainelWeb.Speech.queue.length === 0) {
-                        SGA.PainelWeb.chamar();
-                    }
-                }
-            }
-        });
-        $('#config').on('shown.bs.modal hidden.bs.modal', function(e) {
-            if (e.type === 'shown') {
-                // para de chamar quando abre a janela de configuracao
-                SGA.PainelWeb.started = false;
-            } else if (e.type === 'hidden') {
-                SGA.PainelWeb.started = (SGA.PainelWeb.unidade > 0 && SGA.PainelWeb.servicos.length > 0);
-            }
-        });
-        $('#url').on('change', function() {
-            SGA.PainelWeb.url = $(this).val();
-            SGA.PainelWeb.unidade = 0;
-            $.painel().unidades(SGA.PainelWeb.url);
-            $('#servicos, #unidades').html('');
-        });
-        $('#unidades').on('change', function() {
-            SGA.PainelWeb.unidade = $(this).val();
-            $.painel().servicos(SGA.PainelWeb.unidade);
-        });
-        $('#vocalizar-status').on('click', function() {
-            var checked = $(this).prop('checked');
-            setTimeout(function() { 
-                $('.vocalizar').prop('disabled', !checked);
-            }, 100);
-        });
-        $('#config-save').on('click', function() {
-            SGA.PainelWeb.Config.save();
-            $.painel({
-                url: SGA.PainelWeb.url,
-                servicos: SGA.PainelWeb.servicos
-            });
-            if (!SGA.PainelWeb.started) {
-                $.painel().start();
-                SGA.PainelWeb.started = true;
-            }
-            $('#config').modal('hide');
-        });
-        // ocultando e adicionando animacao ao menu
-        setTimeout(function() {
-            $('#menu').fadeTo("slow", 0, function() {
-                $('#menu').hover(
-                    function() {
-                        $('#menu').fadeTo("fast", 1);
-                    }, 
-                    function() {
-                        $('#menu').fadeTo("slow", 0);
-                    }
-                );
-            });
-        }, 3000);
-    },
-            
-    chamar: function() {
-        var painel = SGA.PainelWeb;
-        if (painel.started && painel.senhas.length > 0) {
-            var senha = painel.senhas.shift();
-            // atualizando a senha atual
-            if (senha.peso > 0) {
-                $('#layout').addClass('prioridade');
-                $('#layout').removeClass('normal');
-            } else {
-                $('#layout').addClass('normal');
-                $('#layout').removeClass('prioridade');
-            }
-            var container = $('#senha-container');
-            SGA.PainelWeb.blink(container.find('#senha'));
-            var atual = container.find('#senha span').text();
-            var s = $.painel().format(senha);
-            container.find('#mensagem span').text(senha.mensagem);
-            container.find('#senha span').text(s);
-            container.find('#local span').text(senha.local);
-            container.find('#local-numero span').text(senha.numeroLocal);
-            // som e animacao
-            SGA.PainelWeb.Alert.play();
-            SGA.PainelWeb.Speech.play(senha);
-            // evita adicionar ao historico senha rechamada
-            if (atual !== s) {
-                // removendo duplicada
-                painel.historico.remove(senha);
-                // guardando historico das 10 ultimas senhas
-                painel.historico.push(senha); 
-                painel.historico = painel.historico.slice(Math.max(0, painel.historico.length - 10), painel.historico.length);
-                // atualizando ultimas senhas chamadas
-                var senhas = $('#historico .senhas');
-                senhas.html('');
-                // -2 porque nao exibe a ultima (senha principal). E limitando exibicao em 5
-                for (var i = painel.historico.length - 2, j = 0; i >= 0 && j < 5; i--, j++) {
-                    var senha = painel.historico[i];
-                    var s = $.painel().format(senha);
-                    var styleClass = (senha.peso > 0) ? 'prioridade' : 'normal';
-                    var local = senha.local + ': ' + senha.numeroLocal;
-                    senhas.append('<div class="senha-chamada ' + styleClass + '"><div class="senha"><span>' + s + '</span></div><div class="local"><span>' + local + '</span></div></div>');
-                }
-            }
-        }
-    },
-
+    
     blink: function(elem) {
         if (!elem.css('visibility')) {
             elem.css('visibility', 'visible');
@@ -308,23 +338,17 @@ SGA.PainelWeb = {
             
     Config: {
 
-        load: function() {
-            SGA.PainelWeb.url = SGA.PainelWeb.Storage.get('url');
-            SGA.PainelWeb.unidade = SGA.PainelWeb.Storage.get('unidade') || 0;
-            var servicos = $.trim(SGA.PainelWeb.Storage.get('servicos'));
-            SGA.PainelWeb.servicos = (servicos.length > 0) ? servicos.split(',') : [];
+        load: function($scope) {
+            $scope.url = SGA.PainelWeb.Storage.get('url');
+            $scope.unidade = JSON.parse(SGA.PainelWeb.Storage.get('unidade')) || {};
+            $scope.servicos = JSON.parse(SGA.PainelWeb.Storage.get('servicos')) || [];
             SGA.PainelWeb.alert = SGA.PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
             SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
             SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
             SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
             SGA.PainelWeb.lang = SGA.PainelWeb.Storage.get('lang') || 'pt';
+            
             // atualizando interface
-            $('#url').val(SGA.PainelWeb.url);
-            $('#unidades').val(SGA.PainelWeb.unidade);
-            $('#servicos input').each(function(i, e) {
-                var value = $(e).val();
-                $(e).prop('checked', SGA.PainelWeb.servicos.contains(value));
-            });
             $('#alert-file').val(SGA.PainelWeb.alert);
             $('.vocalizar').prop('disabled', !SGA.PainelWeb.vocalizar);
             $('#vocalizar-status').prop('checked', SGA.PainelWeb.vocalizar);
@@ -333,22 +357,17 @@ SGA.PainelWeb = {
             $('#idioma').val(SGA.PainelWeb.lang);
         },
                 
-        save: function() {
+        save: function($scope) {
             // pegando da interface
-            SGA.PainelWeb.url = $('#url').val();
-            SGA.PainelWeb.servicos = [];
-            $('#servicos input:checked').each(function(i,e) { 
-                SGA.PainelWeb.servicos.push($(e).val()) 
-            });
             SGA.PainelWeb.alert = $('#alert-file').val();
             SGA.PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
             SGA.PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
             SGA.PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
             SGA.PainelWeb.lang = $('#idioma').val();
             // salvando valores
-            SGA.PainelWeb.Storage.set('url', SGA.PainelWeb.url);
-            SGA.PainelWeb.Storage.set('unidade', SGA.PainelWeb.unidade);
-            SGA.PainelWeb.Storage.set('servicos', SGA.PainelWeb.servicos.join(','));
+            SGA.PainelWeb.Storage.set('url', $scope.url);
+            SGA.PainelWeb.Storage.set('unidade', JSON.stringify($scope.unidade));
+            SGA.PainelWeb.Storage.set('servicos', JSON.stringify($scope.servicos));
             SGA.PainelWeb.Storage.set('alert', SGA.PainelWeb.alert);
             SGA.PainelWeb.Storage.set('vocalizar', SGA.PainelWeb.vocalizar ? '1' : '0');
             SGA.PainelWeb.Storage.set('vocalizarZero', SGA.PainelWeb.vocalizarZero ? '1' : '0');
@@ -403,26 +422,3 @@ Array.prototype.remove = function(elem) {
         }
     }
 };
-
-$(function() {
-    // carregando layout
-    var layoutDir = 'layout/' + SGA.PainelWeb.layout;
-    $('head').append('<link rel="stylesheet" type="text/css" href="' + layoutDir + '/style.css" />')
-            .append('<script type="text/javascript" src="' + layoutDir + '/script.js" />');
-    $('#layout').load(layoutDir + '/index.html', function() {
-        SGA.PainelWeb.init();
-        // loading manifest
-        $.ajax({
-            url: layoutDir + '/manifest.json',
-            dataType: 'json',
-            success: function(manifest) {
-                if (manifest && manifest.events) {
-                    eval('var fn = ' + manifest.events.onload + ';');
-                    if (fn && typeof(fn) === 'function') {
-                        fn(manifest.config || {});
-                    }
-                }
-            }
-        });
-    });
-});
