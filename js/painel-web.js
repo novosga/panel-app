@@ -53,7 +53,9 @@ angular.module('app', [])
             SGA.PainelWeb.Config.save($scope);
             $.painel({
                 url: $scope.url,
-                servicos: $scope.servicos
+                servicos: $scope.servicos.map(function(s) {
+                    return s.id;
+                })
             });
             if (!SGA.PainelWeb.started) {
                 SGA.PainelWeb.started = true;
