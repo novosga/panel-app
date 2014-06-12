@@ -22,7 +22,7 @@
     </div>
     <div id="historico">
         <div class="senhas">
-            <div class="senha-chamada {{ senha.styleClass }}" ng-repeat="senha in anteriores">
+            <div class="senha-chamada {{ senha.styleClass }}" ng-repeat="senha in anteriores | limitTo: 5">
                 <div class="senha">
                     <span>{{ senha.texto }}</span>
                 </div>

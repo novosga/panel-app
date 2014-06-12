@@ -7,7 +7,7 @@ angular.module('app', [])
     .controller('PainelCtrl', function($scope) {
         "use strict";
         
-        $scope.layout = 'default';
+        $scope.layout = 'vetor';
 
         $scope.ultima = {
             texto: 'A000',
@@ -168,7 +168,11 @@ angular.module('app', [])
         
         $scope.layoutResources = function() {
             var layoutDir = 'layout/' + $scope.layout;
-            $.getScript(layoutDir + '/script.js', function( data, textStatus, jqxhr ) {
+            var head = document.getElementsByTagName('head')[0];
+            var script = document.createElement('script');
+            script.type= 'text/javascript';
+            script.onload = function() {
+                // loading layout manifest
                 $.ajax({
                     url: layoutDir + '/manifest.json',
                     dataType: 'json',
@@ -181,9 +185,10 @@ angular.module('app', [])
                         }
                     }
                 });
-            });
+            };
+            script.src = layoutDir + '/script.js';
+            head.appendChild(script);
         };
-
     });
 
 
