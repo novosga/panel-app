@@ -7,7 +7,7 @@ angular.module('app', [])
     .controller('PainelCtrl', function($scope) {
         "use strict";
         
-        $scope.layout = 'vetor';
+        $scope.layout = 'default';
 
         $scope.ultima = {
             texto: 'A000',
