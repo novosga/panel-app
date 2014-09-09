@@ -429,3 +429,10 @@ Array.prototype.remove = function(elem) {
         }
     }
 };
+
+$(function() {
+    $('#vocalizar-status').on('change', function() {
+        var active = $(this).is(':checked');
+        $('.vocalizar').prop('disabled', !active);
+    });
+});
