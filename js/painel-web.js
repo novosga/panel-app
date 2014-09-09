@@ -68,6 +68,7 @@ angular.module('app', [])
             if (SGA.PainelWeb.started && $scope.senhas.length > 0) {
                 var senha = $scope.senhas.shift();
 
+                SGA.PainelWeb.trigger('callstart');
                 // som e animacao
                 SGA.PainelWeb.Alert.play();
                 SGA.PainelWeb.Speech.play(senha);
@@ -198,6 +199,22 @@ var SGA = SGA || {};
 
 SGA.PainelWeb = {
     
+    _events: {},
+    
+    on: function(evt, fn) {
+        if (typeof(fn) === 'function') {
+            SGA.PainelWeb._events[evt] = SGA.PainelWeb._events[evt] || [];
+            SGA.PainelWeb._events[evt].push(fn);
+        }
+    },
+    
+    trigger: function(evt) {
+        var evts = SGA.PainelWeb._events[evt] || [];
+        for (var i = 0; i < evts.length; i++) {
+            evts[i]();
+        }
+    },
+    
     blink: function(elem) {
         if (!elem.css('visibility')) {
             elem.css('visibility', 'visible');
@@ -297,10 +314,8 @@ SGA.PainelWeb = {
         },
 
         processQueue: function() {
-            if (this.queue.length === 0) {
-                return;
-            }
-            if (buzz.sounds.length > 0) {
+            if (this.queue.length === 0 || buzz.sounds.length > 0) {
+                SGA.PainelWeb.trigger('callend');
                 return;
             }
             var current = this.queue.pop();
