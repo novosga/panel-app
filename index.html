@@ -2,16 +2,16 @@
 <html ng-app="app">
     <head>
         <meta charset="utf-8" />
-        <title>Painel Web | Novo SGA</title>
+        <title data-i18n="PainelWeb.title">Painel Web | Novo SGA</title>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" /> 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
         <script src="js/html5shiv.js"></script>
         <script src="js/respond.min.js"></script>
         <![endif]-->
-        <script type="text/javascript" src="js/angular.min.js"></script>
+
     </head>
     <body ng-controller="PainelCtrl" ng-init="init()">
         <!-- menu retratil -->
@@ -20,13 +20,13 @@
                 <li>
                     <a href="#config" data-toggle="modal">
                         <span class="glyphicon glyphicon-cog"></span>&nbsp;
-                        Configuração
+                        <span data-i18n="PainelWeb.configuration">Configuração</span>
                     </a>
                 </li>
                 <li>
                     <a href="javascript:void(0)" onclick="SGA.PainelWeb.fullscreen()">
                         <span class="glyphicon glyphicon-fullscreen"></span>&nbsp;
-                        Fullscreen
+                        <span data-i18n="PainelWeb.fullscreen">Fullscreen</span>
                     </a>
                 </li>
             </ul>
@@ -39,90 +39,101 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Configuração</h4>
+                        <h4 class="modal-title" data-i18n="PainelWeb.configuration">Configuração</h4>
                     </div>
                     <div class="modal-body">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#unidade" data-toggle="tab">Serviços</a></li>
-                            <li><a href="#som" data-toggle="tab">Som</a></li>
+                            <li class="active"><a href="#general" data-toggle="tab" data-i18n="PainelWeb.general">General</a></li>
+                            <li><a href="#servicos" data-toggle="tab" data-i18n="PainelWeb.services">Serviços</a></li>
+                            <li><a href="#som" data-toggle="tab" data-i18n="PainelWeb.sounds">Som</a></li>
                         </ul>
                         <div class="tab-content">
-                            <div id="unidade" class="tab-pane active">
+                            <div id="general" class="tab-pane active">
                                 <div class="form-group">
-                                    <label for="url">URL</label>
-                                    <input id="url" type="text" class="form-control" 
-                                           ng-model="url"
-                                           ng-change="changeUrl()">
-                                </div>
-                                <div class="form-group">
-                                    <label for="unidades">Unidades</label>
-                                    <select id="unidades" class="form-control" ng-model="unidade" ng-change="changeUnidade()" ng-options="u.nome for u in unidades">
-                                        <option value="">Selecione</option>
+                                    <label for="idioma" data-i18n="PainelWeb.language">Idioma</label>
+                                    <select id="idioma" class="form-control" ng-model="lang" ng-change="changeLang()" ng-selected="lang">
+                                        <option value="pt">Português</option>
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Serviços</label>
-                                    <ul id="servicos">
-                                        <li ng-repeat="servico in servicosUnidade">
-                                            <label>
-                                                <input type="checkbox"
-                                                        ng-checked="indexServico(servico) > -1"
+                                    <label for="url" data-i18n="PainelWeb.URL">URL</label>
+                                    <input id="url" type="text" class="form-control" 
+                                           ng-model="url"
+                                           ng-blur="changeUrl()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="unidades" data-i18n="PainelWeb.units">Unidades</label>
+                                    <select id="unidades" class="form-control" ng-model="unidade" ng-change="changeUnidade()" ng-options="u.nome for u in unidades" >
+                                        <option value="" data-i18n="PainelWeb.select">Seleccione</option>
+                                    </select>
+                                </div>
+                            </div>    
+                            <div id="servicos" class="tab-pane">
+                                <div class="form-group">
+                                    <div class="checkbox" ng-repeat="servico in servicosUnidade">
+                                        <label>
+                                            <input type="checkbox" ng-checked="indexServico(servico) > -1"
                                                         ng-click="checkServico(servico)"> {{ servico.nome }}
-                                            </label>
-                                        </li>
-                                    </ul>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div id="som" class="tab-pane">
+
+  
                                 <div class="form-group">
-                                    <label for="alert-file">Alerta</label>
-                                    <select id="alert-file" class="form-control">
-                                        <option value="ekiga-vm.wav">Ekiga</option>
-                                        <option value="doorbell-bingbong.wav">Doorbell bingbong</option>
-                                        <option value="toydoorbell.wav">Toy doorbell</option>
-                                        <option value="airport-bingbong.wav">Airport bingbong.wav</option>
-                                        <option value="ding-dong.wav">ding-dong</option>
-                                        <option value="infobleep.wav">Info bleep</option>
-                                        <option value="quito-mariscal-sucre.wav">Quito mariscal sucre</option>
-                                    </select>
-                                    <button class="btn btn-default" onclick="SGA.PainelWeb.Alert.test();">Testar</button>
-                                </div>
-                                <fieldset>
-                                    <legend>Vocalizar</legend>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input id="vocalizar-status" type="checkbox" value="1"> Ativo
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input id="vocalizar-zero" type="checkbox" value="1" class="vocalizar"> Zero a esquerda
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input id="vocalizar-local" type="checkbox" value="1" class="vocalizar"> Local de atendimento
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="idioma">Idioma</label>
-                                        <select id="idioma" class="vocalizar form-control">
-                                            <option value="pt">Português</option>
-                                            <option value="en">English</option>
-                                            <option value="es">Español</option>
+                                    <label for="alert-file" data-i18n="PainelWeb.alert">Alerta</label>
+                                    <div class="input-group">
+                                        <select id="alert-file" class="form-control">
+                                            <option value="ekiga-vm.wav">Ekiga</option>
+                                            <option value="doorbell-bingbong.wav">Doorbell bingbong</option>
+                                            <option value="toydoorbell.wav">Toy doorbell</option>
+                                            <option value="airport-bingbong.wav">Airport bingbong.wav</option>
+                                            <option value="ding-dong.wav">ding-dong</option>
+                                            <option value="infobleep.wav">Info bleep</option>
+                                            <option value="quito-mariscal-sucre.wav">Quito mariscal sucre</option>
                                         </select>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default class="input-group-addon"" onclick="SGA.PainelWeb.Alert.test();">
+                                            <span class="glyphicon glyphicon-play"></span>
+                                            </button>
+                                        </span>
                                     </div>
+                                </div>
+                                <hr>
+                                <fieldset>
+                                    <label data-i18n="PainelWeb.vocalize">Vocalizar</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="vocalizar-status" type="checkbox" value="1" > <span data-i18n="PainelWeb.active">Ativo</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="vocalizar-zero" type="checkbox" value="1" class="vocalizar"> <span data-i18n="PainelWeb.zero_left">Zero a esquerda</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="vocalizar-local" type="checkbox" value="1" class="vocalizar"> <span data-i18n="PainelWeb.local">Local de atendimento</span>
+                                        </label>
+                                    </div>
+
                                 </fieldset>
                                 <div class="form-group">
-                                    <button class="btn btn-default vocalizar" onclick="SGA.PainelWeb.Speech.test();">Testar</button>
-                                    <code>Senha: A001 / Guichê: 1</code>
+                                    <code data-i18n="PainelWeb.key_sample">Senha: A001 / Guichê: 1</code>
+                                    <button class="btn btn-default vocalizar" onclick="SGA.PainelWeb.Speech.test();">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                        <button id="config-save" type="button" class="btn btn-primary" ng-click="save()">Salvar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="PainelWeb.close">Fechar</button>
+                        <button id="config-save" type="button" class="btn btn-primary" ng-click="save()" data-i18n="PainelWeb.save">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -130,14 +141,20 @@
 
         <div id="layout" class="{{ ultima.styleClass }}">
             <div ng-include="'layout/' + layout + '/index.html'" onload="layoutResources()"></div>
+            <div id="error" data-i18n="PainelWeb.Error.resolution">Resolução não suportada</div>
         </div>
-            
-        <!-- Sounds by http://www.freesound.org -->
+          
+        <!-- 
+            Sounds by http://www.freesound.org
+            http://www.fromtexttospeech.com
+        -->
         <audio id="alert"></audio>
 
         <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/prefixfree.min.js"></script>
+        <script type="text/javascript" src="js/angular.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/i18next-latest.min.js"></script>
+        <script type="text/javascript" src="js/prefixfree.min.js"></script>
         <script type="text/javascript" src="js/buzz.js"></script>
         <script type="text/javascript" src="js/painel.js"></script>
         <script type="text/javascript" src="js/painel-web.js"></script>
