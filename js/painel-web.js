@@ -20,29 +20,29 @@ angular.module('app', [])
         $scope.historico = [];
         $scope.servicosUnidade = [];
         $scope.ultimoId = 0;
-		$scope.lang = window.navigator.userLanguage || window.navigator.language;
-		$scope.unidade = {};
+        $scope.lang = window.navigator.userLanguage || window.navigator.language;
+        $scope.unidade = {};
                 
         $scope.changeUrl = function() {
-			$scope.unidades = [];
+            $scope.unidades = [];
             $scope.unidade = {};
-			if($scope.url.substr(-1) == '/') {$scope.url = $scope.url.substr(0, $scope.url.length - 1);}
+            if($scope.url.substr(-1) == '/') {$scope.url = $scope.url.substr(0, $scope.url.length - 1);}
             $.painel().unidades($scope.url);
         };
-		
-		$scope.changeUnidade = function(){
-			if ($scope.unidade != null) {
-				if ($scope.unidade.id > 0) { 
-					$.painel().servicos($scope.unidade.id);
-				}
-			}
+        
+        $scope.changeUnidade = function(){
+            if ($scope.unidade != null) {
+                if ($scope.unidade.id > 0) { 
+                    $.painel().servicos($scope.unidade.id);
+                }
+            }
         };
-		$scope.changeLang = function() {
-			i18n.setLng($scope.lang, function(t) {
-				$("html").i18n();
-			});
-		};
-		
+        $scope.changeLang = function() {
+            i18n.setLng($scope.lang, function(t) {
+                $("html").i18n();
+            });
+        };
+        
         $scope.checkServico = function(servico) {
             var idx = $scope.indexServico(servico);
             if (idx > -1) {
@@ -66,7 +66,7 @@ angular.module('app', [])
             SGA.PainelWeb.Config.save($scope);
             $.painel({
                 url: $scope.url,
-				unidade: $scope.unidade.id,
+                unidade: $scope.unidade.id,
                 servicos: $scope.servicos.map(function(s) {
                     return s.id;
                 })
@@ -111,12 +111,12 @@ angular.module('app', [])
 
             SGA.PainelWeb.Config.load($scope);
             SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
-			$.i18n.init({ 
-				lng: SGA.PainelWeb.lang,
-				resGetPath: 'locales/__lng__.json'
-				}, function(t) { $("html").i18n();}
-			);
-			
+            $.i18n.init({ 
+                lng: SGA.PainelWeb.lang,
+                resGetPath: 'locales/__lng__.json'
+                }, function(t) { $("html").i18n();}
+            );
+            
             $.painel({
                 url: $scope.url,
                 unidade: ($scope.unidade.id > 0) ? $scope.unidade.id : 0,
@@ -209,7 +209,7 @@ angular.module('app', [])
             };
             script.src = layoutDir + '/script.js';
             head.appendChild(script);
-			$("#layout").i18n();
+            $("#layout").i18n();
         };
     });
 
@@ -309,7 +309,7 @@ SGA.PainelWeb = {
                     }
                     // "local"
                     //this.queue.push({name: "local", lang: lang});
-					this.queue.push({name:senha.local, lang: lang});
+                    this.queue.push({name:senha.local, lang: lang});
                 }
                 // sigla + numero
                 var text = (zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
@@ -334,10 +334,10 @@ SGA.PainelWeb = {
                 buzz.sounds = [];
                 self.processQueue();
             });
-			
-			bz.bind("error", function(e) {
-				this.trigger("ended");
-			});
+            
+            bz.bind("error", function(e) {
+                this.trigger("ended");
+            });
         },
 
         processQueue: function() {
@@ -391,7 +391,7 @@ SGA.PainelWeb = {
             $scope.url = SGA.PainelWeb.Storage.get('url');
             $scope.unidade = JSON.parse(SGA.PainelWeb.Storage.get('unidade')) || {};
             $scope.servicos = JSON.parse(SGA.PainelWeb.Storage.get('servicos')) || [];
-			$scope.lang = SGA.PainelWeb.Storage.get('lang') || window.navigator.userLanguage || window.navigator.language;
+            $scope.lang = SGA.PainelWeb.Storage.get('lang') || window.navigator.userLanguage || window.navigator.language;
             SGA.PainelWeb.alert = SGA.PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
             SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
             SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
