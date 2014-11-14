@@ -177,6 +177,7 @@ angular.module('app', [])
                 $.ajax({
                     url: layoutDir + '/manifest.json',
                     dataType: 'json',
+                    cache: false,
                     success: function(manifest) {
                         if (manifest && manifest.events) {
                             var fn = window[manifest.events.onload];
