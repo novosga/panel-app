@@ -20,14 +20,27 @@ angular.module('app', [])
         $scope.historico = [];
         $scope.servicosUnidade = [];
         $scope.ultimoId = 0;
-        
-        $scope.changeUnidade = function(){
-            $.painel().servicos($scope.unidade.id);
-        };
+        $scope.lang = window.navigator.userLanguage || window.navigator.language;
+        $scope.unidade = {};
                 
         $scope.changeUrl = function() {
-            $scope.unidade = 0;
+            $scope.unidades = [];
+            $scope.unidade = {};
+            if($scope.url.substr(-1) == '/') {$scope.url = $scope.url.substr(0, $scope.url.length - 1);}
             $.painel().unidades($scope.url);
+        };
+        
+        $scope.changeUnidade = function(){
+            if ($scope.unidade != null) {
+                if ($scope.unidade.id > 0) { 
+                    $.painel().servicos($scope.unidade.id);
+                }
+            }
+        };
+        $scope.changeLang = function() {
+            i18n.setLng($scope.lang, function(t) {
+                $("html").i18n();
+            });
         };
         
         $scope.checkServico = function(servico) {
@@ -53,6 +66,7 @@ angular.module('app', [])
             SGA.PainelWeb.Config.save($scope);
             $.painel({
                 url: $scope.url,
+                unidade: $scope.unidade.id,
                 servicos: $scope.servicos.map(function(s) {
                     return s.id;
                 })
@@ -94,9 +108,15 @@ angular.module('app', [])
         };
 
         $scope.init = function() {
+
             SGA.PainelWeb.Config.load($scope);
             SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
-
+            $.i18n.init({ 
+                lng: SGA.PainelWeb.lang,
+                resGetPath: 'locales/__lng__.json'
+                }, function(t) { $("html").i18n();}
+            );
+            
             $.painel({
                 url: $scope.url,
                 unidade: ($scope.unidade.id > 0) ? $scope.unidade.id : 0,
@@ -190,6 +210,7 @@ angular.module('app', [])
             };
             script.src = layoutDir + '/script.js';
             head.appendChild(script);
+            $("#layout").i18n();
         };
     });
 
@@ -251,11 +272,11 @@ SGA.PainelWeb = {
         test: function() {
             this.play(
                 {
-                    mensagem: 'Convencional',
+                    mensagem: i18n.t('PainelWeb.test_priority_normal') || 'Convencional',
                     sigla: 'A',
                     numero: 1,
                     length: 3,
-                    local: 'Guichê',
+                    local: 'test-local',
                     numeroLocal: '1',
                 },
                 {
@@ -288,7 +309,8 @@ SGA.PainelWeb = {
                         this.queue.push({name: num.charAt(i).toLowerCase(), lang: lang});
                     }
                     // "local"
-                    this.queue.push({name: "local", lang: lang});
+                    //this.queue.push({name: "local", lang: lang});
+                    this.queue.push({name:senha.local, lang: lang});
                 }
                 // sigla + numero
                 var text = (zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
@@ -308,9 +330,14 @@ SGA.PainelWeb = {
                 autoplay: true
             });
 
+
             bz.bind("ended", function() {
                 buzz.sounds = [];
                 self.processQueue();
+            });
+            
+            bz.bind("error", function(e) {
+                this.trigger("ended");
             });
         },
 
@@ -365,19 +392,18 @@ SGA.PainelWeb = {
             $scope.url = SGA.PainelWeb.Storage.get('url');
             $scope.unidade = JSON.parse(SGA.PainelWeb.Storage.get('unidade')) || {};
             $scope.servicos = JSON.parse(SGA.PainelWeb.Storage.get('servicos')) || [];
+            $scope.lang = SGA.PainelWeb.Storage.get('lang') || window.navigator.userLanguage || window.navigator.language;
             SGA.PainelWeb.alert = SGA.PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
             SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
             SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
             SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
-            SGA.PainelWeb.lang = SGA.PainelWeb.Storage.get('lang') || 'pt';
-            
+            SGA.PainelWeb.lang = SGA.PainelWeb.Storage.get('lang') || window.navigator.userLanguage || window.navigator.language;
             // atualizando interface
             $('#alert-file').val(SGA.PainelWeb.alert);
             $('.vocalizar').prop('disabled', !SGA.PainelWeb.vocalizar);
             $('#vocalizar-status').prop('checked', SGA.PainelWeb.vocalizar);
             $('#vocalizar-zero').prop('checked', SGA.PainelWeb.vocalizarZero);
             $('#vocalizar-local').prop('checked', SGA.PainelWeb.vocalizarLocal);
-            $('#idioma').val(SGA.PainelWeb.lang);
         },
                 
         save: function($scope) {
@@ -445,6 +471,7 @@ Array.prototype.remove = function(elem) {
         }
     }
 };
+
 
 $(function() {
     $('#vocalizar-status').on('change', function() {
