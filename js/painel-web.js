@@ -76,6 +76,7 @@ angular.module('app', [])
                 $.painel().start();
             }
             $('#config').modal('hide');
+            SGA.PainelWeb.trigger('save');
         };
         
         $scope.chamar = function() {
