@@ -7,7 +7,7 @@ angular.module('app', [])
     .controller('PainelCtrl', function($scope) {
         "use strict";
         
-        $scope.layout = 'default';
+        $scope.layout = 'vetor';
 
         $scope.ultima = {
             texto: 'A000',
@@ -268,6 +268,7 @@ SGA.PainelWeb = {
 
     Speech: {
         queue: [],
+        playing: false,
                 
         test: function() {
             this.play(
@@ -302,25 +303,26 @@ SGA.PainelWeb = {
                 lang = SGA.PainelWeb.lang;
             }
             if (vocalizar) {
-                if (local) {
-                    // numero do local
-                    var num = senha.numeroLocal + '';
-                    for (var i = num.length - 1; i >= 0; i--) {
-                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: lang});
-                    }
-                    // "local"
-                    //this.queue.push({name: "local", lang: lang});
-                    this.queue.push({name:senha.local, lang: lang});
-                }
-                // sigla + numero
-                var text = (zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
-                for (var i = text.length - 1; i >= 0; i--) {
-                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: lang});
-                }
                 // "senha"
                 this.queue.push({name: "senha", lang: lang});
+                // sigla + numero
+                var text = (zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
+                for (var i = 0; i < text.length; i++) {
+                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: lang});
+                }
+                if (local) {
+                    // nome do local
+                    this.queue.push({name: senha.local.toLowerCase(), lang: lang});
+                    // numero do local
+                    var num = senha.numeroLocal + '';
+                    for (var i = 0; i < num.length; i++) {
+                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: lang});
+                    }
+                }
             }
-            this.processQueue();
+            if (!this.playing) {
+                this.processQueue();
+            }
         },
 
         playFile: function(filename) {
@@ -330,25 +332,27 @@ SGA.PainelWeb = {
                 autoplay: true
             });
 
-
-            bz.bind("ended", function() {
-                buzz.sounds = [];
+            var end = function() {
                 self.processQueue();
-            });
+            };
+
+            bz.bind("ended", end);
             
-            bz.bind("error", function(e) {
-                this.trigger("ended");
-            });
+            bz.bind("error", end);
         },
 
         processQueue: function() {
-            if (this.queue.length === 0 || buzz.sounds.length > 0) {
+            if (this.playing && this.queue.length === 0) {
+                this.playing = false;
                 SGA.PainelWeb.trigger('callend');
                 return;
             }
-            var current = this.queue.pop();
-            var filename = "media/voice/" + current.lang + "/" + current.name;
-            this.playFile(filename);
+            var current = this.queue.shift();
+            if (current) {
+                this.playing = true;
+                var filename = "media/voice/" + current.lang + "/" + current.name;
+                this.playFile(filename);
+            }
         }
     },
 

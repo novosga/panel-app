@@ -81,8 +81,6 @@
                                 </div>
                             </div>
                             <div id="som" class="tab-pane">
-
-  
                                 <div class="form-group">
                                     <label for="alert-file" data-i18n="PainelWeb.alert">Alerta</label>
                                     <div class="input-group">
@@ -96,14 +94,13 @@
                                             <option value="quito-mariscal-sucre.wav">Quito mariscal sucre</option>
                                         </select>
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default input-group-addon" onclick="SGA.PainelWeb.Alert.test();">
+                                            <button class="btn btn-default" onclick="SGA.PainelWeb.Alert.test();">
                                                 <span class="glyphicon glyphicon-play"></span>
                                             </button>
                                         </span>
                                     </div>
                                 </div>
-                                <hr>
-                                <fieldset>
+                                <div>
                                     <label data-i18n="PainelWeb.vocalize">Vocalizar</label>
                                     <div class="checkbox">
                                         <label>
@@ -120,13 +117,12 @@
                                             <input id="vocalizar-local" type="checkbox" value="1" class="vocalizar"> <span data-i18n="PainelWeb.local">Local de atendimento</span>
                                         </label>
                                     </div>
-
-                                </fieldset>
-                                <div class="form-group">
-                                    <code data-i18n="PainelWeb.key_sample">Senha: A001 / Guichê: 1</code>
-                                    <button class="btn btn-default vocalizar" onclick="SGA.PainelWeb.Speech.test();">
-                                    <span class="glyphicon glyphicon-play"></span>
-                                    </button>
+                                    <div class="form-group">
+                                        <code data-i18n="PainelWeb.key_sample">Senha: A001 / Guichê: 1</code>
+                                        <button class="btn btn-default vocalizar" onclick="SGA.PainelWeb.Speech.test();">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
