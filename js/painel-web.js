@@ -7,8 +7,6 @@ angular.module('app', [])
     .controller('PainelCtrl', function($scope) {
         "use strict";
         
-        $scope.layout = 'default';
-
         $scope.ultima = {
             texto: 'A000',
             local: 'Guichê',
@@ -109,7 +107,6 @@ angular.module('app', [])
         };
 
         $scope.init = function() {
-
             SGA.PainelWeb.Config.load($scope);
             SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
             $.i18n.init({ 
@@ -188,8 +185,8 @@ angular.module('app', [])
             
         };
         
-        $scope.layoutResources = function() {
-            var layoutDir = 'layout/' + $scope.layout;
+        $scope.themeResources = function() {
+            var layoutDir = 'themes/' + $scope.theme;
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
             script.type= 'text/javascript';
@@ -358,8 +355,11 @@ SGA.PainelWeb = {
     },
 
     Storage: {
+        
+        prefix: 'painelweb_',
 
         set: function(name, value) {
+            name = this.prefix + name;
             if (localStorage) {
                 localStorage.setItem(name, value);
             } else {
@@ -370,6 +370,7 @@ SGA.PainelWeb = {
         },
                 
         get: function(name) {
+            name = this.prefix + name;
             if (localStorage) {
                 return localStorage.getItem(name);
             } else {
@@ -394,15 +395,16 @@ SGA.PainelWeb = {
     Config: {
 
         load: function($scope) {
+            $scope.theme = SGA.PainelWeb.Storage.get('theme') || 'default';
             $scope.url = SGA.PainelWeb.Storage.get('url');
             $scope.unidade = JSON.parse(SGA.PainelWeb.Storage.get('unidade')) || {};
             $scope.servicos = JSON.parse(SGA.PainelWeb.Storage.get('servicos')) || [];
-            $scope.lang = SGA.PainelWeb.Storage.get('lang') || window.navigator.userLanguage || window.navigator.language;
+            $scope.lang = SGA.PainelWeb.Storage.get('lang') || this.defaultLang();
             SGA.PainelWeb.alert = SGA.PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
             SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
             SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
             SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
-            SGA.PainelWeb.lang = SGA.PainelWeb.Storage.get('lang') || window.navigator.userLanguage || window.navigator.language;
+            SGA.PainelWeb.lang = $scope.lang;
             // atualizando interface
             $('#alert-file').val(SGA.PainelWeb.alert);
             $('.vocalizar').prop('disabled', !SGA.PainelWeb.vocalizar);
@@ -419,6 +421,7 @@ SGA.PainelWeb = {
             SGA.PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
             SGA.PainelWeb.lang = $('#idioma').val();
             // salvando valores
+            SGA.PainelWeb.Storage.set('theme', $scope.theme);
             SGA.PainelWeb.Storage.set('url', $scope.url);
             SGA.PainelWeb.Storage.set('unidade', JSON.stringify($scope.unidade));
             SGA.PainelWeb.Storage.set('servicos', JSON.stringify($scope.servicos));
@@ -427,7 +430,14 @@ SGA.PainelWeb = {
             SGA.PainelWeb.Storage.set('vocalizarZero', SGA.PainelWeb.vocalizarZero ? '1' : '0');
             SGA.PainelWeb.Storage.set('vocalizarLocal', SGA.PainelWeb.vocalizarLocal ? '1' : '0');
             SGA.PainelWeb.Storage.set('lang', SGA.PainelWeb.lang);
+        },
+        
+        defaultLang: function() {
+            var lang = (window.navigator.userLanguage || window.navigator.language || 'pt').split('-');
+            return lang[0];
         }
+        
+        
     },
     
     fullscreen: function() {
@@ -444,7 +454,7 @@ SGA.PainelWeb = {
         if (elem.msRequestFullScreen) {
             elem.msRequestFullScreen();
         }
-    },
+    }
  
 };
 
