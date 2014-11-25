@@ -61,7 +61,7 @@ angular.module('app', [])
         };
             
         $scope.save = function() {
-            SGA.PainelWeb.Config.save($scope);
+            PainelWeb.Config.save($scope);
             $.painel({
                 url: $scope.url,
                 unidade: $scope.unidade.id,
@@ -69,23 +69,23 @@ angular.module('app', [])
                     return s.id;
                 })
             });
-            if (!SGA.PainelWeb.started) {
-                SGA.PainelWeb.started = true;
+            if (!PainelWeb.started) {
+                PainelWeb.started = true;
                 $.painel().start();
             }
             $('#config').modal('hide');
-            SGA.PainelWeb.trigger('save');
+            PainelWeb.trigger('save');
         };
         
         $scope.chamar = function() {
-            if (SGA.PainelWeb.started && $scope.senhas.length > 0) {
+            if (PainelWeb.started && $scope.senhas.length > 0) {
                 var senha = $scope.senhas.shift();
 
-                SGA.PainelWeb.trigger('callstart');
+                PainelWeb.trigger('callstart');
                 // som e animacao
-                SGA.PainelWeb.Alert.play();
-                SGA.PainelWeb.Speech.play(senha);
-                SGA.PainelWeb.blink($('.blink'));
+                PainelWeb.Alert.play();
+                PainelWeb.Speech.play(senha);
+                PainelWeb.blink($('.blink'));
                 
                 // evita adicionar ao historico senha rechamada
                 if ($scope.ultima.texto !== senha.texto) {
@@ -107,10 +107,10 @@ angular.module('app', [])
         };
 
         $scope.init = function() {
-            SGA.PainelWeb.Config.load($scope);
-            SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
+            PainelWeb.Config.load($scope);
+            PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
             $.i18n.init({ 
-                lng: SGA.PainelWeb.lang,
+                lng: PainelWeb.lang,
                 resGetPath: 'locales/__lng__.json'
                 }, function(t) { $("html").i18n();}
             );
@@ -134,7 +134,7 @@ angular.module('app', [])
             })
             .on('senhas', function(senhas) {
                 $scope.$apply(function() {
-                    if (SGA.PainelWeb.started && senhas && senhas.length > 0) {
+                    if (PainelWeb.started && senhas && senhas.length > 0) {
                         // as senhas estao em ordem decrescente
                         var primeiro = $scope.ultimoId === 0;
                         for (var i = senhas.length - 1; i >= 0; i--) {
@@ -155,7 +155,7 @@ angular.module('app', [])
                                 $scope.ultimoId = senha.id;
                             }
                         }
-                        if (SGA.PainelWeb.Speech.queue.length === 0) {
+                        if (PainelWeb.Speech.queue.length === 0) {
                             $scope.chamar();
                         }
                     }
@@ -164,9 +164,9 @@ angular.module('app', [])
             $('#config').on('shown.bs.modal hidden.bs.modal', function(e) {
                 if (e.type === 'shown') {
                     // para de chamar quando abre a janela de configuracao
-                    SGA.PainelWeb.started = false;
+                    PainelWeb.started = false;
                 } else if (e.type === 'hidden') {
-                    SGA.PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
+                    PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
                 }
             });
             // ocultando e adicionando animacao ao menu
@@ -214,22 +214,19 @@ angular.module('app', [])
 
 
 
-
-var SGA = SGA || {};
-
-SGA.PainelWeb = {
+var PainelWeb = {
     
     _events: {},
     
     on: function(evt, fn) {
         if (typeof(fn) === 'function') {
-            SGA.PainelWeb._events[evt] = SGA.PainelWeb._events[evt] || [];
-            SGA.PainelWeb._events[evt].push(fn);
+            PainelWeb._events[evt] = PainelWeb._events[evt] || [];
+            PainelWeb._events[evt].push(fn);
         }
     },
     
     trigger: function(evt) {
-        var evts = SGA.PainelWeb._events[evt] || [];
+        var evts = PainelWeb._events[evt] || [];
         for (var i = 0; i < evts.length; i++) {
             evts[i]();
         }
@@ -244,7 +241,7 @@ SGA.PainelWeb = {
             elem.css('visibility', elem.css('visibility') === 'visible' ? 'hidden' : 'visible');
             if (count < 5) {
                 elem.data('bcount', count + 1);
-                SGA.PainelWeb.blink(elem);
+                PainelWeb.blink(elem);
             } else {
                 elem.data('bcount', 0);
             }
@@ -258,7 +255,7 @@ SGA.PainelWeb = {
         },
 
         play: function(filename) {
-            filename = filename || SGA.PainelWeb.alert;
+            filename = filename || PainelWeb.alert;
             document.getElementById('alert').src = 'media/alert/' + filename;
             document.getElementById('alert').play();
         }
@@ -295,10 +292,10 @@ SGA.PainelWeb = {
                 local = params.local;
                 lang = params.lang;
             } else {
-                vocalizar = SGA.PainelWeb.vocalizar;
-                zeros = SGA.PainelWeb.vocalizarZero;
-                local = SGA.PainelWeb.vocalizarLocal;
-                lang = SGA.PainelWeb.lang;
+                vocalizar = PainelWeb.vocalizar;
+                zeros = PainelWeb.vocalizarZero;
+                local = PainelWeb.vocalizarLocal;
+                lang = PainelWeb.lang;
             }
             if (vocalizar) {
                 // "senha"
@@ -342,7 +339,7 @@ SGA.PainelWeb = {
         processQueue: function() {
             if (this.playing && this.queue.length === 0) {
                 this.playing = false;
-                SGA.PainelWeb.trigger('callend');
+                PainelWeb.trigger('callend');
                 return;
             }
             var current = this.queue.shift();
@@ -395,41 +392,41 @@ SGA.PainelWeb = {
     Config: {
 
         load: function($scope) {
-            $scope.theme = SGA.PainelWeb.Storage.get('theme') || 'default';
-            $scope.url = SGA.PainelWeb.Storage.get('url');
-            $scope.unidade = JSON.parse(SGA.PainelWeb.Storage.get('unidade')) || {};
-            $scope.servicos = JSON.parse(SGA.PainelWeb.Storage.get('servicos')) || [];
-            $scope.lang = SGA.PainelWeb.Storage.get('lang') || this.defaultLang();
-            SGA.PainelWeb.alert = SGA.PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
-            SGA.PainelWeb.vocalizar = SGA.PainelWeb.Storage.get('vocalizar') === '1';
-            SGA.PainelWeb.vocalizarZero = SGA.PainelWeb.Storage.get('vocalizarZero') === '1';
-            SGA.PainelWeb.vocalizarLocal = SGA.PainelWeb.Storage.get('vocalizarLocal') === '1';
-            SGA.PainelWeb.lang = $scope.lang;
+            $scope.theme = PainelWeb.Storage.get('theme') || 'default';
+            $scope.url = PainelWeb.Storage.get('url');
+            $scope.unidade = JSON.parse(PainelWeb.Storage.get('unidade')) || {};
+            $scope.servicos = JSON.parse(PainelWeb.Storage.get('servicos')) || [];
+            $scope.lang = PainelWeb.Storage.get('lang') || this.defaultLang();
+            PainelWeb.alert = PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
+            PainelWeb.vocalizar = PainelWeb.Storage.get('vocalizar') === '1';
+            PainelWeb.vocalizarZero = PainelWeb.Storage.get('vocalizarZero') === '1';
+            PainelWeb.vocalizarLocal = PainelWeb.Storage.get('vocalizarLocal') === '1';
+            PainelWeb.lang = $scope.lang;
             // atualizando interface
-            $('#alert-file').val(SGA.PainelWeb.alert);
-            $('.vocalizar').prop('disabled', !SGA.PainelWeb.vocalizar);
-            $('#vocalizar-status').prop('checked', SGA.PainelWeb.vocalizar);
-            $('#vocalizar-zero').prop('checked', SGA.PainelWeb.vocalizarZero);
-            $('#vocalizar-local').prop('checked', SGA.PainelWeb.vocalizarLocal);
+            $('#alert-file').val(PainelWeb.alert);
+            $('.vocalizar').prop('disabled', !PainelWeb.vocalizar);
+            $('#vocalizar-status').prop('checked', PainelWeb.vocalizar);
+            $('#vocalizar-zero').prop('checked', PainelWeb.vocalizarZero);
+            $('#vocalizar-local').prop('checked', PainelWeb.vocalizarLocal);
         },
                 
         save: function($scope) {
             // pegando da interface
-            SGA.PainelWeb.alert = $('#alert-file').val();
-            SGA.PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
-            SGA.PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
-            SGA.PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
-            SGA.PainelWeb.lang = $('#idioma').val();
+            PainelWeb.alert = $('#alert-file').val();
+            PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
+            PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
+            PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
+            PainelWeb.lang = $('#idioma').val();
             // salvando valores
-            SGA.PainelWeb.Storage.set('theme', $scope.theme);
-            SGA.PainelWeb.Storage.set('url', $scope.url);
-            SGA.PainelWeb.Storage.set('unidade', JSON.stringify($scope.unidade));
-            SGA.PainelWeb.Storage.set('servicos', JSON.stringify($scope.servicos));
-            SGA.PainelWeb.Storage.set('alert', SGA.PainelWeb.alert);
-            SGA.PainelWeb.Storage.set('vocalizar', SGA.PainelWeb.vocalizar ? '1' : '0');
-            SGA.PainelWeb.Storage.set('vocalizarZero', SGA.PainelWeb.vocalizarZero ? '1' : '0');
-            SGA.PainelWeb.Storage.set('vocalizarLocal', SGA.PainelWeb.vocalizarLocal ? '1' : '0');
-            SGA.PainelWeb.Storage.set('lang', SGA.PainelWeb.lang);
+            PainelWeb.Storage.set('theme', $scope.theme);
+            PainelWeb.Storage.set('url', $scope.url);
+            PainelWeb.Storage.set('unidade', JSON.stringify($scope.unidade));
+            PainelWeb.Storage.set('servicos', JSON.stringify($scope.servicos));
+            PainelWeb.Storage.set('alert', PainelWeb.alert);
+            PainelWeb.Storage.set('vocalizar', PainelWeb.vocalizar ? '1' : '0');
+            PainelWeb.Storage.set('vocalizarZero', PainelWeb.vocalizarZero ? '1' : '0');
+            PainelWeb.Storage.set('vocalizarLocal', PainelWeb.vocalizarLocal ? '1' : '0');
+            PainelWeb.Storage.set('lang', PainelWeb.lang);
         },
         
         defaultLang: function() {
