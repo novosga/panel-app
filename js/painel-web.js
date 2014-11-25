@@ -12,7 +12,7 @@ angular.module('app', [])
             local: 'Guichê',
             numeroLocal: 0,
             mensagem: 'Atendimento',
-            styleClass: ''
+            styleClass: 'inactive'
         };
         $scope.senhas = [];
         $scope.historico = [];

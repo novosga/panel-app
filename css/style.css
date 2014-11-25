@@ -77,10 +77,10 @@ html, body, #layout {
 }
 
 /* cores - inativo */
-#layout {
+#layout.inactive {
     background: #f1f1f1;
 }
 
-#layout span {
+#layout.inactive span {
     color: #ccc;
 }
