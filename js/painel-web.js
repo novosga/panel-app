@@ -210,7 +210,13 @@ angular.module('app', [])
             head.appendChild(script);
             $("#layout").i18n();
         };
-    });
+    })
+    .filter('pad', function() {
+        return function (input, length) {
+            return new Array(length - input.toString().length + 1).join('0') + input;
+        };
+    })
+;
 
 
 
