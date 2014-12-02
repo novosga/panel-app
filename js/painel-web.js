@@ -84,7 +84,9 @@ angular.module('app', [])
                 PainelWeb.trigger('callstart');
                 // som e animacao
                 PainelWeb.Alert.play();
-                PainelWeb.Speech.play(senha);
+                if (PainelWeb.vocalizar) {
+                    PainelWeb.Speech.play(senha);
+                }
                 PainelWeb.blink($('.blink'));
                 
                 // evita adicionar ao historico senha rechamada
@@ -94,14 +96,7 @@ angular.module('app', [])
                     // guardando historico das 10 ultimas senhas
                     $scope.historico.push(senha); 
                     $scope.historico = $scope.historico.slice(Math.max(0, $scope.historico.length - 10), $scope.historico.length);
-                    // atualizando ultimas senhas chamadas
-                    $scope.anteriores = [];
-                    // -2 porque nao exibe a ultima (senha principal). E limitando exibicao em 5
-                    for (var i = $scope.historico.length - 2, j = 0; i >= 0 && j < 5; i--, j++) {
-                        $scope.anteriores.push($scope.historico[i]);
-                    }
                 }
-                
                 $scope.ultima = senha;
             }
         };
@@ -155,7 +150,7 @@ angular.module('app', [])
                                 $scope.ultimoId = senha.id;
                             }
                         }
-                        if (PainelWeb.Speech.queue.length === 0) {
+                        if (!PainelWeb.Speech.queue.playing) {
                             $scope.chamar();
                         }
                     }
@@ -262,8 +257,15 @@ var PainelWeb = {
 
         play: function(filename) {
             filename = filename || PainelWeb.alert;
-            document.getElementById('alert').src = 'media/alert/' + filename;
-            document.getElementById('alert').play();
+            var audio = document.getElementById('alert');
+            audio.src = 'media/alert/' + filename;
+            audio.play();
+            $(audio).off('ended');
+            if (!PainelWeb.vocalizar) {
+                $(audio).on('ended', function() {
+                    PainelWeb.trigger('callend');
+                });
+            }
         }
     },
 
