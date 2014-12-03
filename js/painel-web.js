@@ -88,14 +88,16 @@ angular.module('app', [])
                     PainelWeb.Speech.play(senha);
                 }
                 PainelWeb.blink($('.blink'));
-                
                 // evita adicionar ao historico senha rechamada
-                if ($scope.ultima.texto !== senha.texto) {
+                if ($scope.ultima.texto !== 'A000' && $scope.ultima.texto !== senha.texto) {
                     // removendo duplicada
-                    $scope.historico.remove(senha);
+                    $scope.historico.remove($scope.ultima);
+                    // guardando a senha anterior
+                    $scope.historico.unshift($scope.ultima); 
                     // guardando historico das 10 ultimas senhas
-                    $scope.historico.push(senha); 
-                    $scope.historico = $scope.historico.slice(Math.max(0, $scope.historico.length - 10), $scope.historico.length);
+                    if ($scope.historico.length > 10) {
+                        $scope.historico.pop();
+                    }
                 }
                 $scope.ultima = senha;
             }
@@ -141,7 +143,7 @@ angular.module('app', [])
                                 if (primeiro && i > 0) {
                                     // remove duplicada (em caso de rechamada)
                                     $scope.historico.remove(senha);
-                                    $scope.historico.push(senha);
+                                    $scope.historico.unshift(senha);
                                 } else {
                                     // remove duplicada (em caso de rechamada)
                                     $scope.senhas.remove(senha);
@@ -150,6 +152,7 @@ angular.module('app', [])
                                 $scope.ultimoId = senha.id;
                             }
                         }
+                        $scope.historico.remove(senhas[0]);
                         if (!PainelWeb.Speech.queue.playing) {
                             $scope.chamar();
                         }
