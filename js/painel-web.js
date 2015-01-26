@@ -4,7 +4,7 @@
  */
 
 angular.module('app', [])
-    .controller('PainelCtrl', function($scope) {
+    .controller('PainelCtrl', function($scope, $http) {
         "use strict";
         
         $scope.ultima = {
@@ -14,29 +14,54 @@ angular.module('app', [])
             mensagem: 'Atendimento',
             styleClass: 'inactive'
         };
+        
         $scope.senhas = [];
         $scope.historico = [];
         $scope.servicosUnidade = [];
         $scope.ultimoId = 0;
-        $scope.lang = window.navigator.userLanguage || window.navigator.language;
-        $scope.unidade = {};
-                
+        
+        $scope.config = {
+            url: '',
+            theme: 'default',
+            alert: 'ekiga-vm.wav',
+            vocalizar: false,
+            vocalizarZero: false,
+            vocalizarLocal: false,
+            lang: (window.navigator.userLanguage || window.navigator.language || 'pt').split('-')[0],
+            unidade: {},
+            servicos: []
+        };
+        
         $scope.changeUrl = function() {
             $scope.unidades = [];
-            $scope.unidade = {};
-            if($scope.url.substr(-1) == '/') {$scope.url = $scope.url.substr(0, $scope.url.length - 1);}
-            $.painel().unidades($scope.url);
+            $scope.servicosUnidade = [];
+            $scope.config.unidade = {};
+            // remove slash on end
+            if($scope.config.url.substr(-1) === '/') {
+                $scope.config.url = $scope.config.url.substr(0, $scope.config.url.length - 1);
+            }
+            $.painel().unidades($scope.config.url, {
+                error: function() {
+                    $scope.$apply(function() {
+                        $scope.config.url = '';
+                    });
+                    $('#error')
+                            .modal('show')
+                            .find('.modal-body>p')
+                            .html(i18n.t('PainelWeb.error.invalid_url'))
+                    ;
+                }
+            });
         };
         
         $scope.changeUnidade = function(){
-            if ($scope.unidade != null) {
-                if ($scope.unidade.id > 0) { 
-                    $.painel().servicos($scope.unidade.id);
-                }
+            if ($scope.config.unidade !== null && $scope.config.unidade.id > 0) { 
+                $.painel().servicos($scope.config.unidade.id);
             }
         };
+        
         $scope.changeLang = function() {
-            i18n.setLng($scope.lang, function(t) {
+            i18n.setLng($scope.config.lang, function(t) {
                 $("html").i18n();
             });
         };
@@ -44,16 +69,17 @@ angular.module('app', [])
         $scope.checkServico = function(servico) {
             var idx = $scope.indexServico(servico);
             if (idx > -1) {
-              $scope.servicos.splice(idx, 1);
+              $scope.config.servicos.splice(idx, 1);
             } else {
-              $scope.servicos.push(servico);
+              $scope.config.servicos.push(servico);
             }
         };
         
         $scope.indexServico = function(servico) {
-            var idx = $scope.servicos.length - 1;
+            var idx = $scope.config.servicos.length - 1;
             for (; idx >= 0; idx--) {
-                if ($scope.servicos[idx].id === servico.id) {
+                var s = $scope.config.servicos[idx];
+                if (s === servico.id || (s.id && s.id === servico.id)) {
                     break;
                 }
             }
@@ -63,11 +89,9 @@ angular.module('app', [])
         $scope.save = function() {
             PainelWeb.Config.save($scope);
             $.painel({
-                url: $scope.url,
-                unidade: $scope.unidade.id,
-                servicos: $scope.servicos.map(function(s) {
-                    return s.id;
-                })
+                url: $scope.config.url,
+                unidade: $scope.config.unidade.id,
+                servicos: $scope.servicosIds()
             });
             if (!PainelWeb.started) {
                 PainelWeb.started = true;
@@ -83,9 +107,9 @@ angular.module('app', [])
 
                 PainelWeb.trigger('callstart');
                 // som e animacao
-                PainelWeb.Alert.play();
-                if (PainelWeb.vocalizar) {
-                    PainelWeb.Speech.play(senha);
+                PainelWeb.Alert.play($scope.config.alert, !$scope.config.vocalizar);
+                if ($scope.config.vocalizar) {
+                    PainelWeb.Speech.play(senha, speechParams());
                 }
                 PainelWeb.blink($('.blink'));
                 // evita adicionar ao historico senha rechamada
@@ -104,20 +128,42 @@ angular.module('app', [])
         };
 
         $scope.init = function() {
-            PainelWeb.Config.load($scope);
-            PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
+            // se nao ha configuracao salva
+            if (!PainelWeb.Config.load($scope)) {
+                $http.get('config.json')
+                        // tente o arquivo config.json
+                        .success(function(config) {
+                            if (config.unidade && typeof(config.unidade) !== 'object') {
+                                config.unidade = { id: parseInt(config.unidade) };
+                            }
+                            $scope.config = config;
+                            PainelWeb.Config.save($scope);
+                        })
+                        // caso contrario (arquivo nao existe) abra a modal
+                        .error(function() {
+                            $('#config').modal('show');
+                        })
+                        .finally(function() {
+                            $scope.run();
+                        })
+                ;
+            } else {
+                $scope.run();
+            }
+        };
+        
+        $scope.run = function() {
+            PainelWeb.started = ($scope.config.unidade.id > 0 && $scope.config.servicos.length > 0);
             $.i18n.init({ 
-                lng: PainelWeb.lang,
+                lng: $scope.config.lang,
                 resGetPath: 'locales/__lng__.json'
                 }, function(t) { $("html").i18n();}
             );
             
             $.painel({
-                url: $scope.url,
-                unidade: ($scope.unidade.id > 0) ? $scope.unidade.id : 0,
-                servicos: $scope.servicos.map(function(s) {
-                    return s.id;
-                })
+                url: $scope.config.url,
+                unidade: ($scope.config.unidade.id > 0) ? $scope.config.unidade.id : 0,
+                servicos: $scope.servicosIds()
             })
             .on('unidades', function(unidades) {
                 $scope.$apply(function() {
@@ -164,7 +210,7 @@ angular.module('app', [])
                     // para de chamar quando abre a janela de configuracao
                     PainelWeb.started = false;
                 } else if (e.type === 'hidden') {
-                    PainelWeb.started = ($scope.unidade.id > 0 && $scope.servicos.length > 0);
+                    PainelWeb.started = ($scope.config.unidade.id > 0 && $scope.config.servicos.length > 0);
                 }
             });
             // ocultando e adicionando animacao ao menu
@@ -180,11 +226,10 @@ angular.module('app', [])
                     );
                 });
             }, 3000);
-            
-        };
+        }
         
         $scope.themeResources = function() {
-            var layoutDir = 'themes/' + $scope.theme;
+            var layoutDir = 'themes/' + $scope.config.theme;
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
             script.type= 'text/javascript';
@@ -208,6 +253,40 @@ angular.module('app', [])
             head.appendChild(script);
             $("#layout").i18n();
         };
+        
+        $scope.testSpeech = function() {
+            PainelWeb.Speech.play(
+                {
+                    mensagem: i18n.t('PainelWeb.test_priority_normal') || 'Convencional',
+                    sigla: 'A',
+                    numero: 1,
+                    length: 3,
+                    local: 'test-local',
+                    numeroLocal: '1',
+                },
+                speechParams()
+            );
+        };
+        
+        $scope.testAlert = function() {
+            PainelWeb.Alert.play($scope.config.alert, true);
+        };
+        
+        $scope.servicosIds = function() {
+            return $scope.config.servicos.map(function(s) {
+                return (s.id) ? s.id : parseInt(s);
+            });
+        }
+        
+        function speechParams() {
+            return {
+                vocalizar: $scope.config.vocalizar,
+                zeros: $scope.config.vocalizarZero,
+                local: $scope.config.vocalizarLocal,
+                lang: $scope.config.lang
+            };
+        }
+        
     })
     .filter('pad', function() {
         return function (input, length) {
@@ -254,17 +333,12 @@ var PainelWeb = {
             
     Alert: {
 
-        test: function() {
-            this.play($('#alert-file').val());
-        },
-
-        play: function(filename) {
-            filename = filename || PainelWeb.alert;
+        play: function(filename, immediate) {
             var audio = document.getElementById('alert');
             audio.src = 'media/alert/' + filename;
             audio.play();
             $(audio).off('ended');
-            if (!PainelWeb.vocalizar) {
+            if (immediate) {
                 $(audio).on('ended', function() {
                     PainelWeb.trigger('callend');
                 });
@@ -276,53 +350,23 @@ var PainelWeb = {
         queue: [],
         playing: false,
                 
-        test: function() {
-            this.play(
-                {
-                    mensagem: i18n.t('PainelWeb.test_priority_normal') || 'Convencional',
-                    sigla: 'A',
-                    numero: 1,
-                    length: 3,
-                    local: 'test-local',
-                    numeroLocal: '1',
-                },
-                {
-                    vocalizar: $('#vocalizar-status').prop('checked'),
-                    zeros: $('#vocalizar-zero').prop('checked'),
-                    local: $('#vocalizar-local').prop('checked'),
-                    lang: $('#idioma').val()
-                }
-            );
-        },
-
         play: function(senha, params) {
-            var vocalizar, zeros, local, lang;
-            if (params) {
-                vocalizar = params.vocalizar;
-                zeros = params.zeros;
-                local = params.local;
-                lang = params.lang;
-            } else {
-                vocalizar = PainelWeb.vocalizar;
-                zeros = PainelWeb.vocalizarZero;
-                local = PainelWeb.vocalizarLocal;
-                lang = PainelWeb.lang;
-            }
-            if (vocalizar) {
+            params = params || {};
+            if (params.vocalizar) {
                 // "senha"
-                this.queue.push({name: "senha", lang: lang});
+                this.queue.push({name: "senha", lang: params.lang});
                 // sigla + numero
-                var text = (zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
+                var text = (params.zeros) ? $.painel().format(senha) : senha.sigla + senha.numero;
                 for (var i = 0; i < text.length; i++) {
-                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: lang});
+                    this.queue.push({name: text.charAt(i).toLowerCase(), lang: params.lang});
                 }
-                if (local) {
+                if (params.local) {
                     // nome do local
-                    this.queue.push({name: senha.local.toLowerCase(), lang: lang});
+                    this.queue.push({name: senha.local.toLowerCase(), lang: params.lang});
                     // numero do local
                     var num = senha.numeroLocal + '';
                     for (var i = 0; i < num.length; i++) {
-                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: lang});
+                        this.queue.push({name: num.charAt(i).toLowerCase(), lang: params.lang});
                     }
                 }
             }
@@ -364,7 +408,7 @@ var PainelWeb = {
 
     Storage: {
         
-        prefix: 'painelweb_',
+        prefix: 'painelweb.',
 
         set: function(name, value) {
             name = this.prefix + name;
@@ -403,48 +447,33 @@ var PainelWeb = {
     Config: {
 
         load: function($scope) {
-            $scope.theme = PainelWeb.Storage.get('theme') || 'default';
-            $scope.url = PainelWeb.Storage.get('url');
-            $scope.unidade = JSON.parse(PainelWeb.Storage.get('unidade')) || {};
-            $scope.servicos = JSON.parse(PainelWeb.Storage.get('servicos')) || [];
-            $scope.lang = PainelWeb.Storage.get('lang') || this.defaultLang();
-            PainelWeb.alert = PainelWeb.Storage.get('alert') || 'ekiga-vm.wav';
-            PainelWeb.vocalizar = PainelWeb.Storage.get('vocalizar') === '1';
-            PainelWeb.vocalizarZero = PainelWeb.Storage.get('vocalizarZero') === '1';
-            PainelWeb.vocalizarLocal = PainelWeb.Storage.get('vocalizarLocal') === '1';
-            PainelWeb.lang = $scope.lang;
-            // atualizando interface
-            $('#alert-file').val(PainelWeb.alert);
-            $('.vocalizar').prop('disabled', !PainelWeb.vocalizar);
-            $('#vocalizar-status').prop('checked', PainelWeb.vocalizar);
-            $('#vocalizar-zero').prop('checked', PainelWeb.vocalizarZero);
-            $('#vocalizar-local').prop('checked', PainelWeb.vocalizarLocal);
+            if (PainelWeb.Storage.get('theme')) {
+                $scope.config.theme = PainelWeb.Storage.get('theme');
+                $scope.config.url = PainelWeb.Storage.get('url');
+                $scope.config.unidade = JSON.parse(PainelWeb.Storage.get('unidade'));
+                $scope.config.servicos = JSON.parse(PainelWeb.Storage.get('servicos'));
+                $scope.config.lang = PainelWeb.Storage.get('lang');
+                $scope.config.alert = PainelWeb.Storage.get('alert');
+                $scope.config.vocalizar = PainelWeb.Storage.get('vocalizar') === '1';
+                $scope.config.vocalizarZero = PainelWeb.Storage.get('vocalizarZero') === '1';
+                $scope.config.vocalizarLocal = PainelWeb.Storage.get('vocalizarLocal') === '1';
+                return true;
+            }
+            return false;
         },
                 
         save: function($scope) {
-            // pegando da interface
-            PainelWeb.alert = $('#alert-file').val();
-            PainelWeb.vocalizar = $('#vocalizar-status').prop('checked');
-            PainelWeb.vocalizarZero = $('#vocalizar-zero').prop('checked');
-            PainelWeb.vocalizarLocal = $('#vocalizar-local').prop('checked');
-            PainelWeb.lang = $('#idioma').val();
             // salvando valores
-            PainelWeb.Storage.set('theme', $scope.theme);
-            PainelWeb.Storage.set('url', $scope.url);
-            PainelWeb.Storage.set('unidade', JSON.stringify($scope.unidade));
-            PainelWeb.Storage.set('servicos', JSON.stringify($scope.servicos));
-            PainelWeb.Storage.set('alert', PainelWeb.alert);
-            PainelWeb.Storage.set('vocalizar', PainelWeb.vocalizar ? '1' : '0');
-            PainelWeb.Storage.set('vocalizarZero', PainelWeb.vocalizarZero ? '1' : '0');
-            PainelWeb.Storage.set('vocalizarLocal', PainelWeb.vocalizarLocal ? '1' : '0');
-            PainelWeb.Storage.set('lang', PainelWeb.lang);
-        },
-        
-        defaultLang: function() {
-            var lang = (window.navigator.userLanguage || window.navigator.language || 'pt').split('-');
-            return lang[0];
+            PainelWeb.Storage.set('theme', $scope.config.theme);
+            PainelWeb.Storage.set('url', $scope.config.url);
+            PainelWeb.Storage.set('unidade', JSON.stringify($scope.config.unidade));
+            PainelWeb.Storage.set('servicos', JSON.stringify($scope.servicosIds()));
+            PainelWeb.Storage.set('alert', $scope.config.alert);
+            PainelWeb.Storage.set('vocalizar', $scope.config.vocalizar ? '1' : '0');
+            PainelWeb.Storage.set('vocalizarZero', $scope.config.vocalizarZero ? '1' : '0');
+            PainelWeb.Storage.set('vocalizarLocal', $scope.config.vocalizarLocal ? '1' : '0');
+            PainelWeb.Storage.set('lang', $scope.config.lang);
         }
-        
         
     },
     
@@ -497,8 +526,13 @@ Array.prototype.remove = function(elem) {
 
 
 $(function() {
-    $('#vocalizar-status').on('change', function() {
-        var active = $(this).is(':checked');
-        $('.vocalizar').prop('disabled', !active);
+    $('#error').on('show.bs.modal', function () {
+        $.painel().pause();
+        $('#config :input').prop('disabled', true);
+    });
+    
+    $('#error').on('hide.bs.modal', function () {
+        $.painel().start();
+        $('#config :input').prop('disabled', false);
     });
 });

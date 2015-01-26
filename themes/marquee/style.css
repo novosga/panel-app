@@ -10,11 +10,6 @@
 
 #layout-content, #senha-container { height: 100%; }
 
-#error {
-    color: #ccc;
-    display: none;
-}
-
 #layout .top {
     height: 15%;
 }
@@ -138,12 +133,8 @@
 
 /* not supported resolution */
 @media only screen and (max-width: 780px) {
-    #layout-content { display: none; }
-    #error { display: block; }
 }
 @media only screen and (min-width: 1441px) {
-    #layout-content { display: none; }
-    #error { display: block; }
 }
 
 /* 1440x900 */

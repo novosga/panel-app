@@ -8,34 +8,14 @@
     line-height: 1;
 }
 
-#error {
-    color: #ccc;
-    display: none;
-}
-
-#layout .top {
-    height: 15%;
-}
-
-#layout .middle { width: 100%; height: 60%; }
-
-#layout .middle .left {
-    width: 70%;
-    height: 100%; 
-    float: left;
-}
-
-#layout .middle .right { 
-    width: 29%; 
-    float: right;
-}
-
-#layout .middle .right .local { line-height: 1; }
-#layout .middle .right .numero-local { line-height: 1; }
-
 /* 
  * Senha Atual - Ultima senha chamada
  */
+#mensagem {
+    padding-bottom: 20px;
+    padding-left: 20px;
+}
+
 #mensagem span {
     padding: 10px 29px;
     display: inline-block;
@@ -69,13 +49,13 @@
 }
 
 #historico .senhas {
-    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
     overflow: hidden;
 }
 
 #historico .senhas div.senha-chamada {
-    width: 33%;
-    height: 100%;
+    text-align: center;
     display: inline-block;
 }
 
@@ -107,126 +87,39 @@
 /* cores - atendimento prioritario quando no historico */
 #historico .senhas .prioridade * { color: #d2322d !important; }
 
-/* not supported resolution */
-@media only screen and (max-width: 790px) {
-    #layout-content { display: none; }
-    #error { display: block; }
-}
-@media only screen and (min-width: 1441px) {
-    #layout-content { display: none; }
-    #error { display: block; }
+/* fonts */
+
+#mensagem span {
+    font-size: 8vw;
 }
 
-
-/* 1440x900 */
-@media only screen and (max-width: 1440px) and (min-width: 1025px) {
-    
-    #mensagem {
-        height: 150px;
-    }
-    
-    #mensagem span {
-        font-size: 5em;
-    }
-    
-    #senha span {
-        font-size: 24em;
-    }
-    
-    #historico {
-        height: 200px; 
-    }
-    
-    #local span {
-        font-size: 6em;
-    }
-    
-    #local-numero span {
-        font-size: 14em;
-    }
-    
-    .senha-chamada .senha span {
-        font-size: 8em;
-    }
-    
-    .senha-chamada .local span {
-        font-size: 4em;
-    }
-    
+#senha span {
+    font-size: 25vw;
 }
 
-/* 1024x768 */
-@media only screen and (max-width: 1024px) and (min-width: 801px) {
-    
-    #mensagem {
-        height: 150px;
-    }
-    
-    #mensagem span {
-        font-size: 5em;
-    }
-    
-    #senha span {
-        font-size: 18em;
-    }
-    
-    #historico {
-        height: 200px; 
-    }
-    
-    #historico .senhas {
-        padding-top: 30px;
-    }
-    
-    #local span {
-        font-size: 4em;
-    }
-    
-    #local-numero span {
-        font-size: 12em;
-    }
-    
-    .senha-chamada .senha span {
-        font-size: 6em;
-    }
-    
-    .senha-chamada .local span {
-        font-size: 3em;
-    }
+#local span {
+    font-size: 10vw;
 }
+
+#local-numero span {
+    font-size: 14em;
+}
+
+.senha-chamada .senha span {
+    font-size: 8vw;
+}
+
+.senha-chamada .local span {
+    font-size: 5vw;
+}
+    
+
 
 /* 800x600 */
 @media only screen and (max-width: 800px) {
-    
-    #mensagem {
-        height: 150px;
-    }
-    
-    #mensagem span {
-        font-size: 4em;
-    }
     
     #historico {
         display: none;
     }
     
-    #senha span {
-        font-size: 14em;
-    }
-    
-    #local span {
-        font-size: 3em;
-    }
-    
-    #local-numero span {
-        font-size: 10em;
-    }
-    
-    .senha-chamada .senha span {
-        font-size: 4em;
-    }
-    
-    .senha-chamada .local span {
-        font-size: 2em;
-    }
 }

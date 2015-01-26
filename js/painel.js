@@ -25,14 +25,14 @@
         self.intervalId = 0;
         self.started = false;
 
-        self.unidades = function(url) {
+        self.unidades = function(url, args) {
             self.options.url = url;
-            loadUnidades(self);
+            loadUnidades(self, args);
         };
 
-        self.servicos = function(unidade) {
+        self.servicos = function(unidade, args) {
             self.options.unidade = unidade;
-            loadServicos(self);
+            loadServicos(self, args);
         };
 
         self.start = function() {
@@ -93,12 +93,14 @@
      * 
      * @param object painel
      */
-    var loadUnidades = function(painel) {
+    var loadUnidades = function(painel, args) {
         var url = painel.options.url;
+        args = args || {};
         apiRequest(url + '/api/unidades', {
-            complete: function(unidades) {
+            success: function(unidades) {
                 painel.trigger('unidades', [unidades]);
-            }
+            },
+            error: args.error
         });
     };
     
@@ -107,13 +109,15 @@
      * 
      * @param object painel
      */
-    var loadServicos = function(painel) {
+    var loadServicos = function(painel, args) {
         var url = painel.options.url;
         var unidade = painel.options.unidade;
+        args = args || {};
         apiRequest(url + '/api/servicos/' + unidade, {
-            complete: function(servicos) {
+            success: function(servicos) {
                 painel.trigger('servicos', [servicos]);
-            }
+            },
+            error: args.error
         });
     };
     
@@ -125,12 +129,14 @@
         var url = painel.options.url;
         var unidade = painel.options.unidade;
         var servicos = painel.options.servicos;
-        apiRequest(url + '/api/painel/' + unidade, {
-            data: { servicos: servicos.join(',') },
-            complete: function(senhas) {
-                painel.trigger('senhas', [senhas]);
-            }
-        });
+        if (unidade > 0 && servicos.length > 0) {
+            apiRequest(url + '/api/painel/' + unidade, {
+                data: { servicos: servicos.join(',') },
+                success: function(senhas) {
+                    painel.trigger('senhas', [senhas]);
+                }
+            });
+        }
     };
     
     var apiRequest = function(url, args) {
@@ -139,11 +145,19 @@
             dataType: 'json',
             data: args.data || {},
             success: function(response) {
-                if (typeof(args.complete) === 'function') {
-                    args.complete(response);
+                if (typeof(args.success) === 'function') {
+                    args.success(response);
                 }
             },
             error: function() {
+                if (typeof(args.error) === 'function') {
+                    args.error();
+                }
+            },
+            complete: function(response) {
+                if (typeof(args.complete) === 'function') {
+                    args.complete(response);
+                }
             }
         });
     };
