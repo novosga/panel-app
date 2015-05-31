@@ -1,0 +1,30 @@
+{
+    "PainelWeb": {
+        "title": "Painel Web | Novo SGA",
+        "configuration": "Configuração",
+        "fullscreen": "Ecrã inteiro",
+        "sounds": "Som",
+        "URL": "URL",
+        "units": "Unidades",
+        "services": "Serviços",
+        "alert": "Alerta",
+        "playsound": "Testar",
+        "vocalize": "Vocalizar",
+        "active": "Ativo",
+        "zero_left": "Zero à esquerda",
+        "local": "Local de atendimento",
+        "language": "Idioma",
+        "key_sample": "Senha: A001 / Balcão: 1",
+        "close" : "Fechar",
+        "save": "Guardar",
+        "select": "Selecione",
+        "theme": "Tema",
+        "test_priority_normal": "Convencional",
+        "test_local": "Balcão",
+        "Convencional": "Convencional",
+        "error": {
+            "title": "Erro",
+            "invalid_url": "O URL que colocou não é válido. Por favor tente novamente."
+        }
+    }
+}

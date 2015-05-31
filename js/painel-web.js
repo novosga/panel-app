@@ -27,7 +27,7 @@ angular.module('app', [])
             vocalizar: false,
             vocalizarZero: false,
             vocalizarLocal: false,
-            lang: (window.navigator.userLanguage || window.navigator.language || 'pt').split('-')[0],
+            lang: (window.navigator.userLanguage || window.navigator.language || 'pt-BR'),
             unidade: {},
             servicos: []
         };
