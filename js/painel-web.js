@@ -15,7 +15,7 @@ angular.module('app', [])
             styleClass: 'inactive'
         };
         
-		$scope.deafultLang = 'pt-BR';
+		$scope.defaultLang = 'pt-BR';
         $scope.senhas = [];
         $scope.historico = [];
         $scope.servicosUnidade = [];
@@ -28,7 +28,7 @@ angular.module('app', [])
             vocalizar: false,
             vocalizarZero: false,
             vocalizarLocal: false,
-            lang: (window.navigator.userLanguage || window.navigator.language || $scope.deafultLang),
+            lang: (window.navigator.userLanguage || window.navigator.language || $scope.defaultLang),
             unidade: {},
             servicos: []
         };
@@ -156,7 +156,7 @@ angular.module('app', [])
         $scope.run = function() {
             PainelWeb.started = ($scope.config.unidade.id > 0 && $scope.config.servicos.length > 0);
             $.i18n.init({ 
-				fallbackLng: $scope.deafultLang,
+				fallbackLng: $scope.defaultLang,
 				useLocalStorage: true,
 				localStorageExpirationTime: 86400000, // in ms, default 1 week
                 lng: $scope.config.lang,
