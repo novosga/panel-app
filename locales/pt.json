@@ -18,6 +18,7 @@
         "close" : "Fechar",
         "save": "Salvar",
         "select": "Selecione",
+        "theme": "Tema",		
         "test_priority_normal": "Convencional",
         "test_local": "Guichê",
         "Convencional": "Convencional",
