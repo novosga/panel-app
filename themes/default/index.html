@@ -15,7 +15,7 @@
                     <span>{{ ultima.local }}</span>
                 </div>
                 <div id="local-numero" class="numero-local">
-                    <span>{{ ultima.numeroLocal }}</span>
+                    <span>{{ ultima.numeroLocal|pad:2 }}</span>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
                     <span>{{ senha.texto }}</span>
                 </div>
                 <div class="local">
-                    <span>{{ senha.local }}: {{ senha.numeroLocal }}</span>
+                    <span>{{ senha.local }}: {{ senha.numeroLocal| pad:2 }}</span>
                 </div>
             </div>
         </div>
