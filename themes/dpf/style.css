@@ -1,0 +1,125 @@
+/** 
+ * Default layout - Painel Web
+ * @author Rogerio Lino <rogeriolino@gmail.com>
+ */
+#layout, #layout * { 
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+}
+
+/* 
+ * Senha Atual - Ultima senha chamada
+ */
+#mensagem {
+    padding-bottom: 20px;
+    padding-left: 20px;
+}
+
+#mensagem span {
+    padding: 10px 29px;
+    display: inline-block;
+}
+
+#senha {
+    font-weight: bold;
+    text-align: center;
+}
+
+/* local */
+
+#local {
+    text-align: center;
+    margin: 0 auto;
+}
+
+#local-numero {    
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/*
+ * Ultimas senhas chamadas
+ */
+#historico {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
+
+#historico .senhas {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+}
+
+#historico .senhas div.senha-chamada {
+    text-align: center;
+    display: inline-block;
+}
+
+#historico .senhas div.senha-chamada div.senha { 
+    font-weight: bold; 
+    text-align: center; 
+}
+
+#historico .senhas div.senha-chamada div.local {
+    text-align: center;
+}
+
+
+/* cores - atendimento normal */
+#layout.normal { background-color: #0055a3; }
+#layout.normal #mensagem span { color: #fff; }
+#layout.normal #senha span { color: #eeff00; }
+#layout.normal #local span { color: #fff; }
+#layout.normal #local-numero span { color: #fff; }
+#layout.normal #historico .senhas { background: rgba(0, 0, 0, .4); }
+#layout.normal #historico .senhas * { color: #fff; }
+
+/* cores - atendimento prioritario */
+#layout.prioridade { background-color: #fff; }
+#layout.prioridade #senha-container span { color: #d2322d; }
+#layout.prioridade #historico .senhas { background-color: #f1f1f1; }
+#layout.prioridade #historico .senhas * { color: #333; }
+
+/* cores - atendimento prioritario quando no historico */
+#historico .senhas .prioridade * { color: #d2322d !important; }
+
+/* fonts */
+
+#mensagem span {
+    font-size: 8vw;
+}
+
+#senha span {
+    font-size: 25vw;
+}
+
+#local span {
+    font-size: 10vw;
+}
+
+#local-numero span {
+    font-size: 14em;
+}
+
+.senha-chamada .senha span {
+    font-size: 8vw;
+}
+
+.senha-chamada .local span {
+    font-size: 5vw;
+}
+    
+
+
+/* 800x600 */
+@media only screen and (max-width: 800px) {
+    
+    #historico {
+        display: none;
+    }
+    
+}

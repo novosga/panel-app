@@ -1,0 +1,35 @@
+        
+<div id="layout-content">
+    <div id="senha-container">
+        <div id="mensagem">
+            <span>{{ ultima.mensagem }}</span>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div id="senha" class="blink">
+                    <span>{{ ultima.texto }}</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div id="local" class="local">
+                    <span>{{ ultima.local }}</span>
+                </div>
+                <div id="local-numero" class="numero-local">
+                    <span>{{ ultima.numeroLocal }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="historico">
+        <div class="senhas">
+            <div class="col-sm-3 senha-chamada {{ senha.styleClass }}" ng-repeat="senha in historico | limitTo: 4">
+                <div class="senha">
+                    <span>{{ senha.texto }}</span>
+                </div>
+                <div class="local">
+                    <span>{{ senha.local }}: {{ senha.numeroLocal }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
