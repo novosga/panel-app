@@ -9,7 +9,7 @@
         url: "",
         unidade: 0,
         servicos: [],
-        interval: 1,
+        interval: 2,
         events: {}
     };
     $.painel = function(opts) {
@@ -129,15 +129,17 @@
                 data: { servicos: servicos.join(',') },
                 success: function(senhas) {
                     painel.trigger('senhas', [senhas]);
+                },
+                complete: function() {
+                    painel.options.intervalId = setTimeout(function() {
+                        if (painel.started) {
+                            loadSenhas(painel);
+                        }
+                    }, painel.options.interval * 1000);
                 }
             });
         }
         clearTimeout(painel.options.intervalId);
-        painel.options.intervalId = setTimeout(function() {
-            if (painel.started) {
-                loadSenhas(painel);
-            }
-        }, painel.options.interval * 1000);
     };
     
     var apiRequest = function(url, args) {
