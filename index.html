@@ -56,16 +56,17 @@
                         <div class="tab-content">
                             <div id="general" class="tab-pane active">
                                 <div class="form-group">
-                                    <label for="theme">Tema</label>
+                                    <label for="theme" data-i18n="PainelWeb.theme">Tema</label>
                                     <input id="theme" type="text" class="form-control" 
                                            ng-model="config.theme">
                                 </div>
                                 <div class="form-group">
                                     <label for="idioma" data-i18n="PainelWeb.language">Idioma</label>
                                     <select id="idioma" class="form-control" ng-model="config.lang" ng-change="changeLang()" ng-selected="config.lang">
-                                        <option value="pt">Português</option>
-                                        <option value="en">English</option>
-                                        <option value="es">Español</option>
+                                        <option value="pt-BR">Português (Brasil)</option>
+                                        <option value="pt-PT">Português (Portugal)</option>
+                                        <option value="en-US">English (United States)</option>
+                                        <option value="es-ES">Español (España)</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
