@@ -1,2 +1,5 @@
-nbproject/*
-config.json
+.DS_Store
+node_modules/
+dist/
+npm-debug.log
+nbproject/
