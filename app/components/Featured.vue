@@ -14,9 +14,9 @@
 
 <script>
     import Queue from "promise-queue"
-    
+
     const queue = new Queue(1, 10);
-    
+
     function toggleVisibility(el) {
         if (el.style.visibility === 'hidden') {
             el.style.visibility = 'visible'
@@ -24,17 +24,17 @@
             el.style.visibility = 'hidden'
         }
     }
-    
+
     function blinkElement(el, count, resolve) {
         toggleVisibility(el)
-        
+
         if (count > 0) {
             setTimeout(() => blinkElement(el, count - 1, resolve), 200)
         } else {
             setTimeout(() => resolve(), 1000)
         }
     }
-    
+
     export default {
         name: 'Featured',
         props: {
@@ -48,6 +48,7 @@
         },
         methods: {
             blink() {
+                this.$emit('blink')
                 return new Promise((resolve, reject) => {
                     blinkElement(this.$el, 5, resolve)
                 })

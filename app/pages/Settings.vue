@@ -10,7 +10,7 @@
                             </span>
                             Voltar
                         </app-link>
-                        
+
                         <p class="menu-label">
                             General
                         </p>
@@ -56,7 +56,7 @@
 
                         <label class="label">Password</label>
                         <p class="control">
-                            <input class="input is-medium" type="password" placeholder="Text input" v-model="config.password">
+                            <input class="input is-medium" type="password" placeholder="" v-model="config.password">
                         </p>
 
                         <label class="label">Client ID</label>
@@ -68,7 +68,7 @@
                         <p class="control">
                             <input class="input is-medium" type="password" placeholder="" v-model="config.clientSecret">
                         </p>
-                        
+
                         <div class="control is-grouped">
                             <p class="control">
                                 <button type="submit" class="button is-primary is-large">
@@ -85,7 +85,7 @@
                         <label class="label">Unity</label>
                         <p class="control">
                             <div class="select">
-                                <select 
+                                <select
                                     v-model="config.unity"
                                     @change="loadServices">
                                     <option></option>
@@ -122,7 +122,7 @@
                         <label class="label">Alert</label>
                         <p class="control has-addons">
                             <div class="select">
-                                <select 
+                                <select
                                     v-model="config.alert">
                                     <option
                                         v-for="(i, alert) in alerts"
@@ -158,7 +158,7 @@
 <script>
     import AppLink from '../components/Link.vue'
     import audio from '../services/audio'
-    
+
     function load(store) {
         store.dispatch('loadConfig')
         store.dispatch('fetchUnities')
@@ -185,7 +185,7 @@
             config () {
                 const config = this.$store.state.config
                 config.services = config.services || []
-                
+
                 return config
             },
             alerts () {

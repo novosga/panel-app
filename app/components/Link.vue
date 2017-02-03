@@ -17,8 +17,10 @@
         },
         methods: {
             click(evt) {
-                const href = evt.target.href || ''
-                this.$root.routeName = href.substring(href.indexOf('#') + 1);
+                const href = evt.target.href || '',
+                        routeName = href.substring(href.indexOf('#') + 1)
+                        
+                this.$root.goto(routeName);
             }
         }
     }

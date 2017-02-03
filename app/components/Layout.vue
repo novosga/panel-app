@@ -1,21 +1,26 @@
 <script>
     const interval = 15 * 1000;
-    
+
     let running = false
-    
-    function fetchMessages(store) {
+
+    function fetchMessages($root, store) {
         if (running) {
             store.dispatch('fetchMessages').then(messages => {
-                console.log('fetchMessages', messages)
+                setTimeout(() => fetchMessages($root, store), interval)
+            }, (e) => {
+                if (typeof(e) === 'string') {
+                    alert(e)
+                }
 
-                setTimeout(() => fetchMessages(store), interval)
+                running = false
+                $root.goto('settings');
             })
         }
     }
-    
+
     export default {
         name: 'Layout',
-        
+
         render(h) {
             let view
             try {
@@ -26,14 +31,14 @@
             }
             return h(view)
         },
-        
+
         beforeMount () {
             this.$store.dispatch('loadConfig').then(() => {
                 running = true
-                fetchMessages(this.$store)
+                fetchMessages(this.$root, this.$store)
             })
         },
-        
+
         beforeDestroy() {
             running = false
         }

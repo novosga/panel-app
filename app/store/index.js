@@ -8,12 +8,16 @@ Vue.use(Vuex)
 const HISTORY_MAX_LENGTH = 10
 const api = new Client()
 
+function zeroFill(number, length) {
+    return new Array(length - number.toString().length + 1).join('0') + number;
+}
+
 function normalizeMessage(data) {
     return {
         id: data.id,
         type: 'ticket',
-        title: data.siglaSenha + data.numeroSenha,
-        subtitle: data.local + ' ' + data.numeroLocal,
+        title: data.siglaSenha + zeroFill(data.numeroSenha, 3),
+        subtitle: data.local + ' ' + zeroFill(data.numeroLocal, 2),
         description: data.prioridade,
         $data: data
     }
@@ -47,9 +51,9 @@ const store = new Vuex.Store({
                     break
                 }
             }
-            
+
             state.history.push(state.message)
-            
+
             if (state.history.length > HISTORY_MAX_LENGTH) {
                 state.history.shift()
             }
@@ -79,15 +83,15 @@ const store = new Vuex.Store({
                             .messages(state.config.unity, state.config.services)
                             .then(messages => {
                                 const last = normalizeMessage(messages[0])
-                        
+
                                 if (!state.message.id || state.message.id < last.id) {
                                     commit('message', last)
                                     commit('append', last)
                                 }
-                                
+
                                 resolve()
                             }, reject)
-                    })
+                    }, reject)
             })
         },
         fetchUnities ({ commit, state }) {
@@ -107,11 +111,11 @@ const store = new Vuex.Store({
         fetchServices ({ commit, state }, unityId) {
             return new Promise((resolve, reject) => {
                 commit('services', [])
-                
+
                 if (!unityId) {
                     return Promise.resolve()
                 }
-                
+
                 api
                     .connect(state.config)
                     .then(() => {
