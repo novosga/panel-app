@@ -1,2 +1,4 @@
 nbproject/*
+/themes/
+!/themes/default/
 config.json
