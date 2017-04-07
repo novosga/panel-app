@@ -1,5 +1,5 @@
 import jQuery from 'jquery'
-import { OAuth2 } from './oauth2.js'
+import { OAuth2 } from '../../services/oauth2.js'
 
 class Client {
 

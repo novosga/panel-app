@@ -8,26 +8,26 @@
                             <span class="icon">
                                 <i class="fa fa-chevron-left"></i>
                             </span>
-                            Voltar
+                            {{ 'menu.go_back'|translate }}
                         </app-link>
                         
                         <p class="menu-label">
-                            General
+                            {{ 'menu.general'|translate }}
                         </p>
                         <ul class="menu-list">
                             <li>
                                 <a @click="showTab('server')">
-                                    Server
+                                    {{ 'menu.server'|translate }}
                                 </a>
                             </li>
                             <li>
                                 <a @click="showTab('services')">
-                                    Services
+                                    {{ 'menu.services'|translate }}
                                 </a>
                             </li>
                             <li>
                                 <a @click="showTab('sound')">
-                                    Sound
+                                    {{ 'menu.sound'|translate }}
                                 </a>
                             </li>
                         </ul>

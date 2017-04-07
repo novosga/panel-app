@@ -25,7 +25,7 @@ new Vue({
                         ? require('./pages/' + matchingView + '.vue')
                         : require('./pages/404.vue')
         }
-        },
+    },
     render(h) {
         return h(this.ViewComponent)
     }

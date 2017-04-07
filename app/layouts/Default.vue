@@ -1,16 +1,18 @@
 <template>
-    <div>
+    <div class="layout-content">
         <div class="columns">
-            <div class="column">
+            <div class="column featured-column">
                 <featured :message="lastMessage" v-if="lastMessage"></featured>
             </div>
-            <div class="column is-one-quarter">
-                <h2>History</h2>
+            <div class="column is-one-quarter history-column">
+                <h2 class="title">
+                    {{ 'history.title'|translate }}
+                </h2>
                 <history :messages="messages" v-if="lastMessage"></history>
+
+                <clock locale="en"></clock>
             </div>
         </div>
-        
-        <clock></clock>
     </div>
 </template>
 
@@ -40,17 +42,54 @@
             
     .clock
         position: fixed
-        bottom: 5%
-        right: 5%
+        bottom: 4vh
+        right: 3vw
         
-        span
-            font-size: 8vh
-            
-        span.hours
+        .time
+            span
+                font-size: 4vw
+                
+            span.hours
+                font-weight: bold
+                
+            span.seconds
+                font-style: italic
+
+        .date
+            text-align: right
+
+            span
+                font-size: 2vw
+                font-weight: bold
+
+
+    .layout-content
+        position: fixed
+        width: 100%
+        height: 100%
+
+        .columns
+            height: 100%
+
+    .history-column
+        background-color: #4fc08d
+        height: 100%
+        padding-top: 4vh
+
+        *
+            color: #2c3e50
+
+        .title
+            text-align: center
             font-weight: bold
-            
-        span.seconds
-            font-style: italic
+
+        .message
+            background-color: transparent
+
+        .empty
+            p
+                font-style: italic
+                text-align: center
 </style>
 
 <script>
@@ -71,11 +110,12 @@
                 return this.$store.state.history
             },
             lastMessage() {
-                if (!this.$store.state.message.id) {
+                if (!this.$store.state.message || !this.$store.state.message.id) {
                     return {
                         id: 0,
-                        message: '0000',
-                        text: '-'
+                        title: 'title',
+                        subtitle: 'subtitle',
+                        description: 'description',
                     };
                 }
                 

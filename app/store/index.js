@@ -1,23 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import vuexI18n from 'vuex-i18n';
 import Config from '../services/config.js'
-import { Client } from '../services/api.js'
+import novosga from '../bridges/novosga/store.js'
 
 Vue.use(Vuex)
 
 const HISTORY_MAX_LENGTH = 10
-const api = new Client()
-
-function normalizeMessage(data) {
-    return {
-        id: data.id,
-        type: 'ticket',
-        title: data.siglaSenha + data.numeroSenha,
-        subtitle: data.local + ' ' + data.numeroLocal,
-        description: data.prioridade,
-        $data: data
-    }
-}
 
 function equals(m1, m2) {
     return m1.type === m2.type && m1.title === m2.title
@@ -27,13 +16,16 @@ const store = new Vuex.Store({
     state: {
         config: {},
         message: {},
-        history: [],
-        unities: [],
-        services: [],
+        history: []
     },
     mutations: {
         config (state, config) {
             state.config = config
+
+            const locale = config.locale || 'en'
+            const dict = require(`../i18n/${locale}.js`)
+            Vue.i18n.add(locale, dict.default);
+            Vue.i18n.set(locale);
         },
         message (state, message) {
             state.message = message
@@ -54,11 +46,8 @@ const store = new Vuex.Store({
                 state.history.shift()
             }
         },
-        unities (state, unities) {
-            state.unities = unities
-        },
-        services (state, services) {
-            state.services = services
+        dict (state, dict) {
+            state.dict = dict
         }
     },
     actions: {
@@ -71,60 +60,17 @@ const store = new Vuex.Store({
             Config.save(config)
         },
         fetchMessages ({ commit, state }) {
-            return new Promise((resolve, reject) => {
-                api
-                    .connect(state.config)
-                    .then(() => {
-                        api
-                            .messages(state.config.unity, state.config.services)
-                            .then(messages => {
-                                const last = normalizeMessage(messages[0])
-                        
-                                if (!state.message.id || state.message.id < last.id) {
-                                    commit('message', last)
-                                    commit('append', last)
-                                }
-                                
-                                resolve()
-                            }, reject)
-                    })
-            })
-        },
-        fetchUnities ({ commit, state }) {
-            return new Promise((resolve, reject) => {
-                api
-                    .connect(state.config)
-                    .then(() => {
-                        api
-                            .unities()
-                            .then(unities => {
-                                commit('unities', unities)
-                                resolve()
-                            }, reject)
-                    })
-            })
-        },
-        fetchServices ({ commit, state }, unityId) {
-            return new Promise((resolve, reject) => {
-                commit('services', [])
-                
-                if (!unityId) {
-                    return Promise.resolve()
-                }
-                
-                api
-                    .connect(state.config)
-                    .then(() => {
-                        api
-                            .services(unityId)
-                            .then(services => {
-                                commit('services', services)
-                                resolve()
-                            }, reject)
-                    })
-            })
+            // novosga fetchMessage bridge
+            return novosga.actions.fetchNovosgaMessages({ commit, state })
         }
+    },
+    modules: {
+        i18n: vuexI18n.store,
+        // novosga module
+        novosga
     }
 })
+
+Vue.use(vuexI18n.plugin, store);
 
 export default store
