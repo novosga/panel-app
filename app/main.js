@@ -26,6 +26,11 @@ new Vue({
                         : require('./pages/404.vue')
         }
     },
+    methods: {
+        goto(routeName) {
+            this.routeName = routeName;
+        }
+    },
     render(h) {
         return h(this.ViewComponent)
     }

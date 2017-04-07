@@ -39,9 +39,9 @@ const store = new Vuex.Store({
                     break
                 }
             }
-            
+
             state.history.push(state.message)
-            
+
             if (state.history.length > HISTORY_MAX_LENGTH) {
                 state.history.shift()
             }

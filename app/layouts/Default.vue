@@ -19,27 +19,27 @@
 <style lang="sass">
     .featured-message
         text-align: center
-    
+
         .title
             font-size: 40vh
             font-weight: bold
-       
+
         .subtitle
             font-size: 10vh
-        
+
         .description
             font-size: 10vh
-            
+
     .history
         .message
             .title
                 font-size: 8vh
                 font-weight: bold
-                
+
             .subtitle
                 font-size: 4vh
                 font-style: italic
-            
+
     .clock
         position: fixed
         bottom: 4vh
@@ -97,7 +97,7 @@
     import Featured from '../components/Featured.vue'
     import History from '../components/History.vue'
     import audio from '../services/audio'
-    
+
     export default {
         name: 'Default',
         components: {
@@ -118,12 +118,12 @@
                         description: 'description',
                     };
                 }
-                
+
                 return this.$store.state.message
             }
         },
-        watch: {
-            lastMessage() {
+        methods: {
+            playAudio() {
                 audio.playAlert(this.$store.state.config.alert)
             }
         }
