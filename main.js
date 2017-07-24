@@ -10,8 +10,8 @@ const template = [
         submenu: [
             {
                 label: 'Settings',
-                click () { 
-                    alert('settings')
+                click () {
+                    mainWindow.loadURL('file://' + __dirname + '/index.html#settings')
                 }
             }
         ]
@@ -38,8 +38,8 @@ const template = [
         submenu: [
             {
                 label: 'About',
-                click () { 
-                    electron.shell.openExternal('http://novosga.org') 
+                click () {
+                    electron.shell.openExternal('http://novosga.org')
                 }
             }
         ]
