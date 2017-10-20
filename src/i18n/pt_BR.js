@@ -6,5 +6,6 @@ export default {
 	"menu.services": "Serviços",
 	"menu.sound": "Som",
 	"history.title": "Histórico",
-	"history.empty": "Vazio"
+	"history.empty": "Vazio",
+	"settings.services.empty": "Vazio"
 }

@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
-import Queue from 'promise-queue'
+import VueSwal from 'vue-swal'
 import store from './store'
+
+Vue.use(VueSwal)
 
 
 const routes = {
@@ -21,9 +22,10 @@ new Vue({
     computed: {
         ViewComponent () {
             const matchingView = routes[this.routeName] || '404'
-            return matchingView
+            const page = matchingView
                         ? require('./pages/' + matchingView + '.vue')
                         : require('./pages/404.vue')
+            return page
         }
     },
     methods: {
@@ -33,5 +35,8 @@ new Vue({
     },
     render(h) {
         return h(this.ViewComponent)
+    },
+    beforeCreate() {
+        this.$store.dispatch('loadConfig')
     }
 })

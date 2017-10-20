@@ -39,7 +39,7 @@
         },
         computed: {
             history() {
-                return this.messages.reverse().slice(0, 5)
+                return this.messages//.reverse().slice(0, 5)
             }
         }
     }

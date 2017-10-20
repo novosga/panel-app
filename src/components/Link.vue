@@ -19,7 +19,7 @@
             click(evt) {
                 const href = evt.target.href || '',
                         routeName = href.substring(href.indexOf('#') + 1)
-                        
+
                 this.$root.goto(routeName);
             }
         }

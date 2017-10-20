@@ -2,7 +2,7 @@
     <div class="layout-content">
         <div class="columns">
             <div class="column featured-column">
-                <featured :message="lastMessage" v-if="lastMessage"></featured>
+                <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio"></featured>
             </div>
             <div class="column is-one-quarter history-column">
                 <h2 class="title">
@@ -15,6 +15,35 @@
         </div>
     </div>
 </template>
+
+<script>
+    import Clock from '../components/Clock.vue'
+    import Featured from '../components/Featured.vue'
+    import History from '../components/History.vue'
+    import audio from '../services/audio'
+
+    export default {
+        name: 'Default',
+        components: {
+            Clock,
+            Featured,
+            History
+        },
+        computed: {
+            messages() {
+                return this.$store.state.history
+            },
+            lastMessage() {
+                return this.$store.getters.message
+            }
+        },
+        methods: {
+            playAudio() {
+                audio.playAlert(this.$store.state.config.alert)
+            }
+        }
+    }
+</script>
 
 <style lang="sass">
     .featured-message
@@ -44,14 +73,14 @@
         position: fixed
         bottom: 4vh
         right: 3vw
-        
+
         .time
             span
                 font-size: 4vw
-                
+
             span.hours
                 font-weight: bold
-                
+
             span.seconds
                 font-style: italic
 
@@ -91,41 +120,3 @@
                 font-style: italic
                 text-align: center
 </style>
-
-<script>
-    import Clock from '../components/Clock.vue'
-    import Featured from '../components/Featured.vue'
-    import History from '../components/History.vue'
-    import audio from '../services/audio'
-
-    export default {
-        name: 'Default',
-        components: {
-            Clock,
-            Featured,
-            History
-        },
-        computed: {
-            messages() {
-                return this.$store.state.history
-            },
-            lastMessage() {
-                if (!this.$store.state.message || !this.$store.state.message.id) {
-                    return {
-                        id: 0,
-                        title: 'title',
-                        subtitle: 'subtitle',
-                        description: 'description',
-                    };
-                }
-
-                return this.$store.state.message
-            }
-        },
-        methods: {
-            playAudio() {
-                audio.playAlert(this.$store.state.config.alert)
-            }
-        }
-    }
-</script>

@@ -8,10 +8,23 @@
                 {{ 'menu.settings'|translate }}
             </app-link>
         </div>
-        
+
         <layout-loader></layout-loader>
     </div>
 </template>
+
+<script>
+    import AppLink from '../components/Link.vue'
+    import LayoutLoader from '../components/LayoutLoader.vue'
+
+    export default {
+        name: 'Home',
+        components: {
+            AppLink,
+            LayoutLoader
+        },
+    }
+</script>
 
 <style lang="sass">
     .home
@@ -34,16 +47,3 @@
                 color: #ffffff
 
 </style>
-
-<script>
-    import AppLink from '../components/Link.vue'
-    import LayoutLoader from '../components/Layout.vue'
-    
-    export default {
-        name: 'Home',
-        components: {
-            AppLink,
-            LayoutLoader
-        },
-    }
-</script>

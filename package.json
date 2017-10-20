@@ -6,33 +6,43 @@
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "org.novosga.painel-web",
+    "mac": {
+      "category": "org.novosga.painel-web.panel"
+    }
   },
   "dependencies": {
-    "bulma": "^0.3.1",
-    "electron": "^1.4.14",
+    "bulma": "^0.5.3",
     "font-awesome": "^4.7.0",
     "jquery": "^3.1.1",
     "moment": "^2.18.1",
     "promise-queue": "^2.2.3",
-    "vue": "^2.1.0",
-    "vuex": "^2.1.1",
-    "vuex-i18n": "^1.3.3"
+    "socket.io-client": "^2.0.3",
+    "vue": "^2.4.4",
+    "vue-swal": "0.0.6",
+    "vuex": "^2.4.1",
+    "vuex-i18n": "^1.7.0"
   },
   "devDependencies": {
-    "babel-core": "^6.0.0",
-    "babel-loader": "^6.0.0",
-    "babel-preset-es2015": "^6.0.0",
-    "cross-env": "^3.2.4",
-    "css-loader": "^0.25.0",
-    "electron": "^1.6.11",
-    "file-loader": "^0.9.0",
-    "node-sass": "^4.5.0",
-    "sass-loader": "^4.1.1",
-    "vue-loader": "^10.0.0",
-    "vue-template-compiler": "^2.1.0",
-    "webpack": "^2.1.0-beta.25",
-    "webpack-dev-server": "^2.1.0-beta.9"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "file-loader": "^1.1.4",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "vue-loader": "^13.0.5",
+    "vue-template-compiler": "^2.4.4",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1",
+    "electron": "^1.7.9"
   }
 }

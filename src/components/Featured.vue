@@ -43,8 +43,7 @@
             }
         },
         data() {
-            return {
-            }
+            return {}
         },
         methods: {
             blink() {
