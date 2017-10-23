@@ -33,11 +33,12 @@ const actions = {
 
             api
                 .unities(rootState.auth.accessToken)
-                .then((unities) => {
-                    commit('updateUnities', unities)
+                .then(data => {
+                    commit('updateUnities', data)
                     resolve()
-                }, reject)
-                .catch(reject)
+                }, error => {
+                    reject(error)
+                })
         })
     },
 
@@ -53,11 +54,12 @@ const actions = {
 
             api
                 .services(rootState.auth.accessToken, unityId)
-                .then(services => {
-                    commit('updateServices', services)
+                .then(data => {
+                    commit('updateServices', data)
                     resolve()
-                }, reject)
-                .catch(reject)
+                }, error => {
+                    reject(error)
+                })
         })
     }
 }

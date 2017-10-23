@@ -1,12 +1,12 @@
 <template>
     <div class="home">
         <div class="menu">
-            <app-link href="#settings">
+            <router-link to="/settings">
                 <span class="icon">
                     <i class="fa fa-cog"></i>
                 </span>
                 {{ 'menu.settings'|translate }}
-            </app-link>
+            </router-link>
         </div>
 
         <layout-loader></layout-loader>
@@ -14,13 +14,11 @@
 </template>
 
 <script>
-    import AppLink from '../components/Link.vue'
     import LayoutLoader from '../components/LayoutLoader.vue'
 
     export default {
         name: 'Home',
         components: {
-            AppLink,
             LayoutLoader
         },
     }

@@ -1,7 +1,7 @@
 
 export default {
 
-    alertPath: 'sound',
+    alertPath: 'static/sound',
 
     alertsAvailable: {
         'Default': 'ekiga-vm.wav',

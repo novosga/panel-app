@@ -1,6 +1,7 @@
 import { Client } from '../../services/api'
 import storage from '../../services/storage'
 import moment from "moment"
+import axios from 'axios'
 
 const accessTokenKey  = 'access_token'
 const refreshTokenKey = 'refresh_token'
@@ -59,22 +60,23 @@ const actions = {
                     throw 'No username and password'
                 }
 
-                const data = {
-                        grant_type: 'password',
-                        client_id: clientId,
-                        client_secret: clientSecret,
-                        username: username,
-                        password: password
-                    }
+                var params = new URLSearchParams()
+                params.append('grant_type', 'password')
+                params.append('client_id', clientId)
+                params.append('client_secret', clientSecret)
+                params.append('username', username)
+                params.append('password', password)
 
                 const api = new Client(rootState.config.server)
 
                 api
-                    .request('/token', 'POST', data)
-                    .then((token) => {
-                        commit('updateToken', token)
-                        resolve(token)
-                    }, reject)
+                    .request('token', { method: 'POST', data: params })
+                    .then(data => {
+                        commit('updateToken', data)
+                        resolve(data)
+                    }, error => {
+                        reject(error)
+                    })
             } catch (e) {
                 reject(e)
             }
@@ -83,30 +85,27 @@ const actions = {
 
     refresh ({ state, commit, rootState }) {
         return new Promise((resolve, reject) => {
-            try {
-                const clientId = rootState.config.clientId
-                const clientSecret = rootState.config.clientSecret
-                const username = rootState.config.username
-                const password = rootState.config.password
+            const clientId = rootState.config.clientId
+            const clientSecret = rootState.config.clientSecret
+            const username = rootState.config.username
+            const password = rootState.config.password
 
-                const data = {
-                        grant_type: 'refresh_token',
-                        client_id: rootState.config.clientId,
-                        client_secret: rootState.config.clientSecret,
-                        refresh_token: state.refreshToken
-                    }
+            var params = new URLSearchParams()
+            params.append('grant_type', 'refresh_token')
+            params.append('client_id', rootState.config.clientId)
+            params.append('client_secret', rootState.config.clientSecret)
+            params.append('refresh_token', state.refreshToken)
 
-                const api = new Client(rootState.config.server)
+            const api = new Client(rootState.config.server)
 
-                api
-                    .request('/token', 'POST', data)
-                    .then(token => {
-                        commit('updateToken', token)
-                        resolve(token)
-                    }, reject)
-            } catch (e) {
-                reject(e)
-            }
+            api
+                .request('token', { method: 'POST', data: data })
+                .then(data => {
+                    commit('updateToken', data)
+                    resolve(data)
+                }, error => {
+                    reject(error)
+                })
         })
     }
 }

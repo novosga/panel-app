@@ -33,13 +33,13 @@
                 .catch(e => {
                     $root.$swal("Oops!", e, "error")
                     running = false
-                    $root.goto('settings');
+                    $root.$router.push('/settings')
                 })
             }
         } catch (e) {
             $root.$swal("Oops!", e, "error")
             running = false
-            $root.goto('settings');
+            $root.$router.push('/settings')
         }
     }
 
@@ -50,9 +50,9 @@
             let view
             try {
                 // TODO: dynamic layout
-                view = require('../layouts/Default.vue')
+                view = require('@/layouts/Default').default
             } catch (e) {
-                view = require('../layouts/Default.vue')
+                view = require('@/layouts/Default').default
             }
             return h(view)
         },

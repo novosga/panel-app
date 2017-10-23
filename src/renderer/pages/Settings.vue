@@ -1,15 +1,14 @@
 <template>
-    <section class="section">
-        <div class="container is-fluid">
-            <div class="columns">
-                <div class="column is-2-desktop is-3-tablet is-3-mobile">
+    <div class="layout-content">
+        <div class="columns">
+            <div class="column is-2-desktop is-3-tablet is-3-mobile column-menu">
                     <aside class="menu">
-                        <app-link href="#">
+                        <router-link to="/">
                             <span class="icon">
                                 <i class="fa fa-chevron-left"></i>
                             </span>
                             {{ 'menu.go_back'|translate }}
-                        </app-link>
+                        </router-link>
 
                         <p class="menu-label">
                             {{ 'menu.general'|translate }}
@@ -33,7 +32,7 @@
                             </li>
                         </ul>
                     </aside>
-                </div>
+            </div>
                 <div class="column">
                     <div class="heading">
                         <h1 class="title">
@@ -200,13 +199,11 @@
                         </div>
                     </form>
                 </div>
-            </div>
         </div>
-    </section>
+    </div>
 </template>
 
 <script>
-    import AppLink from '../components/Link.vue'
     import audio from '../services/audio'
     import speech from '../services/speech'
     import { mapState } from 'vuex'
@@ -218,32 +215,29 @@
         ctx.config.alert = ctx.config.alert || audio.alertsAvailable[0]
 
         ctx.$store.dispatch('fetchUnities')
-            .then(() => {}, (e) => {
-                let error = 'Unknown error'
-                if (e) {
-                    if (e.error_description) {
-                        error = e.error_description
-                    } else {
-                        error = e
-                    }
-                }
+            .then(() => {}, (error) => {
                 ctx.$swal("Oops!", error, "error")
             })
 
         if (ctx.config.unity) {
             ctx.$store.dispatch('fetchServices', ctx.config.unity)
         }
+        ctx.initialClientId = ctx.config.clientId
+        ctx.initialClientSecret = ctx.config.initialClientSecret
+        ctx.initialUsername = ctx.config.initialUsername
+        ctx.initialPassword = ctx.config.initialPassword
     }
 
     export default {
         name: 'Settings',
-        components: {
-            AppLink
-        },
         data() {
             return {
                 tab: 'server',
                 config: {},
+                initialClientId: null,
+                initialClientSecret: null,
+                initialUsername: null,
+                initialPassword: null
             }
         },
         computed: {
@@ -255,6 +249,14 @@
             },
             alerts () {
                 return audio.alertsAvailable
+            },
+            isCredentialChanged () {
+                return (
+                    this.initialClientId !== this.config.clientId ||
+                    this.initialClientSecret !== this.config.initialClientSecret ||
+                    this.initialUsername !== this.config.initialUsername ||
+                    this.initialPassword !== this.config.initialPassword
+                )
             }
         },
         methods: {
@@ -266,9 +268,26 @@
             },
             save() {
                 this.$store.dispatch('saveConfig', this.config)
-                this.$store.dispatch('token').then(() => {
+
+                const token = (
+                    !this.$store.getters.isAuthenticated ||
+                    this.$store.getters.isExpired ||
+                    this.isCredentialChanged
+                )
+
+                let promise
+
+                if (token) {
+                    promise = this.$store.dispatch('token')
+                } else {
+                    promise = Promise.resolve()
+                }
+
+                promise.then(() => {
                     this.$swal("Success", "Configuration Ok", "success")
                     load(this)
+                }, error => {
+                    this.$swal("Oops!", error, "error")
                 })
             },
             testAlert() {
@@ -297,3 +316,16 @@
         }
     }
 </script>
+
+<style lang="sass">
+    .layout-content
+        position: fixed
+        width: 100%
+        height: 100%
+
+        .columns
+            height: 100%
+            
+    .column-menu
+        background-color: #4fc08d
+</style>
