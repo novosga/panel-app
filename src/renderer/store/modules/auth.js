@@ -99,7 +99,7 @@ const actions = {
             const api = new Client(rootState.config.server)
 
             api
-                .request('token', { method: 'POST', data: data })
+                .request('token', { method: 'POST', data: params })
                 .then(data => {
                     commit('updateToken', data)
                     resolve(data)

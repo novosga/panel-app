@@ -11,12 +11,20 @@
                 }
 
                 let promise
-
                 if ($store.getters.isExpired) {
+                    console.log('token expired')
+
                     promise = new Promise((resolve, reject) => {
-                        $store.dispatch('refresh').then(() => {
-                            $store.dispatch('fetchMessages').then(resolve, reject)
-                        }, reject)
+                        $store
+                            .dispatch('refresh')
+                            .then(() => {
+                                $store
+                                    .dispatch('fetchMessages')
+                                    .then(resolve, reject)
+                            }, e => {
+                                console.log(e)
+                                reject
+                            })
                     })
                 } else {
                     promise = $store.dispatch('fetchMessages')

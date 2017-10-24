@@ -1,37 +1,39 @@
 <template>
-    <div class="layout-content">
+    <div class="container">
         <div class="columns">
             <div class="column is-2-desktop is-3-tablet is-3-mobile column-menu">
-                    <aside class="menu">
-                        <router-link to="/">
-                            <span class="icon">
-                                <i class="fa fa-chevron-left"></i>
-                            </span>
-                            {{ 'menu.go_back'|translate }}
-                        </router-link>
+                <aside class="menu">
+                    <img src="static/images/logo.png">
 
-                        <p class="menu-label">
-                            {{ 'menu.general'|translate }}
-                        </p>
+                    <router-link to="/">
+                        <span class="icon">
+                            <i class="fa fa-chevron-left"></i>
+                        </span>
+                        {{ 'menu.go_back'|translate }}
+                    </router-link>
 
-                        <ul class="menu-list">
-                            <li>
-                                <a @click="showTab('server')">
-                                    {{ 'menu.server'|translate }}
-                                </a>
-                            </li>
-                            <li>
-                                <a @click="showTab('services')">
-                                    {{ 'menu.services'|translate }}
-                                </a>
-                            </li>
-                            <li>
-                                <a @click="showTab('sound')">
-                                    {{ 'menu.sound'|translate }}
-                                </a>
-                            </li>
-                        </ul>
-                    </aside>
+                    <p class="menu-label">
+                        {{ 'menu.general'|translate }}
+                    </p>
+
+                    <ul class="menu-list">
+                        <li>
+                            <a @click="showTab('server')">
+                                {{ 'menu.server'|translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a @click="showTab('services')">
+                                {{ 'menu.services'|translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a @click="showTab('sound')">
+                                {{ 'menu.sound'|translate }}
+                            </a>
+                        </li>
+                    </ul>
+                </aside>
             </div>
                 <div class="column">
                     <div class="heading">
@@ -318,14 +320,6 @@
 </script>
 
 <style lang="sass">
-    .layout-content
-        position: fixed
-        width: 100%
-        height: 100%
-
-        .columns
-            height: 100%
-            
-    .column-menu
-        background-color: #4fc08d
+    .columns .column
+        padding: 2rem
 </style>
