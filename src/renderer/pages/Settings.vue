@@ -51,7 +51,7 @@
                                 {{ 'settings.label.server'|translate }}
                             </label>
                             <div class="control">
-                                <input class="input is-medium" type="url" placeholder="https://" v-model="config.server">
+                                <input class="input is-medium" type="url" placeholder="https://" v-model="config.server" @change="changeServer">
                             </div>
                         </div>
 
@@ -175,7 +175,7 @@
                             </div>
                         </div>
 
-                        <div class="field">
+                        <!--div class="field">
                             <div class="control has-addons">
                                 <label class="checkbox">
                                     <input type="checkbox" v-model="config.services">
@@ -187,7 +187,7 @@
                                     </span>
                                 </a>
                             </div>
-                        </div>
+                        </div-->
 
                         <div class="control is-grouped">
                             <div class="control">
@@ -216,14 +216,20 @@
         ctx.config.services = ctx.config.services || []
         ctx.config.alert = ctx.config.alert || audio.alertsAvailable[0]
 
-        ctx.$store.dispatch('fetchUnities')
-            .then(() => {}, (error) => {
-                ctx.$swal("Oops!", error, "error")
-            })
 
-        if (ctx.config.unity) {
-            ctx.$store.dispatch('fetchServices', ctx.config.unity)
+        if (ctx.fetchUnities) {
+            ctx.$store.dispatch('fetchUnities')
+                .then(() => {}, (error) => {
+                    ctx.$swal("Oops!", error, "error")
+                })
+            ctx.fetchUnities = false
         }
+
+        if (ctx.fetchServices && ctx.config.unity) {
+            ctx.$store.dispatch('fetchServices', ctx.config.unity)
+            ctx.fetchServices = false
+        }
+
         ctx.initialClientId = ctx.config.clientId
         ctx.initialClientSecret = ctx.config.initialClientSecret
         ctx.initialUsername = ctx.config.initialUsername
@@ -239,7 +245,9 @@
                 initialClientId: null,
                 initialClientSecret: null,
                 initialUsername: null,
-                initialPassword: null
+                initialPassword: null,
+                fetchUnities: !this.unities,
+                fetchServices: !this.services
             }
         },
         computed: {
@@ -264,6 +272,11 @@
         methods: {
             showTab(tab) {
                 this.tab = tab
+            },
+            changeServer() {
+                this.config.unity = null
+                this.fetchUnities = true
+                this.fetchServices = false
             },
             loadServices() {
                 this.$store.dispatch('fetchServices', this.config.unity)

@@ -1,13 +1,17 @@
 
 export const message = state => {
-    let message = state.history[0]
+    let message = state.messages[0]
     if (!message) {
         message = {
             id: 0,
-            title: 'title',
-            subtitle: 'subtitle',
-            description: 'description',
+            title: '',
+            subtitle: '',
+            description: '',
         }
     }
     return message
+}
+
+export const history = state => {
+    return state.messages.slice(1)
 }

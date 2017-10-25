@@ -1,16 +1,23 @@
 <template>
     <div class="layout-content">
-        <div class="columns">
-            <div class="column featured-column">
-                <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio"></featured>
+        <div class="columns is-gapless">
+            <div class="column is-multiline featured-column">
+                <header class="column">
+                    <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio"></featured>
+                </header>
+                <footer class="column">
+                    <img src="static/images/logo.png">
+                </footer>
             </div>
             <div class="column is-one-quarter history-column">
-                <h2 class="title">
-                    {{ 'history.title'|translate }}
-                </h2>
-                <history :messages="messages" v-if="lastMessage"></history>
+                <div>
+                    <h2 class="title">
+                        {{ 'history.title'|translate }}
+                    </h2>
+                    <history :messages="messages" v-if="lastMessage"></history>
 
-                <clock locale="en"></clock>
+                    <clock locale="en"></clock>
+                </div>
             </div>
         </div>
     </div>
@@ -31,7 +38,7 @@
         },
         computed: {
             messages() {
-                return this.$store.state.history
+                return this.$store.getters.history
             },
             lastMessage() {
                 return this.$store.getters.message
@@ -46,28 +53,13 @@
 </script>
 
 <style lang="sass">
-    .featured-message
-        text-align: center
+    .layout-content
+        position: fixed
+        width: 100%
+        height: 100%
 
-        .title
-            font-size: 40vh
-            font-weight: bold
-
-        .subtitle
-            font-size: 10vh
-
-        .description
-            font-size: 10vh
-
-    .history
-        .message
-            .title
-                font-size: 8vh
-                font-weight: bold
-
-            .subtitle
-                font-size: 4vh
-                font-style: italic
+        .columns
+            height: 100%
 
     .clock
         position: fixed
@@ -92,18 +84,37 @@
                 font-weight: bold
 
 
-    .layout-content
-        position: fixed
-        width: 100%
-        height: 100%
+    .featured-column
+        header
+            height: 80vh
 
-        .columns
-            height: 100%
+        footer
+            height: 20vh
+            background-color: #f1f1f1
+            padding: 5vh
+
+            img
+                height: 10vh
+
+        .featured-message
+            text-align: center
+
+            .title
+                font-size: 30vh
+                font-weight: bold
+
+            .subtitle
+                font-size: 10vh
+
+            .description
+                font-size: 10vh
 
     .history-column
         background-color: #4fc08d
-        height: 100%
-        padding-top: 4vh
+        height: 100vh
+
+        >div
+            padding: 4vh
 
         *
             color: #2c3e50
@@ -119,4 +130,18 @@
             p
                 font-style: italic
                 text-align: center
+
+        .history
+            .message
+                span
+                    text-align: left
+                    display: block
+
+                .title
+                    font-size: 8vh
+                    font-weight: bold
+
+                .subtitle
+                    font-size: 4vh
+                    font-style: italic
 </style>

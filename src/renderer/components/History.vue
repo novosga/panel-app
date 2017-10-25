@@ -1,9 +1,9 @@
 <template>
     <div class="history">
-        <div v-if="history.length===0" class="empty">
+        <div v-if="messages.length===0" class="empty">
             <p>{{ 'history.empty'|translate }}</p>
         </div>
-        <div v-for="message in history" class="message">
+        <div v-for="message in messages" class="message">
             <span class="title" v-if="showMessageTitle">
                 {{ message.title }}
             </span>
@@ -35,11 +35,6 @@
             showMessageDescription: {
                 type: Boolean,
                 default: false
-            }
-        },
-        computed: {
-            history() {
-                return this.messages//.reverse().slice(0, 5)
             }
         }
     }

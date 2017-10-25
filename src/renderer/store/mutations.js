@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import storage from '../services/storage'
 
-const HISTORY_MAX_LENGTH = 10
+const HISTORY_MAX_LENGTH = 5
 
 function equals(m1, m2) {
     return m1.type === m2.type && m1.title === m2.title
@@ -19,27 +19,28 @@ export default {
         Vue.i18n.add(locale, dict)
         Vue.i18n.set(locale)
     },
+
     newMessage (state, message) {
-        if (state.history.length) {
-            const last = state.history[0]
+        if (state.messages.length) {
+            const last = state.messages[0]
             if (last.id === message.id) {
                 return
             }
 
             // prevent multiple messages of same type+title
-            for (let i = 0; i < state.history.length; i++) {
-                let m = state.history[i]
+            for (let i = 0; i < state.messages.length; i++) {
+                let m = state.messages[i]
                 if (equals(m, message)) {
-                    state.history.splice(state.history.indexOf(m), 1)
+                    state.messages.splice(state.messages.indexOf(m), 1)
                     break
                 }
             }
         }
 
-        state.history.push(message)
+        state.messages.unshift(message)
 
-        if (state.history.length > HISTORY_MAX_LENGTH) {
-            state.history.shift()
+        if (state.messages.length > HISTORY_MAX_LENGTH) {
+            state.messages.pop()
         }
     }
 }

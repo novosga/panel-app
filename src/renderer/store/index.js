@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import vuexI18n from 'vuex-i18n'
-import socketIO from 'socket.io-client'
 import * as getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
@@ -14,7 +13,7 @@ const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
     config: {},
-    history: [
+    messages: [
         /*
         {
             id,
