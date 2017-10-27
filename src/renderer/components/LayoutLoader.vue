@@ -10,7 +10,7 @@
         console.log('[websocket] trying connect to websocket server: ' + host)
 
         socket = socketIO(host, {
-            reconnectionAttempts: 5
+            reconnectionAttempts: 3
         })
 
         socket.on('connect', () => {
@@ -32,28 +32,9 @@
         })
 
         socket.on('reconnect_failed', evt => {
-            console.log('[websocket] max attempts reached')
-
-            $root
-            .$swal({
-                type: 'Oops!',
-                icon: 'error',
-                text: 'Max connection attempts reached. Please check is the websocket server is running.',
-                buttons: {
-                    cancel: true,
-                    confirm: false,
-                    retry: {
-                        text: "Try again",
-                        value: "retry",
-                    },
-                },
-            })
-            .then(value => {
-                if (value === 'retry') {
-                    console.log('[websocket] trying to connect')
-                    socket.open()
-                }
-            })
+            console.log('[websocket] max attempts reached, ajax polling fallback')
+            fetchMessages($root, $store)
+            socket.open()
         })
     }
 
