@@ -3,6 +3,11 @@ image: Visual Studio 2017
 platform:
   - x64
 
+artifacts:
+  - path: build\win-unpacked
+    name: Painel Web
+    type: zip
+
 cache:
   - node_modules
   - '%USERPROFILE%\.electron'
