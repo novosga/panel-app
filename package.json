@@ -3,6 +3,12 @@
   "description": "Novo SGA panel",
   "license": "MIT",
   "version": "2.0.0",
+  "homepage": "http://novosga.org",
+  "author": {
+    "name": "Rogerio Lino",
+    "email": "rogeriolino@gmail.com",
+    "url": "http://rogeriolino.com"
+  },
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
