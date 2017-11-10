@@ -1,0 +1,14 @@
+h1.brand {
+	text-align: center;
+    padding: 2rem 0 !important;
+}
+
+.ui.left.fixed.vertical.inverted.menu {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.ui.main.grid {
+	width: 100%;
+    padding-left: 20rem;
+}
