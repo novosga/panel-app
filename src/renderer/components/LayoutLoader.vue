@@ -79,12 +79,10 @@
             })
             .catch(e => {
                 $root.$swal("Oops!", e, "error")
-                running = false
                 $root.$router.push('/settings')
             })
         } catch (e) {
             $root.$swal("Oops!", e, "error")
-            running = false
             $root.$router.push('/settings')
         }
     }
