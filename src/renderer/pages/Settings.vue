@@ -131,7 +131,7 @@
                             <div class="control" v-for="service in services">
                                 <label class="checkbox">
                                     <input type="checkbox" :value="service.servico.id" v-model="config.services">
-                                    {{service.servico.nome}}
+                                    {{service.sigla}} - {{service.servico.nome}}
                                 </label>
                             </div>
                             <div class="control" v-if="!services || !services.length">
