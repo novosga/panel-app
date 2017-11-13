@@ -1,6 +1,6 @@
 # painel-web
 
-> Novo SGA panel
+Novo SGA panel.
 
 ## Build Setup
 
