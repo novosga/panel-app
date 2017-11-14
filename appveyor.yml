@@ -30,7 +30,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: jAoBlzSLWDwiDEs7yaPJHvPr3rzz1+lyZw5n4XQfdQayg3qbWWGq+44+zOLyodha
-  artifact: painel-web.zip
+  artifact: build\painel-web.zip
   draft: true
   prerelease: true
   on:
