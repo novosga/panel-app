@@ -5,7 +5,7 @@ platform:
 
 artifacts:
   - path: build\win-unpacked
-    name: Painel Web
+    name: painel-web
     type: zip
 
 cache:
@@ -23,3 +23,16 @@ build_script:
   - yarn run build
 
 test: off
+
+deploy:
+  release: painel-web-2.0.0-BETA
+  description: 'Painel Web 2.0 beta'
+  provider: GitHub
+  auth_token:
+    secure: jAoBlzSLWDwiDEs7yaPJHvPr3rzz1+lyZw5n4XQfdQayg3qbWWGq+44+zOLyodha
+  artifact: painel-web.zip
+  draft: true
+  prerelease: true
+  on:
+    branch: master
+    appveyor_repo_tag: true
