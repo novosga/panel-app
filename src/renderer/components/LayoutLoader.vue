@@ -4,6 +4,11 @@
     let socket = null
 
     function connect($root, $store) {
+        if (!$store.state.config || !$store.state.config.server) {
+            $root.$router.push('/settings')
+            return
+        }
+
         const tokens = $store.state.config.server.split(':')
         const host = `${tokens[0]}:${tokens[1]}:2020`
 
@@ -93,8 +98,8 @@
         render(h) {
             let view
             try {
-                // TODO: dynamic layout
-                view = require('@/layouts/Default').default
+                const theme = $store.getters.theme
+                view = require(`@/layouts/${theme}`).default
             } catch (e) {
                 view = require('@/layouts/Default').default
             }
