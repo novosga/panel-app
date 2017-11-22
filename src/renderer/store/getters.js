@@ -1,4 +1,8 @@
 
+export const theme = state => {
+    return 'Default'
+}
+
 export const message = state => {
     let message = state.messages[0]
     if (!message) {
