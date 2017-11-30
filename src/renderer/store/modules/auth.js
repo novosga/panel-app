@@ -26,16 +26,27 @@ const getters = {
 
 const mutations = {
     updateToken (state, token) {
-        state.accessToken = token.access_token
+        if (!token) {
+            token = {
+                access_token: null,
+                refresh_token: null,
+            }
+        }
+
+        state.accessToken  = token.access_token
         state.refreshToken = token.refresh_token
+        state.expireDate   = null
 
-        const dt = moment().add(token.expires_in, 's')
+        if (token.expires_in) {
+            // expiration time minus 5 minutes
+            const secs  = 5 * 60
+            const dt    = moment().add(token.expires_in - secs, 's')
+            state.expireDate = dt.format()
+        }
 
-        state.expireDate = dt.format()
-
-        storage.set(accessTokenKey, state.accessToken)
+        storage.set(accessTokenKey,  state.accessToken)
         storage.set(refreshTokenKey, state.refreshToken)
-        storage.set(expireDateKey, state.expireDate)
+        storage.set(expireDateKey,   state.expireDate)
     }
 }
 

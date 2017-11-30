@@ -17,6 +17,11 @@ new Vue({
   store,
   template: '<App/>',
   beforeCreate() {
-      this.$store.dispatch('loadConfig')
+    this.$store.dispatch('loadConfig')
+  },
+  mounted () {
+    this.$electron.ipcRenderer.on('navigate', (e, routePath) => {
+      this.$router.push(routePath)
+    })
   }
 }).$mount('#app')
