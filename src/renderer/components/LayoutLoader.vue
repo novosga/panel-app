@@ -1,7 +1,14 @@
 <script>
     import socketIO from 'socket.io-client'
+    import auth from '../store/modules/auth'
 
-    let socket = null
+    let socket    = null
+    let running   = false
+    let timeoutId = 0
+
+    function isExpired($store) {
+        return auth.getters.isExpired($store.state.auth)
+    }
 
     function connect($root, $store) {
         if (!$store.state.config || !$store.state.config.server) {
@@ -49,26 +56,58 @@
         }
     }
 
+    function checkToken($store) {
+        clearTimeout(timeoutId)
+
+        if (!running) {
+            console.log('not running')
+            return
+        }
+
+        console.log('checking token. Authenticated: ' + $store.getters.isAuthenticated)
+
+        if ($store.getters.isAuthenticated && isExpired($store)) {
+            console.log('token expired, refreshing')
+            $store
+                .dispatch('refresh')
+                .then(() => {
+                    console.log('token refreshed')
+                }, e => {
+                    console.log(e)
+                })
+        }
+
+        timeoutId = setTimeout(() => {
+            checkToken($store)
+        }, 60 * 1000)
+    }
+
     function fetchMessages($root, $store) {
+        if (!running) {
+            running = true
+            checkToken($store)
+        }
+
         try {
             if (!$store.getters.isAuthenticated) {
                 throw "Please configure client id and client secret."
             }
 
             let promise
-            if ($store.getters.isExpired) {
+            if (isExpired($store)) {
                 console.log('token expired')
 
                 promise = new Promise((resolve, reject) => {
                     $store
                         .dispatch('refresh')
                         .then(() => {
+                            console.log('token refreshed')
                             $store
                                 .dispatch('fetchMessages')
                                 .then(resolve, reject)
                         }, e => {
                             console.log(e)
-                            reject
+                            reject(e)
                         })
                 })
             } else {
@@ -83,6 +122,9 @@
                 throw "Unknown error. Please see the log console"
             })
             .catch(e => {
+                // clear token
+                $store.commit('updateToken', {})
+
                 $root.$swal("Oops!", e, "error")
                 $root.$router.push('/settings')
             })
@@ -111,7 +153,9 @@
         },
 
         beforeDestroy() {
+            running = false
             disconnect()
+            clearTimeout(timeoutId)
         }
     }
 </script>
