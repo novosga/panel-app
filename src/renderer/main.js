@@ -20,8 +20,10 @@ new Vue({
     this.$store.dispatch('loadConfig')
   },
   mounted () {
-    this.$electron.ipcRenderer.on('navigate', (e, routePath) => {
-      this.$router.push(routePath)
-    })
+    if (this.$electron) {
+      this.$electron.ipcRenderer.on('navigate', (e, routePath) => {
+        this.$router.push(routePath)
+      })
+    }
   }
 }).$mount('#app')
