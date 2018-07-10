@@ -1,6 +1,6 @@
 <script>
     import socketIO from 'socket.io-client'
-    import auth from '../store/modules/auth'
+    import auth from '@/store/modules/auth'
 
     let socket    = null
     let running   = false
@@ -28,8 +28,8 @@
         socket.on('connect', () => {
             console.log('[websocket] connected')
             socket.emit('register panel', {
-                unidade: $store.state.config.unity,
-                servicos: $store.state.config.services
+                unity: $store.state.config.unity,
+                services: $store.state.config.services
             })
         })
 

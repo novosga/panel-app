@@ -38,7 +38,7 @@
 
             &:hover
                 opacity: 1
-                transition: opacity 0.2s ease-in-out;
+                transition: opacity 0.2s ease-in-out
                 background-color: rgba(0,0,0,1)
 
             a

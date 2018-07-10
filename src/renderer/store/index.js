@@ -4,12 +4,11 @@ import vuexI18n from 'vuex-i18n'
 import * as getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
-import settings from './modules/settings'
-import auth from './modules/auth'
+import modules from './modules'
 
 Vue.use(Vuex)
 
-const debug = process.env.NODE_ENV !== 'production'
+modules.i18n = vuexI18n.store
 
 const state = {
     config: {},
@@ -29,13 +28,8 @@ const store = new Vuex.Store({
     getters,
     actions,
     mutations,
-    modules: {
-        i18n: vuexI18n.store,
-        settings,
-        auth
-    },
-    strict: debug,
-    plugins: debug ? [] : []
+    modules,
+    strict: process.env.NODE_ENV !== 'production'
 })
 
 Vue.use(vuexI18n.plugin, store)
