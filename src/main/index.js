@@ -33,6 +33,15 @@ function createWindow () {
     {
       label: 'View',
       submenu: [
+        {
+          label: 'Settings',
+          click () {
+            if (mainWindow.webContents) {
+              mainWindow.webContents.send('navigate', '/settings')
+            }
+          }
+        },
+        {type: 'separator'},
         {role: 'reload'},
         {role: 'forcereload'},
         {role: 'toggledevtools'},

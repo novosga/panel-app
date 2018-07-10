@@ -208,13 +208,12 @@
 <script>
     import audio from '../services/audio'
     import speech from '../services/speech'
-    import { mapState } from 'vuex'
 
     function load(ctx) {
         ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config));
         // defaults
         ctx.config.services = ctx.config.services || []
-        ctx.config.alert = ctx.config.alert || audio.alertsAvailable[0]
+        ctx.config.alert    = ctx.config.alert || audio.alertsAvailable[0]
 
 
         if (ctx.fetchUnities) {

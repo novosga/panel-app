@@ -5,7 +5,12 @@ export default {
 
     get (name, defaultValue) {
         const json = localStorage.getItem(this.storagePrefixKey + name)
-        const data = JSON.parse(json) || defaultValue
+        let data
+        try {
+            data = JSON.parse(json)
+        } catch (e) {
+            data = defaultValue
+        }
         return data
     },
 
