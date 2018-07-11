@@ -1,6 +1,6 @@
 image: Visual Studio 2017
 
-clone_depth: 1
+version: "{branch}"
 
 platform:
   - x64
@@ -27,11 +27,13 @@ build_script:
 test: off
 
 deploy:
-  release: "{branch}"
-  description: "Painel Web {branch}"
+  release: "{version}"
+  description: "Painel Web {version}"
   provider: GitHub
+  draft: true
+  prerelease: true
   auth_token:
     secure: jAoBlzSLWDwiDEs7yaPJHvPr3rzz1+lyZw5n4XQfdQayg3qbWWGq+44+zOLyodha
-  artifact: "build\\painel-web-{branch}-x64-win.zip"
+  artifact: "build\\painel-web-{version}-x64-win.zip"
   on:
     appveyor_repo_tag: true
