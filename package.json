@@ -54,7 +54,9 @@
       "icon": "build/icons/icon.ico"
     },
     "linux": {
-      "icon": "build/icons"
+      "target": "AppImage",
+      "icon": "build/icons",
+      "category": "Utility"
     }
   },
   "dependencies": {
