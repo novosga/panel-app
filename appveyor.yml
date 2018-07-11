@@ -1,13 +1,15 @@
 image: Visual Studio 2017
 
-version: "{branch}"
+branches:
+  except:
+    - master
 
 platform:
   - x64
 
 artifacts:
   - path: build\win-unpacked
-    name: painel-web-{branch}-x64-win
+    name: painel-web-$(appveyor_build_version)-x64-win
     type: zip
 
 cache:
@@ -27,13 +29,12 @@ build_script:
 test: off
 
 deploy:
-  release: "{version}"
-  description: "Painel Web {version}"
+  description: "Painel Web $(appveyor_build_version)"
   provider: GitHub
   draft: true
   prerelease: true
   auth_token:
     secure: jAoBlzSLWDwiDEs7yaPJHvPr3rzz1+lyZw5n4XQfdQayg3qbWWGq+44+zOLyodha
-  artifact: "build\\painel-web-{version}-x64-win.zip"
+  artifact: "build\\painel-web-$(appveyor_build_version)-x64-win.zip"
   on:
     appveyor_repo_tag: true
