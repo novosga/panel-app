@@ -1427,9 +1427,9 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
 
-bulma@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.6.0.tgz#4f5c5de582810d11aa0cfb1f30aec8a792d0d92c"
+bulma@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.7.1.tgz#73c2e3b2930c90cc272029cbd19918b493fca486"
 
 bytes@3.0.0:
   version "3.0.0"
@@ -7061,10 +7061,6 @@ vue-template-es2015-compiler@^1.6.0:
 vue@^2.3.3:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.2.tgz#fd367a87bae7535e47f9dc5c9ec3b496e5feb5a4"
-
-vuex-i18n@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/vuex-i18n/-/vuex-i18n-1.7.0.tgz#14dd805addc9be9caca4af4e900bef4c60fcbbd3"
 
 vuex@^2.3.1:
   version "2.5.0"

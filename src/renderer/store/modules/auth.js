@@ -1,5 +1,5 @@
-import { Client } from '../../services/api'
-import storage from '../../services/storage'
+import { Client } from '@/services/api'
+import storage from '@/services/storage'
 import moment from 'moment'
 
 const accessTokenKey = 'access_token'

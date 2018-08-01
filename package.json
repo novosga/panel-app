@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "bulma": "^0.6.0",
+    "bulma": "^0.7.1",
     "font-awesome": "^4.7.0",
     "moment": "^2.18.1",
     "promise-queue": "^2.2.3",
@@ -70,8 +70,7 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
     "vue-swal": "0.0.6",
-    "vuex": "^2.3.1",
-    "vuex-i18n": "^1.7.0"
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
