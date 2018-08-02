@@ -36,9 +36,6 @@ export default {
     }
 
     state.messages.unshift(message)
-    state.messages.unshift(message)
-    state.messages.unshift(message)
-    state.messages.unshift(message)
 
     if (state.messages.length > HISTORY_MAX_LENGTH) {
       state.messages.pop()
