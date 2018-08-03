@@ -245,7 +245,7 @@
     ctx.config.services = ctx.config.services || []
     ctx.config.alert    = ctx.config.alert || audio.alertsAvailable[0]
 
-    if (ctx.config.server) {
+    if (ctx.fetchUnities && ctx.config.server) {
       ctx.$store
         .dispatch('fetchUnities')
         .then(() => {}, (error) => {
