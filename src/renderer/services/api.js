@@ -2,11 +2,15 @@ import axios from 'axios'
 
 class Client {
 
-  constructor(server) {
+  constructor(server, moduleName) {
     let host = server + ''
 
     if (!host.endsWith('/')) {
       host += '/'
+    }
+
+    if (moduleName) {
+      host += moduleName + '/'
     }
 
     this.endpoint = host + 'api'

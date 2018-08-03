@@ -54,11 +54,6 @@
 </script>
 
 <style lang="sass">
-  iframe
-    width: 100%
-    height: 100%
-    border: 1px solid #000
-
   .layout-content
     position: fixed
     width: 100%
