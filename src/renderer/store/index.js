@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import * as getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
-import settings from './modules/settings'
 import modules from './modules'
 
 Vue.use(Vuex)
@@ -23,12 +22,12 @@ const state = {
 }
 
 const store = new Vuex.Store({
-    state,
-    getters,
-    actions,
-    mutations,
-    modules,
-    strict: process.env.NODE_ENV !== 'production'
+  state,
+  getters,
+  actions,
+  mutations,
+  modules,
+  strict: process.env.NODE_ENV !== 'production'
 })
 
 export default store

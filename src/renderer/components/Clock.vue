@@ -24,7 +24,7 @@ import moment from 'moment'
 
 export default {
   name: 'Clock',
-  data() {
+  data () {
     return {
       date: new Date()
     }
@@ -32,23 +32,23 @@ export default {
   props: {
     showHours: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showMinutes: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showSeconds: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showDate: {
       type: Boolean,
-      default: true,
+      default: true
     },
     dateFormat: {
       type: String,
-      default: 'MMMM Do YYYY',
+      default: 'MMMM Do YYYY'
     },
     locale: {
       type: String,
@@ -56,22 +56,22 @@ export default {
     }
   },
   computed: {
-    hours() {
+    hours () {
       return moment(this.date).format('HH')
     },
-    minutes() {
+    minutes () {
       return moment(this.date).format('mm')
     },
-    seconds() {
+    seconds () {
       return moment(this.date).format('ss')
     },
-    formattedDate() {
+    formattedDate () {
       return moment(this.date).format(this.dateFormat)
     }
   },
-  created() {
+  created () {
     moment.locale(this.locale)
-    setInterval(() => this.date = new Date(), 1000)
+    setInterval(() => { this.date = new Date() }, 1000)
   }
 }
 </script>

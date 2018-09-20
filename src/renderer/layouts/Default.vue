@@ -38,15 +38,15 @@
       History
     },
     computed: {
-      messages() {
+      messages () {
         return this.$store.getters.history
       },
-      lastMessage() {
+      lastMessage () {
         return this.$store.getters.message
       }
     },
     methods: {
-      playAudio() {
+      playAudio () {
         audio.playAlert(this.$store.state.config.alert)
       }
     }

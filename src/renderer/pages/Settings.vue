@@ -239,18 +239,18 @@
   import speech from '@/services/speech'
   import { log } from '@/util/functions'
 
-  function load(ctx) {
-    ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config));
+  function load (ctx) {
+    ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config))
     // defaults
-    ctx.config.locale   = ctx.config.locale || 'en'
+    ctx.config.locale = ctx.config.locale || 'en'
     ctx.config.services = ctx.config.services || []
-    ctx.config.alert    = ctx.config.alert || audio.alertsAvailable[0]
+    ctx.config.alert = ctx.config.alert || audio.alertsAvailable[0]
 
     if (ctx.config.server) {
       ctx.$store
         .dispatch('fetchUnities')
         .then(() => {}, (error) => {
-          ctx.$swal("Oops!", error, "error")
+          ctx.$swal('Oops!', error, 'error')
         })
       ctx.fetchUnities = false
     }
@@ -268,7 +268,7 @@
 
   export default {
     name: 'Settings',
-    data() {
+    data () {
       return {
         tab: 'interface',
         config: {},
@@ -300,18 +300,18 @@
       }
     },
     methods: {
-      showTab(tab) {
+      showTab (tab) {
         this.tab = tab
       },
-      changeServer() {
+      changeServer () {
         this.config.unity = null
         this.fetchUnities = true
         this.fetchServices = false
       },
-      loadServices() {
+      loadServices () {
         this.$store.dispatch('fetchServices', this.config.unity)
       },
-      save() {
+      save () {
         this.$store.dispatch('saveConfig', this.config)
 
         const token = (
@@ -329,18 +329,18 @@
         }
 
         promise.then(() => {
-          this.$swal("Success", "Configuration Ok", "success")
+          this.$swal('Success', 'Configuration Ok', 'success')
           load(this)
         }, error => {
-          this.$swal("Oops!", error, "error")
+          this.$swal('Oops!', error, 'error')
         })
       },
-      testAlert() {
+      testAlert () {
         if (this.config.alert) {
           audio.playAlert(this.config.alert)
         }
       },
-      testSpeech() {
+      testSpeech () {
         const lang = this.config.locale || 'pt-BR'
         log('Testing speech lang', lang)
 

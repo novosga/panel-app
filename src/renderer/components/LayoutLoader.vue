@@ -3,15 +3,15 @@
   import auth from '@/store/modules/auth'
   import { log } from '@/util/functions'
 
-  let socket    = null
-  let running   = false
+  let socket = null
+  let running = false
   let timeoutId = 0
 
-  function isExpired($store) {
+  function isExpired ($store) {
     return auth.getters.isExpired($store.state.auth)
   }
 
-  function doConnect($root, $store) {
+  function doConnect ($root, $store) {
     const tokens = $store.state.config.server.split('//')
     const schema = tokens[0]
     const host = tokens[1].split('/')[0].split(':')[0]
@@ -34,26 +34,26 @@
     })
 
     socket.on('disconnect', function () {
-        log('[websocket] disconnected!');
+      log('[websocket] disconnected!')
     })
-    
+  
     socket.on('connect_error', function () {
-        log('[websocket] connect error');
+      log('[websocket] connect error')
     })
 
     socket.on('connect_timeout', function () {
-        log('[websocket] timeout');
+      log('[websocket] timeout')
     })
-    
+  
     socket.on('reconnect_failed', evt => {
       log('[websocket] max attempts reached, ajax polling fallback')
       fetchMessages($root, $store)
       socket.open()
     })
-    
+  
     socket.on('error', function () {
-        log('[websocket] error');
-    });
+      log('[websocket] error')
+    })
 
     socket.on('register ok', evt => {
       log('[websocket] painel registered')
@@ -69,7 +69,7 @@
     fetchMessages($root, $store)
   }
 
-  function connect($root, $store) {
+  function connect ($root, $store) {
     if (!$store.state.config || !$store.state.config.server) {
       log('panel no configured yet. go to settings!')
       $root.$router.push('/settings')
@@ -82,7 +82,7 @@
       $store.dispatch('token').then(() => {
         log('token refreshed successfully!')
         doConnect($root, $store)
-      }, error => {
+      }, () => {
         log('error on refresh token. go to settings!')
         $root.$router.push('/settings')
       })
@@ -91,13 +91,13 @@
     }
   }
 
-  function disconnect() {
+  function disconnect () {
     if (socket) {
       socket.close()
     }
   }
 
-  function checkToken($store) {
+  function checkToken ($store) {
     clearTimeout(timeoutId)
 
     if (!running) {
@@ -123,7 +123,7 @@
     }, 60 * 1000)
   }
 
-  function fetchMessages($root, $store) {
+  function fetchMessages ($root, $store) {
     if (!running) {
       running = true
       checkToken($store)
@@ -131,7 +131,7 @@
 
     try {
       if (!$store.getters.isAuthenticated) {
-        throw "Please configure client id and client secret."
+        throw new Error('Please configure client id and client secret.')
       }
 
       let promise
@@ -152,25 +152,25 @@
             })
         })
       } else {
-          promise = $store.dispatch('fetchMessages')
+        promise = $store.dispatch('fetchMessages')
       }
 
       promise.then(messages => {
       }, (e) => {
-        if (typeof(e) === 'string') {
-          throw e
+        if (typeof (e) === 'string') {
+          throw new Error(e)
         }
-        throw "Unknown error. Please see the log console"
+        throw new Error('Unknown error. Please see the log console')
       })
-      .catch(e => {
+        .catch(e => {
         // clear token
-        $store.commit('updateToken', {})
+          $store.commit('updateToken', {})
 
-        $root.$swal("Oops!", e, "error")
-        $root.$router.push('/settings')
-      })
+          $root.$swal('Oops!', e, 'error')
+          $root.$router.push('/settings')
+        })
     } catch (e) {
-      $root.$swal("Oops!", e, "error")
+      $root.$swal('Oops!', e, 'error')
       $root.$router.push('/settings')
     }
   }
@@ -178,10 +178,10 @@
   export default {
     name: 'Layout',
 
-    render(h) {
+    render (h) {
       let view
       try {
-        const theme = $store.getters.theme
+        const theme = this.$store.getters.theme
         view = require(`@/layouts/${theme}`).default
       } catch (e) {
         view = require('@/layouts/Default').default
@@ -193,7 +193,7 @@
       connect(this, this.$store)
     },
 
-    beforeDestroy() {
+    beforeDestroy () {
       running = false
       disconnect()
       clearTimeout(timeoutId)

@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import Queue from "promise-queue"
+import Queue from 'promise-queue'
 
-const queue = new Queue(1, 10);
+const queue = new Queue(1, 10)
 
-function toggleVisibility(el) {
+function toggleVisibility (el) {
   if (el.style.visibility === 'hidden') {
     el.style.visibility = 'visible'
   } else {
@@ -25,7 +25,7 @@ function toggleVisibility(el) {
   }
 }
 
-function blinkElement(el, count, resolve) {
+function blinkElement (el, count, resolve) {
   toggleVisibility(el)
 
   if (count > 0) {
@@ -42,11 +42,11 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {}
   },
   methods: {
-    blink() {
+    blink () {
       this.$emit('blink')
       return new Promise((resolve, reject) => {
         blinkElement(this.$el, 5, resolve)
@@ -54,7 +54,7 @@ export default {
     }
   },
   watch: {
-    message() {
+    message () {
       queue.add(this.blink)
     }
   }

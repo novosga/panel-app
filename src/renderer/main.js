@@ -20,7 +20,7 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  beforeCreate() {
+  beforeCreate () {
     this.$store.dispatch('loadConfig')
   },
   mounted () {
