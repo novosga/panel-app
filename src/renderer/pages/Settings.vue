@@ -148,7 +148,7 @@
               <div class="select">
                 <select v-model="config.unity" @change="loadServices">
                   <option></option>
-                  <option v-for="unity in unities" :value="unity.id">
+                  <option v-for="unity in unities" :value="unity.id" :key="unity.id">
                     {{ unity.nome }}
                   </option>
                 </select>
@@ -160,7 +160,7 @@
             <label class="label">
               {{ 'settings.label.services'|trans }}
             </label>
-            <div class="control" v-for="service in services">
+            <div class="control" v-for="service in services" :key="service.servico.id">
               <label class="checkbox">
                 <input type="checkbox" :value="service.servico.id" v-model="config.services">
                 {{service.sigla}} - {{service.servico.nome}}
@@ -191,7 +191,7 @@
             <div class="control has-addons">
               <div class="select">
                 <select v-model="config.alert">
-                  <option v-for="(i, alert) in alerts" :value="i">
+                  <option v-for="(i, alert) in alerts" :value="i" :key="i">
                     {{ alert }}
                   </option>
                 </select>
@@ -237,6 +237,7 @@
 <script>
   import audio from '@/services/audio'
   import speech from '@/services/speech'
+  import { log } from '@/util/functions'
 
   function load(ctx) {
     ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config));
@@ -341,7 +342,7 @@
       },
       testSpeech() {
         const lang = this.config.locale || 'pt-BR'
-        console.log('Testing speech lang', lang)
+        log('Testing speech lang', lang)
 
         speech.speechAll([
           'Senha',
@@ -349,9 +350,9 @@
           'mesa',
           '5'
         ], lang).then(() => {
-          console.log('Testing end')
+          log('Testing end')
         }, (e) => {
-          console.log('Testing error', e)
+          log('Testing error', e)
         })
       }
     },
