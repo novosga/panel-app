@@ -10,6 +10,15 @@ export default {
   'history.empty': 'Empty',
   'settings.title': 'Settings',
   'settings.subtitle': 'Panel settings',
+  'settings.interface.colors': 'Cores',
+  'settings.label.page_bg_color': 'Fundo da página',
+  'settings.label.page_font_color': 'Fonte da página',
+  'settings.label.sidebar_bg_color': 'Fundo da lateral',
+  'settings.label.sidebar_font_color': 'Fonte da lateral',
+  'settings.label.footer_bg_color': 'Fundo do rodapé',
+  'settings.label.footer_font_color': 'Fonte do rodapé',
+  'settings.label.clock_bg_color': 'Fundo do relógio',
+  'settings.label.clock_font_color': 'Fonte do relógio',
   'settings.label.locale': 'Locale',
   'settings.label.server': 'Server',
   'settings.label.username': 'Username',
@@ -19,6 +28,8 @@ export default {
   'settings.label.unity': 'Unity',
   'settings.label.services': 'Services',
   'settings.label.alert': 'Alert',
+  'settings.label.speech_enabled': 'Vocalizar (experimental!!!)',
   'settings.btn.save': 'Save',
-  'settings.services.empty': 'Empty'
+  'settings.services.empty': 'Empty',
+  'date_format': 'MMMM Do YYYY'
 }

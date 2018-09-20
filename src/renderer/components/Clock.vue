@@ -1,18 +1,18 @@
 <template>
   <div class="clock">
     <div class="date" v-if="showDate">
-      <span>{{formattedDate}}</span>
+      <span :style="{ 'color': fontColor }">{{formattedDate}}</span>
     </div>
     <div class="time">
-      <span class="hours" v-if="showHours">
+      <span class="hours" v-if="showHours" :style="{ 'color': fontColor }">
         {{ hours }}
       </span>
-      <span class="separator" v-if="showMinutes">:</span>
-      <span class="minutes" v-if="showMinutes">
+      <span class="separator" v-if="showMinutes" :style="{ 'color': fontColor }">:</span>
+      <span class="minutes" v-if="showMinutes" :style="{ 'color': fontColor }">
         {{ minutes }}
       </span>
-      <span class="separator" v-if="showSeconds">:</span>
-      <span class="seconds" v-if="showSeconds">
+      <span class="separator" v-if="showSeconds" :style="{ 'color': fontColor }">:</span>
+      <span class="seconds" v-if="showSeconds" :style="{ 'color': fontColor }">
         {{ seconds }}
       </span>
     </div>
@@ -53,6 +53,10 @@ export default {
     locale: {
       type: String,
       default: 'en'
+    },
+    fontColor: {
+      type: String,
+      default: '#000000'
     }
   },
   computed: {

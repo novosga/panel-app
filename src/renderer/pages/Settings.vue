@@ -55,21 +55,118 @@
         <hr>
 
         <form @submit.prevent="save" v-if="tab==='interface'">
-          <div class="field">
-            <label class="label">
-              {{ 'settings.label.locale'|trans }}
-            </label>
-            <div class="control">
-              <div class="select">
-                <select v-model="config.locale">
-                  <option value="en">English</option>
-                  <option value="pt_BR">Português (Brasil)</option>
-                </select>
+          <div class="columns">
+            <div class="column is-4">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.locale'|trans }}
+                </label>
+                <div class="control is-expanded has-icons-left">
+                  <span class="select is-fullwidth">
+                    <select v-model="config.locale">
+                      <option value="en">English</option>
+                      <option value="pt_BR">Português (Brasil)</option>
+                    </select>
+                  </span>
+                  <span class="icon is-left">
+                    <i class="fa fa-globe"></i>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="control is-grouped">
+          <h3 class="title">{{ 'settings.interface.colors'| trans }}</h3>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.page_bg_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageBgColor">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.page_font_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageFontColor">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.sidebar_bg_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColor">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.sidebar_font_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColor">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_bg_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColor">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_font_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColor">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_bg_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColor">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_font_color'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColor">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="field is-grouped is-grouped-right">
             <div class="control">
               <button type="submit" class="button is-primary is-large">
                 {{ 'settings.btn.save'|trans }} &nbsp;
@@ -127,7 +224,9 @@
             </div>
           </div>
 
-          <div class="control is-grouped">
+          <hr>
+
+          <div class="field is-grouped is-grouped-right">
             <div class="control">
               <button type="submit" class="button is-primary is-large">
                 {{ 'settings.btn.save'|trans }} &nbsp;
@@ -171,7 +270,9 @@
             </div>
           </div>
 
-          <div class="control is-grouped">
+          <hr>
+
+          <div class="field is-grouped is-grouped-right">
             <div class="control">
               <button type="submit" class="button is-primary is-large">
                 {{ 'settings.btn.save'|trans }} &nbsp;
@@ -203,25 +304,27 @@
               </a>
             </div>
           </div>
+          <!--
+          <div class="field">
+            <div class="control has-addons">
+              <label class="checkbox">
+                <input type="checkbox" v-model="config.services">
+                {{ 'settings.label.speech_enabled'|trans }}
+              </label>
+              <a class="button" title="Play">
+                <span class="icon is-small" @click.prevent="testSpeech">
+                  <i class="fa fa-play"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+          -->
+          <hr>
 
-          <!--div class="field">
-              <div class="control has-addons">
-                  <label class="checkbox">
-                      <input type="checkbox" v-model="config.services">
-                      {{ 'settings.label.speech_enabled'|trans }}
-                  </label>
-                  <a class="button" title="Play">
-                      <span class="icon is-small" @click.prevent="testSpeech">
-                          <i class="fa fa-play"></i>
-                      </span>
-                  </a>
-              </div>
-          </div-->
-
-          <div class="control is-grouped">
+          <div class="field is-grouped is-grouped-right">
             <div class="control">
               <button type="submit" class="button is-primary is-large">
-                Salvar &nbsp;
+                {{ 'settings.btn.save'|trans }} &nbsp;
                 <span class="icon is-small">
                   <i class="fa fa-save"></i>
                 </span>
@@ -245,6 +348,15 @@
     ctx.config.locale = ctx.config.locale || 'en'
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable[0]
+
+    ctx.config.pageBgColor = ctx.config.pageBgColor || '#FFFFFF'
+    ctx.config.pageFontColor = ctx.config.pageFontColor || '#000000'
+    ctx.config.sidebarBgColor = ctx.config.sidebarBgColor || '#4FC08D'
+    ctx.config.sidebarFontColor = ctx.config.sidebarFontColor || '#000000'
+    ctx.config.footerBgColor = ctx.config.footerBgColor || '#F1F1F1'
+    ctx.config.footerFontColor = ctx.config.footerFontColor || '#000000'
+    ctx.config.clockBgColor = ctx.config.clockBgColor || '#44A075'
+    ctx.config.clockFontColor = ctx.config.clockFontColor || '#000000'
 
     if (ctx.config.server) {
       ctx.$store

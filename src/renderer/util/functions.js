@@ -1,8 +1,8 @@
 
 const debug = false
 
-export function log (msg) {
+export function log () {
   if (debug) {
-    console.log(msg)
+    console.log.apply(null, arguments)
   }
 }

@@ -1,12 +1,12 @@
 <template>
   <div class="featured-message">
-    <p class="description">
+    <p class="description" :style="{ 'color': fontColor }">
       {{ message.description }}
     </p>
-    <h1 class="title">
+    <h1 class="title" :style="{ 'color': fontColor }">
       {{ message.title }}
     </h1>
-    <h2 class="subtitle">
+    <h2 class="subtitle" :style="{ 'color': fontColor }">
       {{ message.subtitle }}
     </h2>
   </div>
@@ -40,6 +40,10 @@ export default {
   props: {
     message: {
       required: true
+    },
+    fontColor: {
+      type: String,
+      default: '#000000'
     }
   },
   data () {

@@ -1,23 +1,23 @@
 <template>
-  <div class="layout-content">
+  <div class="layout-content" :style="{ 'background-color': config.pageBgColor, 'color': config.pageFontColor }">
     <div class="columns is-gapless">
       <div class="column is-multiline featured-column">
         <header class="column">
-          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio"></featured>
+          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="config.pageFontColor"></featured>
         </header>
-        <footer class="column">
+        <footer class="column" :style="{ 'background-color': config.footerBgColor, 'color': config.footerFontColor }">
           <img src="static/images/logo.png">
         </footer>
       </div>
-      <div class="column is-one-quarter history-column">
+      <div class="column is-one-quarter history-column" :style="{ 'background-color': config.sidebarBgColor, 'color': config.sidebarFontColor }">
         <header>
-          <h2 class="title">
+          <h2 class="title" :style="{ 'color': config.sidebarFontColor }">
             {{ 'history.title'|trans }}
           </h2>
-          <history :messages="messages" v-if="lastMessage"></history>
+          <history :messages="messages" v-if="lastMessage" :fontColor="config.sidebarFontColor"></history>
         </header>
-        <footer>
-          <clock locale="en"></clock>
+        <footer :style="{ 'background-color': config.clockBgColor, 'color': config.clockFontColor }">
+          <clock :locale="config.locale" :dateFormat="'date_format'|trans" :fontColor="config.clockFontColor"></clock>
         </footer>
       </div>
     </div>
@@ -43,11 +43,14 @@
       },
       lastMessage () {
         return this.$store.getters.message
+      },
+      config () {
+        return this.$store.state.config
       }
     },
     methods: {
       playAudio () {
-        audio.playAlert(this.$store.state.config.alert)
+        audio.playAlert(this.config.alert)
       }
     }
   }
@@ -80,7 +83,6 @@
         height: 80vh
       footer
         height: 20vh
-        background-color: #f1f1f1
         padding: 5vh
         img
           height: 10vh
@@ -95,7 +97,6 @@
           font-size: 10vh
 
   .history-column
-    background-color: #4fc08d
     height: 100vh
     header
       height: 80vh
