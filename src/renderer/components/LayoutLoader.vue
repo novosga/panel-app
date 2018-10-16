@@ -22,6 +22,9 @@
 
     socket = socketIO(url, {
       timeout: 2000,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
       reconnectionAttempts: 3
     })
 

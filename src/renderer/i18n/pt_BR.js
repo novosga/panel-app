@@ -31,5 +31,5 @@ export default {
   'settings.label.speech_enabled': 'Vocalizar (experimental!!!)',
   'settings.btn.save': 'Salvar',
   'settings.services.empty': 'Nenhum serviço',
-  'date_format': 'D [de] MMMM [de] YYYY'
+  'date_format': 'DD [de] MMMM [de] YYYY'
 }
