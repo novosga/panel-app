@@ -1,23 +1,23 @@
 <template>
   <div class="featured-message">
-    <p class="description">
+    <p class="description" :style="{ 'color': fontColor }">
       {{ message.description }}
     </p>
-    <h1 class="title">
+    <h1 class="title" :style="{ 'color': fontColor }">
       {{ message.title }}
     </h1>
-    <h2 class="subtitle">
+    <h2 class="subtitle" :style="{ 'color': fontColor }">
       {{ message.subtitle }}
     </h2>
   </div>
 </template>
 
 <script>
-import Queue from "promise-queue"
+import Queue from 'promise-queue'
 
-const queue = new Queue(1, 10);
+const queue = new Queue(1, 10)
 
-function toggleVisibility(el) {
+function toggleVisibility (el) {
   if (el.style.visibility === 'hidden') {
     el.style.visibility = 'visible'
   } else {
@@ -25,7 +25,7 @@ function toggleVisibility(el) {
   }
 }
 
-function blinkElement(el, count, resolve) {
+function blinkElement (el, count, resolve) {
   toggleVisibility(el)
 
   if (count > 0) {
@@ -40,13 +40,17 @@ export default {
   props: {
     message: {
       required: true
+    },
+    fontColor: {
+      type: String,
+      default: '#000000'
     }
   },
-  data() {
+  data () {
     return {}
   },
   methods: {
-    blink() {
+    blink () {
       this.$emit('blink')
       return new Promise((resolve, reject) => {
         blinkElement(this.$el, 5, resolve)
@@ -54,7 +58,7 @@ export default {
     }
   },
   watch: {
-    message() {
+    message () {
       queue.add(this.blink)
     }
   }

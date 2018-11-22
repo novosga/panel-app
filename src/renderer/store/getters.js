@@ -10,7 +10,7 @@ export const message = state => {
       id: 0,
       title: '',
       subtitle: '',
-      description: '',
+      description: ''
     }
   }
   return message

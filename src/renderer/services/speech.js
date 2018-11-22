@@ -1,15 +1,15 @@
 
-function speechQueue(speech, texts, lang, index) {
+function speechQueue (speech, texts, lang, index) {
   return new Promise((resolve, reject) => {
-      if (texts.length === 0 || index >= texts.length) {
-        resolve()
-        return
-      }
+    if (texts.length === 0 || index >= texts.length) {
+      resolve()
+      return
+    }
 
-      let text = texts[index]
-      speech(text, lang).then(() => {
-        queue(speech, texts, lang, index + 1)
-      }, reject)
+    let text = texts[index]
+    speech(text, lang).then(() => {
+      speechQueue(speech, texts, lang, index + 1)
+    }, reject)
   })
 }
 
@@ -22,7 +22,7 @@ export default {
       msg.lang = lang
 
       msg.onerror = reject
-      msg.onend   = resolve
+      msg.onend = resolve
 
       speechSynthesis.speak(msg)
     })

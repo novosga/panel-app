@@ -20,7 +20,7 @@
     name: 'Home',
     components: {
       LayoutLoader
-    },
+    }
   }
 </script>
 

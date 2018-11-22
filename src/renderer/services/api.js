@@ -1,8 +1,7 @@
 import axios from 'axios'
 
 class Client {
-
-  constructor(server, moduleName) {
+  constructor (server, moduleName) {
     let host = server + ''
 
     if (!host.endsWith('/')) {
@@ -16,28 +15,28 @@ class Client {
     this.endpoint = host + 'api'
   }
 
-  request(url, config) {
+  request (url, config) {
     config.withCredentials = true
 
     return new Promise((resolve, reject) => {
-        axios
-          .request(`${this.endpoint}/${url}`, config)
-          .then(response => {
-            resolve(response.data)
-          }, error => {
-            let message = error.message
-            if (error.response) {
-              message = error.response.statusText
-              if (error.response.data && error.response.data.error_description) {
-                message += ': ' + error.response.data.error_description
-              }
+      axios
+        .request(`${this.endpoint}/${url}`, config)
+        .then(response => {
+          resolve(response.data)
+        }, error => {
+          let message = error.message
+          if (error.response) {
+            message = error.response.statusText
+            if (error.response.data && error.response.data.error_description) {
+              message += ': ' + error.response.data.error_description
             }
-            reject(message)
-          })
+          }
+          reject(message)
+        })
     })
   }
 
-  unities(token) {
+  unities (token) {
     const config = {
       headers: {
         Authorization: 'Bearer ' + token
@@ -46,7 +45,7 @@ class Client {
     return this.request(`unidades`, config)
   }
 
-  services(token, unityId) {
+  services (token, unityId) {
     const config = {
       headers: {
         Authorization: 'Bearer ' + token
@@ -55,8 +54,8 @@ class Client {
     return this.request(`unidades/${unityId}/servicos`, config)
   }
 
-  messages(token, unity, services) {
-    const id = typeof(unity) === 'object' ? unity.id : unity
+  messages (token, unity, services) {
+    const id = typeof (unity) === 'object' ? unity.id : unity
     const config = {
       headers: {
         Authorization: 'Bearer ' + token

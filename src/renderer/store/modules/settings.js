@@ -2,7 +2,7 @@ import { Client } from '@/services/api'
 
 const state = {
   unities: [],
-  services: [],
+  services: []
 }
 
 const getters = {
@@ -19,7 +19,7 @@ const mutations = {
 }
 
 const actions = {
-	fetchUnities ({ state, commit, rootState }) {
+  fetchUnities ({ state, commit, rootState }) {
     return new Promise((resolve, reject) => {
       const api = new Client(rootState.config.server)
       api
@@ -55,8 +55,8 @@ const actions = {
 }
 
 export default {
-	state,
-	getters,
-	actions,
-	mutations
+  state,
+  getters,
+  actions,
+  mutations
 }

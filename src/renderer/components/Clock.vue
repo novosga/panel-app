@@ -1,18 +1,18 @@
 <template>
   <div class="clock">
     <div class="date" v-if="showDate">
-      <span>{{formattedDate}}</span>
+      <span :style="{ 'color': fontColor }">{{formattedDate}}</span>
     </div>
     <div class="time">
-      <span class="hours" v-if="showHours">
+      <span class="hours" v-if="showHours" :style="{ 'color': fontColor }">
         {{ hours }}
       </span>
-      <span class="separator" v-if="showMinutes">:</span>
-      <span class="minutes" v-if="showMinutes">
+      <span class="separator" v-if="showMinutes" :style="{ 'color': fontColor }">:</span>
+      <span class="minutes" v-if="showMinutes" :style="{ 'color': fontColor }">
         {{ minutes }}
       </span>
-      <span class="separator" v-if="showSeconds">:</span>
-      <span class="seconds" v-if="showSeconds">
+      <span class="separator" v-if="showSeconds" :style="{ 'color': fontColor }">:</span>
+      <span class="seconds" v-if="showSeconds" :style="{ 'color': fontColor }">
         {{ seconds }}
       </span>
     </div>
@@ -24,7 +24,7 @@ import moment from 'moment'
 
 export default {
   name: 'Clock',
-  data() {
+  data () {
     return {
       date: new Date()
     }
@@ -32,46 +32,50 @@ export default {
   props: {
     showHours: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showMinutes: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showSeconds: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showDate: {
       type: Boolean,
-      default: true,
+      default: true
     },
     dateFormat: {
       type: String,
-      default: 'MMMM Do YYYY',
+      default: 'MMMM Do YYYY'
     },
     locale: {
       type: String,
       default: 'en'
+    },
+    fontColor: {
+      type: String,
+      default: '#000000'
     }
   },
   computed: {
-    hours() {
+    hours () {
       return moment(this.date).format('HH')
     },
-    minutes() {
+    minutes () {
       return moment(this.date).format('mm')
     },
-    seconds() {
+    seconds () {
       return moment(this.date).format('ss')
     },
-    formattedDate() {
+    formattedDate () {
       return moment(this.date).format(this.dateFormat)
     }
   },
-  created() {
+  created () {
     moment.locale(this.locale)
-    setInterval(() => this.date = new Date(), 1000)
+    setInterval(() => { this.date = new Date() }, 1000)
   }
 }
 </script>
