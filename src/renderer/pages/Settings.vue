@@ -30,7 +30,7 @@
               </a>
             </li>
             <li>
-              <a @click="showTab('services')">
+              <a @click="showTab('services')" v-if="unities.length">
                 {{ 'menu.services'|trans }}
               </a>
             </li>
@@ -342,12 +342,12 @@
   import speech from '@/services/speech'
   import { log } from '@/util/functions'
 
-  function load (ctx) {
+  function load (ctx, isInit) {
     ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config))
     // defaults
     ctx.config.locale = ctx.config.locale || 'en'
     ctx.config.services = ctx.config.services || []
-    ctx.config.alert = ctx.config.alert || audio.alertsAvailable[0]
+    ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
 
     ctx.config.pageBgColor = ctx.config.pageBgColor || '#FFFFFF'
     ctx.config.pageFontColor = ctx.config.pageFontColor || '#000000'
@@ -358,18 +358,28 @@
     ctx.config.clockBgColor = ctx.config.clockBgColor || '#44A075'
     ctx.config.clockFontColor = ctx.config.clockFontColor || '#000000'
 
-    if (ctx.fetchUnities && ctx.config.server) {
-      ctx.$store
-        .dispatch('fetchUnities')
-        .then(() => {}, (error) => {
-          ctx.$swal('Oops!', error, 'error')
-        })
-      ctx.fetchUnities = false
-    }
+    if (ctx.$store.getters.isAuthenticated) {
+      const forceLoad = (
+        isInit ||
+        !ctx.unities ||
+        ctx.unities.length === 0
+      )
 
-    if (ctx.fetchServices && ctx.config.unity) {
-      ctx.$store.dispatch('fetchServices', ctx.config.unity)
-      ctx.fetchServices = false
+      ctx.fetchUnities = forceLoad
+      ctx.fetchServices = forceLoad
+
+      if (ctx.$store.getters.isExpired) {
+        log('token expired, trying to refresh')
+
+        ctx.$store.dispatch('token').then(() => {
+          log('token refreshed successfully!')
+          ctx.loadData()
+        }, () => {
+          log('error on refresh token')
+        })
+      } else {
+        ctx.loadData()
+      }
     }
 
     ctx.initialClientId = ctx.config.clientId
@@ -420,6 +430,21 @@
         this.fetchUnities = true
         this.fetchServices = false
       },
+      loadData () {
+        if (this.fetchUnities && this.config.server) {
+          this.$store
+            .dispatch('fetchUnities')
+            .then(() => {}, (error) => {
+              this.$swal('Oops!', error, 'error')
+            })
+          this.fetchUnities = false
+        }
+
+        if (this.fetchServices && this.config.unity) {
+          this.$store.dispatch('fetchServices', this.config.unity)
+          this.fetchServices = false
+        }
+      },
       loadServices () {
         this.$store.dispatch('fetchServices', this.config.unity)
       },
@@ -442,7 +467,7 @@
 
         promise.then(() => {
           this.$swal('Success', 'Configuration Ok', 'success')
-          load(this)
+          load(this, false)
         }, error => {
           this.$swal('Oops!', error, 'error')
         })
@@ -469,7 +494,7 @@
       }
     },
     beforeMount () {
-      load(this)
+      load(this, true)
     }
   }
 </script>

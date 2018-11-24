@@ -1,5 +1,5 @@
 <script>
-  import socketIO from 'socket.io-client'
+  import socketIO from 'socket.io-client/dist/socket.io'
   import auth from '@/store/modules/auth'
   import { log } from '@/util/functions'
 
@@ -36,34 +36,34 @@
       })
     })
 
-    socket.on('disconnect', function () {
+    socket.on('disconnect', () => {
       log('[websocket] disconnected!')
     })
   
-    socket.on('connect_error', function () {
-      log('[websocket] connect error')
+    socket.on('connect_error', (evt) => {
+      log('[websocket] connect error', evt)
     })
 
-    socket.on('connect_timeout', function () {
+    socket.on('connect_timeout', () => {
       log('[websocket] timeout')
     })
   
-    socket.on('reconnect_failed', evt => {
+    socket.on('reconnect_failed', () => {
       log('[websocket] max attempts reached, ajax polling fallback')
       fetchMessages($root, $store)
       socket.open()
     })
   
-    socket.on('error', function () {
-      log('[websocket] error')
+    socket.on('error', (evt) => {
+      log('[websocket] error', evt)
     })
 
-    socket.on('register ok', evt => {
+    socket.on('register ok', () => {
       log('[websocket] painel registered')
       fetchMessages($root, $store)
     })
 
-    socket.on('call ticket', evt => {
+    socket.on('call ticket', () => {
       log('[websocket] call ticket')
       fetchMessages($root, $store)
     })
@@ -158,22 +158,22 @@
         promise = $store.dispatch('fetchMessages')
       }
 
-      promise.then(messages => {
-      }, (e) => {
-        if (typeof (e) === 'string') {
-          throw new Error(e)
-        }
-        throw new Error('Unknown error. Please see the log console')
-      })
+      promise
+        .then(messages => {}, (e) => {
+          if (typeof (e) === 'string') {
+            throw new Error(e)
+          }
+          throw new Error('Unknown error. Please see the log console')
+        })
         .catch(e => {
-        // clear token
+          // clear token
           $store.commit('updateToken', {})
 
-          $root.$swal('Oops!', e, 'error')
+          $root.$swal('Oops!', e.message, 'error')
           $root.$router.push('/settings')
         })
     } catch (e) {
-      $root.$swal('Oops!', e, 'error')
+      $root.$swal('Oops!', e.message, 'error')
       $root.$router.push('/settings')
     }
   }
