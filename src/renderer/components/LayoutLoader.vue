@@ -21,6 +21,9 @@
     log('[websocket] trying connect to websocket server: ' + url)
 
     socket = socketIO(url, {
+      path: '/socket.io',
+      transports: ['websocket'],
+      secure: true,
       timeout: 2000,
       reconnection: true,
       reconnectionDelay: 1000,
