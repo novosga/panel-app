@@ -1,21 +1,21 @@
 
 export const theme = state => {
-    return 'Default'
+  return 'Default'
 }
 
 export const message = state => {
-    let message = state.messages[0]
-    if (!message) {
-        message = {
-            id: 0,
-            title: '',
-            subtitle: '',
-            description: '',
-        }
+  let message = state.messages[0]
+  if (!message) {
+    message = {
+      id: 0,
+      title: '',
+      subtitle: '',
+      description: ''
     }
-    return message
+  }
+  return message
 }
 
 export const history = state => {
-    return state.messages.slice(1)
+  return state.messages.slice(1)
 }

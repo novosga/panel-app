@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import vuexI18n from 'vuex-i18n'
 import * as getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
@@ -8,10 +7,9 @@ import modules from './modules'
 
 Vue.use(Vuex)
 
-modules.i18n = vuexI18n.store
-
 const state = {
   config: {},
+  dict: {},
   messages: [
     /*
     {
@@ -31,8 +29,5 @@ const store = new Vuex.Store({
   modules,
   strict: process.env.NODE_ENV !== 'production'
 })
-
-Vue.use(vuexI18n.plugin, store)
-Vue.i18n.set('en')
 
 export default store
