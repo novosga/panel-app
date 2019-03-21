@@ -14,7 +14,7 @@ export default {
 
     const locale = config.locale || 'en'
 
-    state.dict = require(`../i18n/${locale}.js`).default
+    state.dict = require(`../../../static/i18n/${locale}.json`)
   },
 
   newMessage (state, message) {
