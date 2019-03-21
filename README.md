@@ -6,11 +6,11 @@ Novo SGA panel.
 
 ``` bash
 # install dependencies
-yarn install
+npm install
 
 # serve with hot reload at localhost:8080
-yarn run dev
+npm run dev
 
 # build for production with minification
-yarn run build
+npm run build
 ```
