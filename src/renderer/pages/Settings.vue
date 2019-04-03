@@ -65,6 +65,7 @@
                   <span class="select is-fullwidth">
                     <select v-model="config.locale">
                       <option value="en">English</option>
+                      <option value="es">Español</option>
                       <option value="pt_BR">Português (Brasil)</option>
                     </select>
                   </span>
