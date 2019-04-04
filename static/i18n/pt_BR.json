@@ -11,6 +11,7 @@
   "settings.title": "Configurações",
   "settings.subtitle": "Configurações do painel",
   "settings.interface.colors": "Cores",
+  "settings.label.logo": "Logo",
   "settings.label.page_bg_color": "Fundo da página",
   "settings.label.page_font_color": "Fonte da página",
   "settings.label.sidebar_bg_color": "Fundo da lateral",

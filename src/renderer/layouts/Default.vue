@@ -6,7 +6,7 @@
           <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="config.pageFontColor"></featured>
         </header>
         <footer class="column" :style="{ 'background-color': config.footerBgColor, 'color': config.footerFontColor }">
-          <img src="static/images/logo.png">
+          <img :src="logoUrl">
         </footer>
       </div>
       <div class="column is-one-quarter history-column" :style="{ 'background-color': config.sidebarBgColor, 'color': config.sidebarFontColor }">
@@ -46,6 +46,9 @@
       },
       config () {
         return this.$store.state.config
+      },
+      logoUrl () {
+        return this.config.logo || 'static/images/logo.png'
       }
     },
     methods: {

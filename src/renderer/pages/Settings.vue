@@ -76,6 +76,19 @@
             </div>
           </div>
 
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.logo'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="url" placeholder="https://" v-model="config.logo">
+                </div>
+              </div>
+            </div>
+          </div>
+
           <h3 class="title">{{ 'settings.interface.colors'| trans }}</h3>
 
           <div class="columns">
