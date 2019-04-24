@@ -11,6 +11,7 @@
   "settings.title": "Configuración",
   "settings.subtitle": "Panel de configuración",
   "settings.interface.colors": "Colores",
+  "settings.label.theme": "Tema",
   "settings.label.page_bg_color_normal": "Fondo de la páginad (Normal)",
   "settings.label.page_font_color_normal": "Fuente de la página (Normal)",
   "settings.label.page_bg_color_priority": "Fondo de la página (Prioridad)",

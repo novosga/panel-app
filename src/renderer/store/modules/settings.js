@@ -2,10 +2,29 @@ import { Client } from '@/services/api'
 
 const state = {
   unities: [],
-  services: []
+  services: [],
+  availableThemes: [
+    {
+      id: 'novosga.default',
+      name: 'Default',
+      options: [
+        {
+          name: 'logo',
+          label: 'Logo',
+          type: 'url',
+          required: false,
+          placeholder: 'https://'
+        }
+      ]
+    }
+  ]
 }
 
 const getters = {
+  getTheme: (state) => (id) => {
+    const theme = state.availableThemes.find(t => t.id === id)
+    return theme
+  }
 }
 
 const mutations = {

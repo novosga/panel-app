@@ -75,16 +75,35 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="columns">
-            <div class="column">
+            <div class="column is-4">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.logo'|trans }}
+                  {{ 'settings.label.theme'|trans }}
                 </label>
-                <div class="control">
-                  <input class="input is-medium" type="url" placeholder="https://" v-model="config.logo">
+                <div class="control is-expanded has-icons-left">
+                  <span class="select is-fullwidth">
+                    <select v-model="config.theme" @change="changeTheme">
+                      <option :value="theme.id" v-for="theme in themes" :key="theme.id">
+                        {{ theme.name }}
+                      </option>
+                    </select>
+                  </span>
+                  <span class="icon is-left">
+                    <i class="fa fa-paint-brush"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns" v-if="selectedTheme && selectedTheme.options.length">
+            <div class="column">
+              <div class="field" v-for="option in selectedTheme.options" :key="option.name">
+                <label class="label">
+                  {{ option.label }}
+                </label>
+                <div class="control is-expanded">
+                  <input :type="option.type" :placeholder="option.placeholder" v-model="config.themeOptions[option.name]" class="input is-medium">
                 </div>
               </div>
             </div>
@@ -393,6 +412,8 @@
     // defaults
     ctx.config.locale = ctx.config.locale || 'en'
     ctx.config.retries = ctx.config.retries || 5
+    ctx.config.theme = ctx.config.theme || ctx.themes[0].id
+    ctx.config.themeOptions = ctx.config.themeOptions || {}
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
 
@@ -458,6 +479,12 @@
       services () {
         return this.$store.state.settings.services
       },
+      themes () {
+        return this.$store.state.settings.availableThemes
+      },
+      selectedTheme () {
+        return this.$store.getters.getTheme(this.config.theme)
+      },
       alerts () {
         return audio.alertsAvailable
       },
@@ -473,6 +500,9 @@
     methods: {
       showTab (tab) {
         this.tab = tab
+      },
+      changeTheme () {
+        this.config.themeOptions = {}
       },
       changeServer () {
         this.config.unity = null

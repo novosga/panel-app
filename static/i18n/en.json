@@ -11,7 +11,7 @@
   "settings.title": "Settings",
   "settings.subtitle": "Panel settings",
   "settings.interface.colors": "Colors",
-  "settings.label.logo": "Logo",
+  "settings.label.theme": "Theme",
   "settings.label.page_bg_color_normal": "Page background (Normal)",
   "settings.label.page_font_color_normal": "Page font (Normal)",
   "settings.label.page_bg_color_priority": "Page background (Priority)",
