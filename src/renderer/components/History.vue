@@ -6,13 +6,13 @@
       </p>
     </div>
     <div v-for="message in messages" class="message" :key="message.id">
-      <span class="title" v-if="showMessageTitle" :style="{ 'color': fontColor }">
+      <span class="title" v-if="showMessageTitle" :style="{ 'color': fontColor(message) }">
         {{ message.title }}
       </span>
-      <span class="subtitle" v-if="showMessageSubtitle" :style="{ 'color': fontColor }">
+      <span class="subtitle" v-if="showMessageSubtitle" :style="{ 'color': fontColor(message) }">
         {{ message.subtitle }}
       </span>
-      <span class="description" v-if="showMessageDescription" :style="{ 'color': fontColor }">
+      <span class="description" v-if="showMessageDescription" :style="{ 'color': fontColor(message) }">
         {{ message.description }}
       </span>
     </div>
@@ -46,6 +46,12 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  methods: {
+    fontColor (message) {
+        const peso = message.$data ? message.$data.peso : 0
+        return peso > 0 ? this.fontColorPriority : this.fontColorNormal
+      }
   }
 }
 </script>
