@@ -48,7 +48,7 @@
         return this.$store.state.config
       },
       logoUrl () {
-        return this.config.logo || 'static/images/logo.png'
+        return this.config.themeOptions.logo || 'static/images/logo.png'
       },
       pageBgColor () {
         const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 1
