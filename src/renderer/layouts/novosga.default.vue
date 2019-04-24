@@ -17,7 +17,12 @@
           <h2 class="title" :style="{ 'color': color('sidebarFontColor') }">
             {{ 'history.title'|trans }}
           </h2>
-          <history :messages="messages" v-if="lastMessage" :fontColor="color('historyFontColor', 'sidebarFontColor')"></history>
+          <history
+            v-if="lastMessage"
+            :messages="messages"
+            :fontColorNormal="config.historyFontColorNormal || config.sidebarFontColorNormal"
+            :fontColorPriority="config.historyFontColorPriority || config.sidebarFontColorPriority">
+          </history>
         </header>
         <footer :style="{ 'background-color': color('clockBgColor'), 'color': color('clockFontColor') }">
           <clock :locale="config.locale" :dateFormat="'date_format'|trans" :fontColor="color('clockFontColor')"></clock>

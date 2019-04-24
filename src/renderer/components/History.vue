@@ -26,9 +26,13 @@ export default {
     messages: {
       required: true
     },
-    fontColor: {
+    fontColorNormal: {
       type: String,
       default: '#000000'
+    },
+    fontColorPriority: {
+      type: String,
+      default: '#FF0000'
     },
     showMessageTitle: {
       type: Boolean,
