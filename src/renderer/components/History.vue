@@ -1,7 +1,7 @@
 <template>
   <div class="history">
     <div v-if="messages.length===0" class="empty">
-      <p :style="{ 'color': fontColor }">
+      <p :style="{ 'color': fontColorNormal }">
         {{ 'history.empty'|trans }}
       </p>
     </div>
