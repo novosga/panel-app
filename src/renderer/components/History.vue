@@ -49,9 +49,9 @@ export default {
   },
   methods: {
     fontColor (message) {
-        const peso = message.$data ? message.$data.peso : 0
-        return peso > 0 ? this.fontColorPriority : this.fontColorNormal
-      }
+      const peso = message.$data ? message.$data.peso : 0
+      return peso > 0 ? this.fontColorPriority : this.fontColorNormal
+    }
   }
 }
 </script>
