@@ -1,23 +1,26 @@
 <template>
-  <div class="novosga-default layout-content" :style="{ 'background-color': pageBgColor, 'color': pageFontColor }">
+  <div class="novosga-default layout-content" :style="{ 'background-color': color('pageBgColor'), 'color': color('pageFontColor') }">
     <div class="columns is-gapless">
       <div class="column is-multiline featured-column">
         <header class="column">
-          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="pageFontColor"></featured>
+          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="color('featuredFontColor', 'pageFontColor')"></featured>
         </header>
-        <footer class="column" :style="{ 'background-color': config.footerBgColor, 'color': config.footerFontColor }">
-          <img :src="logoUrl">
+        <footer class="column" :style="{ 'background-color': color('footerBgColor'), 'color': color('footerFontColor') }">
+          <img :src="logoUrl" class="is-pulled-left">
+          <h1 class="is-pulled-left" v-if="config.themeOptions.footerText" :style="{ 'color': color('footerFontColor') }">
+            {{ config.themeOptions.footerText }}
+          </h1>
         </footer>
       </div>
-      <div class="column is-one-quarter history-column" :style="{ 'background-color': config.sidebarBgColor, 'color': config.sidebarFontColor }">
+      <div class="column is-one-quarter history-column" :style="{ 'background-color': color('sidebarBgColor'), 'color': color('sidebarFontColor') }">
         <header>
-          <h2 class="title" :style="{ 'color': config.sidebarFontColor }">
+          <h2 class="title" :style="{ 'color': color('sidebarFontColor') }">
             {{ 'history.title'|trans }}
           </h2>
-          <history :messages="messages" v-if="lastMessage" :fontColor="config.sidebarFontColor"></history>
+          <history :messages="messages" v-if="lastMessage" :fontColor="color('historyFontColor', 'sidebarFontColor')"></history>
         </header>
-        <footer :style="{ 'background-color': config.clockBgColor, 'color': config.clockFontColor }">
-          <clock :locale="config.locale" :dateFormat="'date_format'|trans" :fontColor="config.clockFontColor"></clock>
+        <footer :style="{ 'background-color': color('clockBgColor'), 'color': color('clockFontColor') }">
+          <clock :locale="config.locale" :dateFormat="'date_format'|trans" :fontColor="color('clockFontColor')"></clock>
         </footer>
       </div>
     </div>
@@ -49,19 +52,16 @@
       },
       logoUrl () {
         return this.config.themeOptions.logo || 'static/images/logo.png'
-      },
-      pageBgColor () {
-        const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 1
-        return peso > 0 ? this.config.pageBgColorPriority : this.config.pageBgColorNormal
-      },
-      pageFontColor () {
-        const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 1
-        return peso > 0 ? this.config.pageFontColorPriority : this.config.pageFontColorNormal
       }
     },
     methods: {
       playAudio () {
         audio.playAlert(this.config.alert)
+      },
+      color (prefix, fallback) {
+        const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 0
+        const suffix = peso > 0 ? 'Priority' : 'Normal'
+        return this.config[prefix + suffix] || this.config[fallback + suffix]
       }
     }
   }
@@ -98,6 +98,9 @@
           padding: 5vh
           img
             height: 10vh
+          h1
+            font-size: 5vh
+            padding: 2vh 0 0 5vh
         .featured-message
           text-align: center
           .title

@@ -14,6 +14,13 @@ const state = {
           type: 'url',
           required: false,
           placeholder: 'https://'
+        },
+        {
+          name: 'footerText',
+          label: 'Footer text',
+          type: 'text',
+          required: false,
+          placeholder: ''
         }
       ]
     }

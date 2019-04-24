@@ -96,6 +96,8 @@
             </div>
           </div>
 
+          <h3 class="title" v-if="selectedTheme && selectedTheme.options.length">{{ 'settings.interface.theme_options'| trans }}</h3>
+
           <div class="columns" v-if="selectedTheme && selectedTheme.options.length">
             <div class="column">
               <div class="field" v-for="option in selectedTheme.options" :key="option.name">
@@ -158,20 +160,40 @@
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.sidebar_bg_color'|trans }}
+                  {{ 'settings.label.featured_font_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.featuredFontColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.sidebar_font_color'|trans }}
+                  {{ 'settings.label.featured_font_color_priority'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.featuredFontColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.history_font_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.historyFontColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.history_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.historyFontColorPriority">
                 </div>
               </div>
             </div>
@@ -181,40 +203,126 @@
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.footer_bg_color'|trans }}
+                  {{ 'settings.label.sidebar_bg_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.footer_font_color'|trans }}
+                  {{ 'settings.label.sidebar_font_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.clock_bg_color'|trans }}
+                  {{ 'settings.label.sidebar_bg_color_priority'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColorPriority">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.clock_font_color'|trans }}
+                  {{ 'settings.label.sidebar_font_color_priority'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColorPriority">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_bg_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_font_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_bg_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColorPriority">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_bg_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_font_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_bg_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColorPriority">
                 </div>
               </div>
             </div>
@@ -421,12 +529,22 @@
     ctx.config.pageFontColorNormal = ctx.config.pageFontColorNormal || '#000000'
     ctx.config.pageBgColorPriority = ctx.config.pageBgColorPriority || '#FFFFFF'
     ctx.config.pageFontColorPriority = ctx.config.pageFontColorPriority || '#FF0000'
-    ctx.config.sidebarBgColor = ctx.config.sidebarBgColor || '#4FC08D'
-    ctx.config.sidebarFontColor = ctx.config.sidebarFontColor || '#000000'
-    ctx.config.footerBgColor = ctx.config.footerBgColor || '#F1F1F1'
-    ctx.config.footerFontColor = ctx.config.footerFontColor || '#000000'
-    ctx.config.clockBgColor = ctx.config.clockBgColor || '#44A075'
-    ctx.config.clockFontColor = ctx.config.clockFontColor || '#000000'
+    ctx.config.featuredFontColorNormal = ctx.config.featuredFontColorNormal || '#000000'
+    ctx.config.featuredFontColorPriority = ctx.config.featuredFontColorPriority || '#FF0000'
+    ctx.config.historyFontColorNormal = ctx.config.historyFontColorNormal || '#000000'
+    ctx.config.historyFontColorPriority = ctx.config.historyFontColorPriority || '#FF0000'
+    ctx.config.sidebarBgColorNormal = ctx.config.sidebarBgColorNormal || '#4FC08D'
+    ctx.config.sidebarFontColorNormal = ctx.config.sidebarFontColorNormal || '#000000'
+    ctx.config.sidebarBgColorPriority = ctx.config.sidebarBgColor || '#4FC08D'
+    ctx.config.sidebarFontColorPriority = ctx.config.sidebarFontColor || '#000000'
+    ctx.config.footerBgColorNormal = ctx.config.footerBgColorNormal || '#F1F1F1'
+    ctx.config.footerFontColorNormal = ctx.config.footerFontColorNormal || '#000000'
+    ctx.config.footerBgColorPriority = ctx.config.footerBgColorPriority || '#F1F1F1'
+    ctx.config.footerFontColorPriority = ctx.config.footerFontColorPriority || '#000000'
+    ctx.config.clockBgColorNormal = ctx.config.clockBgColorNormal || '#44A075'
+    ctx.config.clockFontColorNormal = ctx.config.clockFontColorNormal || '#000000'
+    ctx.config.clockBgColorPriority = ctx.config.clockBgColorPriority || '#44A075'
+    ctx.config.clockFontColorPriority = ctx.config.clockFontColorPriority || '#000000'
 
     if (ctx.$store.getters.isAuthenticated) {
       const forceLoad = (

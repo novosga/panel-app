@@ -1,13 +1,13 @@
 <template>
   <div class="featured-message">
     <p class="description" :style="{ 'color': fontColor }">
-      {{ message.description }}
+      {{ message.description || '---' }}
     </p>
     <h1 class="title" :style="{ 'color': fontColor }">
-      {{ message.title }}
+      {{ message.title || '---' }}
     </h1>
     <h2 class="subtitle" :style="{ 'color': fontColor }">
-      {{ message.subtitle }}
+      {{ message.subtitle || '---' }}
     </h2>
   </div>
 </template>
