@@ -190,7 +190,7 @@
         const theme = this.$store.getters.theme
         view = require(`@/layouts/${theme}`).default
       } catch (e) {
-        view = require('@/layouts/Default').default
+        view = require('@/layouts/novosga.default').default
       }
       return h(view)
     },
