@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-content" :style="{ 'background-color': pageBgColor, 'color': pageFontColor }">
+  <div class="novosga-default layout-content" :style="{ 'background-color': pageBgColor, 'color': pageFontColor }">
     <div class="columns is-gapless">
       <div class="column is-multiline featured-column">
         <header class="column">
@@ -68,78 +68,79 @@
 </script>
 
 <style lang="sass">
-  .layout-content
-    position: fixed
-    width: 100%
-    height: 100%
-    .columns
+  .novosga-default
+    .layout-content
+      position: fixed
+      width: 100%
       height: 100%
+      .columns
+        height: 100%
 
-  .clock
-    .time
-      span
-        font-size: 4vw
-      span.hours
-        font-weight: bold
-      span.seconds
-        font-style: italic
-    .date
-      text-align: center
-      span
-        font-size: 2vw
-        font-weight: bold
-
-  .featured-column
-      header
-        height: 80vh
-      footer
-        height: 20vh
-        padding: 5vh
-        img
-          height: 10vh
-      .featured-message
-        text-align: center
-        .title
-          font-size: 30vh
-          font-weight: bold
-        .subtitle
-          font-size: 10vh
-        .description
-          font-size: 10vh
-
-  .history-column
-    height: 100vh
-    header
-      height: 80vh
-      padding: 1rem 0
-    footer
-      height: 20vh
-      padding: 1rem 0
-      text-align: center
-      background: rgba(0,0,0,.1)
-    *
-      color: #2c3e50
-    .title
-      text-align: center
-      font-weight: bold
-    .message
-      background-color: transparent
-      border-left: 8px solid rgba(0,0,0,.3)
-      padding-left: 2rem
-      margin-bottom: 1rem
-    .empty
-      p
-        font-style: italic
-        text-align: center
-    .history
-      .message
+    .clock
+      .time
         span
-          text-align: left
-          display: block
-        .title
-          font-size: 8vh
+          font-size: 4vw
+        span.hours
           font-weight: bold
-        .subtitle
-          font-size: 4vh
+        span.seconds
           font-style: italic
+      .date
+        text-align: center
+        span
+          font-size: 2vw
+          font-weight: bold
+
+    .featured-column
+        >header
+          height: 80vh
+        >footer
+          height: 20vh
+          padding: 5vh
+          img
+            height: 10vh
+        .featured-message
+          text-align: center
+          .title
+            font-size: 30vh
+            font-weight: bold
+          .subtitle
+            font-size: 10vh
+          .description
+            font-size: 10vh
+
+    .history-column
+      height: 100vh
+      >header
+        height: 80vh
+        padding: 1rem 0
+      >footer
+        height: 20vh
+        padding: 1rem 0
+        text-align: center
+        background: rgba(0,0,0,.1)
+      *
+        color: #2c3e50
+      .title
+        text-align: center
+        font-weight: bold
+      .message
+        background-color: transparent
+        border-left: 8px solid rgba(0,0,0,.3)
+        padding-left: 2rem
+        margin-bottom: 1rem
+      .empty
+        p
+          font-style: italic
+          text-align: center
+      .history
+        .message
+          span
+            text-align: left
+            display: block
+          .title
+            font-size: 8vh
+            font-weight: bold
+          .subtitle
+            font-size: 4vh
+            font-style: italic
 </style>
