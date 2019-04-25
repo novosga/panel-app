@@ -417,7 +417,7 @@
               {{ 'settings.label.unity'|trans }}
             </label>
             <div class="control">
-              <div class="select">
+              <div class="select is-fullwidth">
                 <select v-model="config.unity" @change="loadServices">
                   <option></option>
                   <option v-for="unity in unities" :value="unity.id" :key="unity.id">
