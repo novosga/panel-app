@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="columns">
-      <div class="column is-2-desktop is-3-tablet is-3-mobile column-menu">
+    <div class="columns is-mobile">
+      <div class="column is-2-desktop is-3-tablet is-3-mobile">
         <aside class="menu">
           <img src="static/images/logo.png">
 
@@ -20,29 +20,29 @@
 
           <ul class="menu-list">
             <li>
-              <a @click="showTab('interface')">
+              <a @click="showTab('interface')" :class="{ 'is-active': (tab==='interface') }">
                 {{ 'menu.interface'|trans }}
               </a>
             </li>
             <li>
-              <a @click="showTab('server')">
+              <a @click="showTab('server')" :class="{ 'is-active': (tab==='server') }">
                 {{ 'menu.server'|trans }}
               </a>
             </li>
             <li>
-              <a @click="showTab('services')" v-if="unities.length">
+              <a @click="showTab('services')" :class="{ 'is-active': (tab==='services') }" v-if="unities.length">
                 {{ 'menu.services'|trans }}
               </a>
             </li>
             <li>
-              <a @click="showTab('sound')">
+              <a @click="showTab('sound')" :class="{ 'is-active': (tab==='sound') }">
                 {{ 'menu.sound'|trans }}
               </a>
             </li>
           </ul>
         </aside>
       </div>
-      <div class="column">
+      <div class="column is-10-desktop is-9-tablet is-9-mobile">
         <div class="heading">
           <h1 class="title">
             {{ 'settings.title'|trans }}
@@ -699,7 +699,8 @@
 <style lang="sass">
   aside
     img
-      height: 60px
+      width: 100%
+      max-height: 60px
   .columns .column
     padding: 2rem
 </style>
