@@ -2,7 +2,7 @@ import axios from 'axios'
 import axiosRetry from 'axios-retry'
 
 class Client {
-  constructor (server, moduleName) {
+  constructor (server, moduleName, retries) {
     let host = server + ''
 
     if (!host.endsWith('/')) {
@@ -13,6 +13,10 @@ class Client {
       host += moduleName + '/'
     }
 
+    if (retries) {
+      this.retries = retries
+    }
+
     this.endpoint = host + 'api'
   }
 
@@ -21,7 +25,7 @@ class Client {
 
     // Set auto-retry for network failed requests
     axiosRetry(axios, {
-      retries: 10,
+      retries: this.retries || 3,
       retryDelay: axiosRetry.exponentialDelay
     })
 

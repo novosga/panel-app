@@ -224,6 +224,15 @@
             </div>
           </div>
 
+          <div class="field">
+            <label class="label">
+              {{ 'settings.label.retries'|trans }}
+            </label>
+            <div class="control">
+              <input class="input is-medium" type="text" placeholder="" v-model="config.retries">
+            </div>
+          </div>
+
           <hr>
 
           <div class="field is-grouped is-grouped-right">
@@ -346,6 +355,7 @@
     ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config))
     // defaults
     ctx.config.locale = ctx.config.locale || 'en'
+    ctx.config.retries = ctx.config.retries || 3
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
 
