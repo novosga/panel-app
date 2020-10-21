@@ -1,4 +1,5 @@
 import axios from 'axios'
+import axiosRetry from 'axios-retry'
 
 class Client {
   constructor (server, moduleName) {
@@ -17,6 +18,12 @@ class Client {
 
   request (url, config) {
     config.withCredentials = true
+
+    // Set auto-retry for network failed requests
+    axiosRetry(axios, {
+      retries: 10,
+      retryDelay: axiosRetry.exponentialDelay
+    })
 
     return new Promise((resolve, reject) => {
       axios
