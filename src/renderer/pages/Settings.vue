@@ -355,7 +355,7 @@
     ctx.config = JSON.parse(JSON.stringify(ctx.$store.state.config))
     // defaults
     ctx.config.locale = ctx.config.locale || 'en'
-    ctx.config.retries = ctx.config.retries || 3
+    ctx.config.retries = ctx.config.retries || 5
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
 

@@ -25,7 +25,7 @@ class Client {
 
     // Set auto-retry for network failed requests
     axiosRetry(axios, {
-      retries: this.retries || 3,
+      retries: this.retries || 5,
       retryDelay: axiosRetry.exponentialDelay
     })
 
