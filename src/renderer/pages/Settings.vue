@@ -65,6 +65,7 @@
                   <span class="select is-fullwidth">
                     <select v-model="config.locale">
                       <option value="en">English</option>
+                      <option value="es">Español</option>
                       <option value="pt_BR">Português (Brasil)</option>
                     </select>
                   </span>
@@ -76,29 +77,65 @@
             </div>
           </div>
 
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.logo'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="url" placeholder="https://" v-model="config.logo">
+                </div>
+              </div>
+            </div>
+          </div>
+
           <h3 class="title">{{ 'settings.interface.colors'| trans }}</h3>
 
           <div class="columns">
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.page_bg_color'|trans }}
+                  {{ 'settings.label.page_bg_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageBgColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.page_font_color'|trans }}
+                  {{ 'settings.label.page_font_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageFontColorNormal">
                 </div>
               </div>
             </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.page_bg_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageBgColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.page_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.pageFontColorPriority">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
             <div class="column">
               <div class="field">
                 <label class="label">
@@ -359,8 +396,10 @@
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
 
-    ctx.config.pageBgColor = ctx.config.pageBgColor || '#FFFFFF'
-    ctx.config.pageFontColor = ctx.config.pageFontColor || '#000000'
+    ctx.config.pageBgColorNormal = ctx.config.pageBgColorNormal || '#FFFFFF'
+    ctx.config.pageFontColorNormal = ctx.config.pageFontColorNormal || '#000000'
+    ctx.config.pageBgColorPriority = ctx.config.pageBgColorPriority || '#FFFFFF'
+    ctx.config.pageFontColorPriority = ctx.config.pageFontColorPriority || '#FF0000'
     ctx.config.sidebarBgColor = ctx.config.sidebarBgColor || '#4FC08D'
     ctx.config.sidebarFontColor = ctx.config.sidebarFontColor || '#000000'
     ctx.config.footerBgColor = ctx.config.footerBgColor || '#F1F1F1'

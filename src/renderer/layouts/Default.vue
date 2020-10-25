@@ -1,12 +1,12 @@
 <template>
-  <div class="layout-content" :style="{ 'background-color': config.pageBgColor, 'color': config.pageFontColor }">
+  <div class="layout-content" :style="{ 'background-color': pageBgColor, 'color': pageFontColor }">
     <div class="columns is-gapless">
       <div class="column is-multiline featured-column">
         <header class="column">
-          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="config.pageFontColor"></featured>
+          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="pageFontColor"></featured>
         </header>
         <footer class="column" :style="{ 'background-color': config.footerBgColor, 'color': config.footerFontColor }">
-          <img src="static/images/logo.png">
+          <img :src="logoUrl">
         </footer>
       </div>
       <div class="column is-one-quarter history-column" :style="{ 'background-color': config.sidebarBgColor, 'color': config.sidebarFontColor }">
@@ -46,6 +46,17 @@
       },
       config () {
         return this.$store.state.config
+      },
+      logoUrl () {
+        return this.config.logo || 'static/images/logo.png'
+      },
+      pageBgColor () {
+        const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 1
+        return peso > 0 ? this.config.pageBgColorPriority : this.config.pageBgColorNormal
+      },
+      pageFontColor () {
+        const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 1
+        return peso > 0 ? this.config.pageFontColorPriority : this.config.pageFontColorNormal
       }
     },
     methods: {

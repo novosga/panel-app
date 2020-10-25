@@ -16,11 +16,14 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
+  const fullscreen = process.argv.indexOf('--fullscreen') !== -1
+
   /**
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    useContentSize: true
+    useContentSize: true,
+    fullscreen: fullscreen
   })
 
   mainWindow.loadURL(winURL)
@@ -68,8 +71,11 @@ function createWindow () {
       ]
     }
   ]
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+
+  if (!fullscreen) {
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+  }
 }
 
 app.on('ready', createWindow)
