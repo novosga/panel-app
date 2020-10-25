@@ -23,7 +23,10 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     useContentSize: true,
-    fullscreen: fullscreen
+    fullscreen: fullscreen,
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
 
   mainWindow.loadURL(winURL)
