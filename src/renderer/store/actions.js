@@ -23,7 +23,7 @@ export const saveConfig = ({ commit }, config) => {
 
 export const fetchMessages = ({ state, commit }) => {
   return new Promise((resolve, reject) => {
-    const api = new Client(state.config.server)
+    const api = new Client(state.config.server, null, state.config.retries)
     api
       .messages(state.auth.accessToken, state.config.unity, state.config.services)
       .then(messages => {

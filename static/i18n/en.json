@@ -32,6 +32,7 @@
   "settings.label.services": "Services",
   "settings.label.alert": "Alert",
   "settings.label.speech_enabled": "Speach (experimental!!!)",
+  "settings.label.retries": "Retries before show network error",
   "settings.btn.save": "Save",
   "settings.services.empty": "Empty",
   "date_format": "MMMM Do YYYY"

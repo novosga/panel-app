@@ -32,6 +32,7 @@
   "settings.label.services": "Serviços",
   "settings.label.alert": "Alerta",
   "settings.label.speech_enabled": "Vocalizar (experimental!!!)",
+  "settings.label.retries": "Tentativas antes de exibir erro de rede",
   "settings.btn.save": "Salvar",
   "settings.services.empty": "Nenhum serviço",
   "date_format": "DD [de] MMMM [de] YYYY"

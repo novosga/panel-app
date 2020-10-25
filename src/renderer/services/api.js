@@ -1,7 +1,8 @@
 import axios from 'axios'
+import axiosRetry from 'axios-retry'
 
 class Client {
-  constructor (server, moduleName) {
+  constructor (server, moduleName, retries) {
     let host = server + ''
 
     if (!host.endsWith('/')) {
@@ -12,11 +13,21 @@ class Client {
       host += moduleName + '/'
     }
 
+    if (retries) {
+      this.retries = retries
+    }
+
     this.endpoint = host + 'api'
   }
 
   request (url, config) {
     config.withCredentials = true
+
+    // Set auto-retry for network failed requests
+    axiosRetry(axios, {
+      retries: this.retries || 5,
+      retryDelay: axiosRetry.exponentialDelay
+    })
 
     return new Promise((resolve, reject) => {
       axios
