@@ -16,6 +16,10 @@ export const message = state => {
   return message
 }
 
+export const apiInfo = state => {
+  return state.apiInfo
+}
+
 export const history = state => {
   return state.messages.slice(1)
 }

@@ -47,6 +47,15 @@ class Client {
     })
   }
 
+  info (token) {
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }
+    return this.request('', config)
+  }
+
   unities (token) {
     const config = {
       headers: {

@@ -17,6 +17,10 @@ export default {
     state.dict = require(`../../../static/i18n/${locale}.json`)
   },
 
+  updateApiInfo (state, apiInfo) {
+    state.apiInfo = apiInfo || {}
+  },
+
   newMessage (state, message) {
     if (state.messages.length) {
       const last = state.messages[0]

@@ -21,6 +21,20 @@ export const saveConfig = ({ commit }, config) => {
   commit('updateConfig', config)
 }
 
+export const fetchApiInfo = ({ commit, rootState }) => {
+  return new Promise((resolve, reject) => {
+    const api = new Client(rootState.config.server)
+    api
+      .info(rootState.auth.accessToken)
+      .then(data => {
+        commit('updateApiInfo', data)
+        resolve()
+      }, error => {
+        reject(error)
+      })
+  })
+}
+
 export const fetchMessages = ({ state, commit }) => {
   return new Promise((resolve, reject) => {
     const api = new Client(state.config.server, null, state.config.retries)
