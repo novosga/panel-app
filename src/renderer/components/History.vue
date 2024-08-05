@@ -1,18 +1,18 @@
 <template>
   <div class="history">
     <div v-if="messages.length===0" class="empty">
-      <p :style="{ 'color': fontColor }">
+      <p :style="{ 'color': fontColorNormal }">
         {{ 'history.empty'|trans }}
       </p>
     </div>
     <div v-for="message in messages" class="message" :key="message.id">
-      <span class="title" v-if="showMessageTitle" :style="{ 'color': fontColor }">
+      <span class="title" v-if="showMessageTitle" :style="{ 'color': fontColor(message) }">
         {{ message.title }}
       </span>
-      <span class="subtitle" v-if="showMessageSubtitle" :style="{ 'color': fontColor }">
+      <span class="subtitle" v-if="showMessageSubtitle" :style="{ 'color': fontColor(message) }">
         {{ message.subtitle }}
       </span>
-      <span class="description" v-if="showMessageDescription" :style="{ 'color': fontColor }">
+      <span class="description" v-if="showMessageDescription" :style="{ 'color': fontColor(message) }">
         {{ message.description }}
       </span>
     </div>
@@ -26,9 +26,13 @@ export default {
     messages: {
       required: true
     },
-    fontColor: {
+    fontColorNormal: {
       type: String,
       default: '#000000'
+    },
+    fontColorPriority: {
+      type: String,
+      default: '#FF0000'
     },
     showMessageTitle: {
       type: Boolean,
@@ -41,6 +45,12 @@ export default {
     showMessageDescription: {
       type: Boolean,
       default: false
+    }
+  },
+  methods: {
+    fontColor (message) {
+      const peso = message.$data ? message.$data.peso : 0
+      return peso > 0 ? this.fontColorPriority : this.fontColorNormal
     }
   }
 }

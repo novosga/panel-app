@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="columns">
-      <div class="column is-2-desktop is-3-tablet is-3-mobile column-menu">
+    <div class="columns is-mobile">
+      <div class="column is-2-desktop is-3-tablet is-3-mobile">
         <aside class="menu">
           <img src="static/images/logo.png">
 
@@ -20,29 +20,29 @@
 
           <ul class="menu-list">
             <li>
-              <a @click="showTab('interface')">
+              <a @click="showTab('interface')" :class="{ 'is-active': (tab==='interface') }">
                 {{ 'menu.interface'|trans }}
               </a>
             </li>
             <li>
-              <a @click="showTab('server')">
+              <a @click="showTab('server')" :class="{ 'is-active': (tab==='server') }">
                 {{ 'menu.server'|trans }}
               </a>
             </li>
             <li>
-              <a @click="showTab('services')" v-if="unities.length">
+              <a @click="showTab('services')" :class="{ 'is-active': (tab==='services') }" v-if="unities.length">
                 {{ 'menu.services'|trans }}
               </a>
             </li>
             <li>
-              <a @click="showTab('sound')">
+              <a @click="showTab('sound')" :class="{ 'is-active': (tab==='sound') }">
                 {{ 'menu.sound'|trans }}
               </a>
             </li>
           </ul>
         </aside>
       </div>
-      <div class="column">
+      <div class="column is-10-desktop is-9-tablet is-9-mobile">
         <div class="heading">
           <h1 class="title">
             {{ 'settings.title'|trans }}
@@ -75,16 +75,37 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="columns">
-            <div class="column">
+            <div class="column is-4">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.logo'|trans }}
+                  {{ 'settings.label.theme'|trans }}
                 </label>
-                <div class="control">
-                  <input class="input is-medium" type="url" placeholder="https://" v-model="config.logo">
+                <div class="control is-expanded has-icons-left">
+                  <span class="select is-fullwidth">
+                    <select v-model="config.theme" @change="changeTheme">
+                      <option :value="theme.id" v-for="theme in themes" :key="theme.id">
+                        {{ theme.name }}
+                      </option>
+                    </select>
+                  </span>
+                  <span class="icon is-left">
+                    <i class="fa fa-paint-brush"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="title" v-if="selectedTheme && selectedTheme.options.length">{{ 'settings.interface.theme_options'| trans }}</h3>
+
+          <div class="columns" v-if="selectedTheme && selectedTheme.options.length">
+            <div class="column">
+              <div class="field" v-for="option in selectedTheme.options" :key="option.name">
+                <label class="label">
+                  {{ option.label }}
+                </label>
+                <div class="control is-expanded">
+                  <input :type="option.type" :placeholder="option.placeholder" v-model="config.themeOptions[option.name]" class="input is-medium">
                 </div>
               </div>
             </div>
@@ -139,20 +160,40 @@
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.sidebar_bg_color'|trans }}
+                  {{ 'settings.label.featured_font_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.featuredFontColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.sidebar_font_color'|trans }}
+                  {{ 'settings.label.featured_font_color_priority'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.featuredFontColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.history_font_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.historyFontColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.history_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.historyFontColorPriority">
                 </div>
               </div>
             </div>
@@ -162,40 +203,126 @@
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.footer_bg_color'|trans }}
+                  {{ 'settings.label.sidebar_bg_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.footer_font_color'|trans }}
+                  {{ 'settings.label.sidebar_font_color_normal'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColorNormal">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.clock_bg_color'|trans }}
+                  {{ 'settings.label.sidebar_bg_color_priority'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarBgColorPriority">
                 </div>
               </div>
             </div>
             <div class="column">
               <div class="field">
                 <label class="label">
-                  {{ 'settings.label.clock_font_color'|trans }}
+                  {{ 'settings.label.sidebar_font_color_priority'|trans }}
                 </label>
                 <div class="control">
-                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColor">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.sidebarFontColorPriority">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_bg_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_font_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_bg_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerBgColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.footer_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.footerFontColorPriority">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_bg_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_font_color_normal'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColorNormal">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_bg_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockBgColorPriority">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">
+                  {{ 'settings.label.clock_font_color_priority'|trans }}
+                </label>
+                <div class="control">
+                  <input class="input is-medium" type="text" placeholder="#000000" v-model="config.clockFontColorPriority">
                 </div>
               </div>
             </div>
@@ -290,7 +417,7 @@
               {{ 'settings.label.unity'|trans }}
             </label>
             <div class="control">
-              <div class="select">
+              <div class="select is-fullwidth">
                 <select v-model="config.unity" @change="loadServices">
                   <option></option>
                   <option v-for="unity in unities" :value="unity.id" :key="unity.id">
@@ -393,6 +520,8 @@
     // defaults
     ctx.config.locale = ctx.config.locale || 'en'
     ctx.config.retries = ctx.config.retries || 5
+    ctx.config.theme = ctx.config.theme || ctx.themes[0].id
+    ctx.config.themeOptions = ctx.config.themeOptions || {}
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
 
@@ -400,12 +529,22 @@
     ctx.config.pageFontColorNormal = ctx.config.pageFontColorNormal || '#000000'
     ctx.config.pageBgColorPriority = ctx.config.pageBgColorPriority || '#FFFFFF'
     ctx.config.pageFontColorPriority = ctx.config.pageFontColorPriority || '#FF0000'
-    ctx.config.sidebarBgColor = ctx.config.sidebarBgColor || '#4FC08D'
-    ctx.config.sidebarFontColor = ctx.config.sidebarFontColor || '#000000'
-    ctx.config.footerBgColor = ctx.config.footerBgColor || '#F1F1F1'
-    ctx.config.footerFontColor = ctx.config.footerFontColor || '#000000'
-    ctx.config.clockBgColor = ctx.config.clockBgColor || '#44A075'
-    ctx.config.clockFontColor = ctx.config.clockFontColor || '#000000'
+    ctx.config.featuredFontColorNormal = ctx.config.featuredFontColorNormal || '#000000'
+    ctx.config.featuredFontColorPriority = ctx.config.featuredFontColorPriority || '#FF0000'
+    ctx.config.historyFontColorNormal = ctx.config.historyFontColorNormal || '#000000'
+    ctx.config.historyFontColorPriority = ctx.config.historyFontColorPriority || '#FF0000'
+    ctx.config.sidebarBgColorNormal = ctx.config.sidebarBgColorNormal || '#4FC08D'
+    ctx.config.sidebarFontColorNormal = ctx.config.sidebarFontColorNormal || '#000000'
+    ctx.config.sidebarBgColorPriority = ctx.config.sidebarBgColorPriority || '#4FC08D'
+    ctx.config.sidebarFontColorPriority = ctx.config.sidebarFontColorPriority || '#000000'
+    ctx.config.footerBgColorNormal = ctx.config.footerBgColorNormal || '#F1F1F1'
+    ctx.config.footerFontColorNormal = ctx.config.footerFontColorNormal || '#000000'
+    ctx.config.footerBgColorPriority = ctx.config.footerBgColorPriority || '#F1F1F1'
+    ctx.config.footerFontColorPriority = ctx.config.footerFontColorPriority || '#000000'
+    ctx.config.clockBgColorNormal = ctx.config.clockBgColorNormal || '#44A075'
+    ctx.config.clockFontColorNormal = ctx.config.clockFontColorNormal || '#000000'
+    ctx.config.clockBgColorPriority = ctx.config.clockBgColorPriority || '#44A075'
+    ctx.config.clockFontColorPriority = ctx.config.clockFontColorPriority || '#000000'
 
     if (ctx.$store.getters.isAuthenticated) {
       const forceLoad = (
@@ -458,6 +597,12 @@
       services () {
         return this.$store.state.settings.services
       },
+      themes () {
+        return this.$store.state.settings.availableThemes
+      },
+      selectedTheme () {
+        return this.$store.getters.getTheme(this.config.theme)
+      },
       alerts () {
         return audio.alertsAvailable
       },
@@ -473,6 +618,9 @@
     methods: {
       showTab (tab) {
         this.tab = tab
+      },
+      changeTheme () {
+        this.config.themeOptions = {}
       },
       changeServer () {
         this.config.unity = null
@@ -551,7 +699,8 @@
 <style lang="sass">
   aside
     img
-      height: 60px
+      width: 100%
+      max-height: 60px
   .columns .column
     padding: 2rem
 </style>

@@ -2,7 +2,7 @@
   "name": "painel-web",
   "description": "Novo SGA panel",
   "license": "MIT",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "homepage": "http://novosga.org",
   "author": {
     "name": "Rogerio Lino",
@@ -66,7 +66,6 @@
     "font-awesome": "^4.7.0",
     "moment": "^2.18.1",
     "promise-queue": "^2.2.3",
-    "socket.io-client": "^2.0.3",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

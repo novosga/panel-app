@@ -10,6 +10,7 @@ Vue.use(Vuex)
 const state = {
   config: {},
   dict: {},
+  apiInfo: {},
   messages: [
     /*
     {
