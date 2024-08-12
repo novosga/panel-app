@@ -17,6 +17,8 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4.3.0
+        with:
+          images: ${{ github.repository }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4.0.0
