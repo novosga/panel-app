@@ -9,6 +9,8 @@ function speechQueue (speech, texts, lang, index) {
     let text = texts[index]
     speech(text, lang).then(() => {
       speechQueue(speech, texts, lang, index + 1)
+        .then(resolve)
+        .catch(reject)
     }, reject)
   })
 }
@@ -19,7 +21,7 @@ export default {
     return new Promise((resolve, reject) => {
       const msg = new SpeechSynthesisUtterance()
       msg.text = text
-      msg.lang = lang
+      msg.lang = (lang || '').replace('_', '-').toLowerCase()
 
       msg.onerror = reject
       msg.onend = resolve

@@ -14,7 +14,20 @@
     $store.dispatch('fetchApiInfo').then(() => {
       disconnect()
 
-      const url = new URL($store.state.apiInfo.mercureUrl)
+      let mercureUrl = $store.state.apiInfo.mercureUrl || ''
+      if (!mercureUrl.toLowerCase().startsWith('http')) {
+        let serverUrl = $store.state.config.server
+        if (!serverUrl.endsWith('/')) {
+          serverUrl += '/'
+        }
+        if (mercureUrl.startsWith('/')) {
+          mercureUrl = serverUrl + mercureUrl.substring(1)
+        } else {
+          mercureUrl = serverUrl + mercureUrl
+        }
+      }
+
+      const url = new URL(mercureUrl)
       url.searchParams.append('topic', `/unidades/${$store.state.config.unity}/painel`)
       eventSource = new EventSource(url)
       eventSource.onmessage = (e) => {

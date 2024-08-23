@@ -31,7 +31,7 @@ class Client {
 
     return new Promise((resolve, reject) => {
       axios
-        .request(`${this.endpoint}/${url}`, config)
+        .request(`${this.endpoint}${url}`, config)
         .then(response => {
           resolve(response.data)
         }, error => {
@@ -62,7 +62,7 @@ class Client {
         Authorization: 'Bearer ' + token
       }
     }
-    return this.request(`unidades`, config)
+    return this.request(`/unidades`, config)
   }
 
   services (token, unityId) {
@@ -71,7 +71,7 @@ class Client {
         Authorization: 'Bearer ' + token
       }
     }
-    return this.request(`unidades/${unityId}/servicos`, config)
+    return this.request(`/unidades/${unityId}/servicos`, config)
   }
 
   messages (token, unity, services) {
@@ -81,10 +81,10 @@ class Client {
         Authorization: 'Bearer ' + token
       },
       params: {
-        servicos: services.join(',')
+        servicos: services.map(s => parseInt(s, 10)).filter(s => s > 0).join(',')
       }
     }
-    return this.request(`unidades/${id}/painel`, config)
+    return this.request(`/unidades/${id}/painel`, config)
   }
 }
 

@@ -57,6 +57,7 @@ function createWindow () {
         {role: 'togglefullscreen'}
       ]
     },
+    { role: 'editMenu' },
     {
       role: 'window',
       submenu: [
