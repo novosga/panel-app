@@ -3,7 +3,7 @@
     <div class="columns is-gapless">
       <div class="column is-multiline featured-column">
         <header class="column">
-          <featured :message="lastMessage" v-if="lastMessage" @blink="playAudio" :fontColor="color('featuredFontColor', 'pageFontColor')"></featured>
+          <featured :message="lastMessage" v-if="lastMessage" :fontColor="color('featuredFontColor', 'pageFontColor')"></featured>
         </header>
         <footer class="column" :style="{ 'background-color': color('footerBgColor'), 'color': color('footerFontColor') }">
           <img :src="logoUrl" class="is-pulled-left">
@@ -37,6 +37,7 @@
   import Featured from '@/components/Featured.vue'
   import History from '@/components/History.vue'
   import audio from '@/services/audio'
+  import speech from '@/services/speech'
 
   export default {
     name: 'Default',
@@ -45,11 +46,18 @@
       Featured,
       History
     },
+    data () {
+      return {
+        isCalling: false,
+        lastMessage: {},
+        messageQueue: []
+      }
+    },
     computed: {
       messages () {
         return this.$store.getters.history
       },
-      lastMessage () {
+      message () {
         return this.$store.getters.message
       },
       config () {
@@ -60,13 +68,44 @@
       }
     },
     methods: {
+      call () {
+        this.messageQueue.push(this.message)
+        if (!this.isCalling) {
+          this.playAudio()
+        }
+      },
       playAudio () {
+        if (this.isCalling || this.messageQueue.length === 0) {
+          return
+        }
+        this.isCalling = true
+        this.lastMessage = this.messageQueue.shift()
         audio.playAlert(this.config.alert)
+          .then(() => {
+            if (!this.config.speech) {
+              return Promise.resolve()
+            }
+            let texts = ['Senha']
+            this.message.$data.siglaSenha.split('').forEach(char => texts.push(char))
+            texts.push(this.message.$data.numeroSenha)
+            texts.push(this.message.$data.local)
+            texts.push(this.message.$data.numeroLocal)
+            return speech.speechAll(texts, this.config.locale)
+          })
+          .then(() => {
+            this.isCalling = false
+            this.playAudio()
+          })
       },
       color (prefix, fallback) {
         const peso = this.lastMessage.$data ? this.lastMessage.$data.peso : 0
         const suffix = peso > 0 ? 'Priority' : 'Normal'
         return this.config[prefix + suffix] || this.config[fallback + suffix]
+      }
+    },
+    watch: {
+      message () {
+        this.call()
       }
     }
   }

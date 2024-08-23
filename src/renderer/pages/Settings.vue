@@ -477,11 +477,10 @@
               </a>
             </div>
           </div>
-          <!--
           <div class="field">
             <div class="control has-addons">
               <label class="checkbox">
-                <input type="checkbox" v-model="config.services">
+                <input type="checkbox" v-model="config.speech">
                 {{ 'settings.label.speech_enabled'|trans }}
               </label>
               <a class="button" title="Play">
@@ -491,7 +490,7 @@
               </a>
             </div>
           </div>
-          -->
+
           <hr>
 
           <div class="field is-grouped is-grouped-right">
@@ -524,6 +523,7 @@
     ctx.config.themeOptions = ctx.config.themeOptions || {}
     ctx.config.services = ctx.config.services || []
     ctx.config.alert = ctx.config.alert || audio.alertsAvailable.Default
+    ctx.config.speech = !!ctx.config.speech
 
     ctx.config.pageBgColorNormal = ctx.config.pageBgColorNormal || '#FFFFFF'
     ctx.config.pageFontColorNormal = ctx.config.pageFontColorNormal || '#000000'
