@@ -571,9 +571,9 @@
     }
 
     ctx.initialClientId = ctx.config.clientId
-    ctx.initialClientSecret = ctx.config.initialClientSecret
-    ctx.initialUsername = ctx.config.initialUsername
-    ctx.initialPassword = ctx.config.initialPassword
+    ctx.initialClientSecret = ctx.config.clientSecret
+    ctx.initialUsername = ctx.config.username
+    ctx.initialPassword = ctx.config.password
   }
 
   export default {
@@ -609,9 +609,9 @@
       isCredentialChanged () {
         return (
           this.initialClientId !== this.config.clientId ||
-          this.initialClientSecret !== this.config.initialClientSecret ||
-          this.initialUsername !== this.config.initialUsername ||
-          this.initialPassword !== this.config.initialPassword
+          this.initialClientSecret !== this.config.clientSecret ||
+          this.initialUsername !== this.config.username ||
+          this.initialPassword !== this.config.password
         )
       }
     },
