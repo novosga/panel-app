@@ -6,11 +6,15 @@
   let running = false
   let timeoutId = 0
 
+  // this funciton is needed because computed value is not being updated
   function isExpired ($store) {
     return auth.getters.isExpired($store.state.auth)
   }
 
-  function doConnect ($root, $store) {
+  function doConnect ($root, $store, attempts) {
+    if (attempts <= 0) {
+      return
+    }
     $store.dispatch('fetchApiInfo').then(() => {
       disconnect()
 
@@ -33,10 +37,57 @@
       eventSource.onmessage = (e) => {
         fetchMessages($root, $store)
       }
+    }).catch((e) => {
+      clearToken($root, $store).then(() => {
+        doConnect($root, $store, attempts - 1)
+      })
     })
 
     // initial fetch
     fetchMessages($root, $store)
+  }
+
+  function clearToken ($root, $store) {
+    // clear token
+    $store.commit('updateToken', {})
+    return doCheckToken($root, $store)
+  }
+
+  function doCheckToken ($root, $store) {
+    return new Promise((resolve, reject) => {
+      let promise = Promise.resolve()
+      if ($store.getters.isAuthenticated && isExpired($store)) {
+        log('token expired, refreshing')
+        promise = $store
+          .dispatch('refresh')
+          .then(() => {
+            log('token refreshed successfully!')
+            return Promise.resolve()
+          })
+          .catch((error) => {
+            log('error on refresh token: ' + error)
+            log('trying to issue a new token')
+            return $store.dispatch('token')
+          })
+      } else if (!$store.getters.isAuthenticated) {
+        log('not authenticated, issuing new token')
+        promise = $store
+          .dispatch('token')
+          .then(() => {
+            log('token issued successfully!')
+            return Promise.resolve()
+          })
+          .catch((error) => {
+            log('error on issuing token')
+            return Promise.reject(error)
+          })
+      }
+      promise.then(resolve).catch((error) => {
+        log('error on issuing/refresh token. go to settings!')
+        $root.$swal('Oops!', error, 'error')
+        $root.$router.push('/settings')
+      })
+    })
   }
 
   function connect ($root, $store) {
@@ -46,19 +97,7 @@
       return
     }
 
-    if ($store.getters.isAuthenticated && $store.getters.isExpired) {
-      log('token expired, trying to refresh')
-
-      $store.dispatch('token').then(() => {
-        log('token refreshed successfully!')
-        doConnect($root, $store)
-      }, () => {
-        log('error on refresh token. go to settings!')
-        $root.$router.push('/settings')
-      })
-    } else {
-      doConnect($root, $store)
-    }
+    doConnect($root, $store, 3)
   }
 
   function disconnect () {
@@ -67,7 +106,7 @@
     }
   }
 
-  function checkToken ($store) {
+  function checkToken ($root, $store) {
     clearTimeout(timeoutId)
 
     if (!running) {
@@ -75,74 +114,25 @@
       return
     }
 
-    log('checking token. Authenticated: ' + $store.getters.isAuthenticated)
-
-    if ($store.getters.isAuthenticated && isExpired($store)) {
-      log('token expired, refreshing')
-      $store
-        .dispatch('refresh')
-        .then(() => {
-          log('token refreshed')
-        }, e => {
-          log(e)
-        })
-    }
+    log('checking token. Authenticated: ' + $store.getters.isAuthenticated + '. isExpired: ' + isExpired($store))
+    doCheckToken($root, $store)
 
     timeoutId = setTimeout(() => {
-      checkToken($store)
+      checkToken($root, $store)
     }, 60 * 1000)
   }
 
   function fetchMessages ($root, $store) {
     if (!running) {
       running = true
-      checkToken($store)
+      checkToken($root, $store)
     }
-
-    try {
-      if (!$store.getters.isAuthenticated) {
-        throw new Error('Please configure client id and client secret.')
-      }
-
-      let promise
-      if (isExpired($store)) {
-        log('token expired')
-
-        promise = new Promise((resolve, reject) => {
-          $store
-            .dispatch('refresh')
-            .then(() => {
-              log('token refreshed')
-              $store
-                .dispatch('fetchMessages')
-                .then(resolve, reject)
-            }, e => {
-              log(e)
-              reject(e)
-            })
-        })
-      } else {
-        promise = $store.dispatch('fetchMessages')
-      }
-
-      promise
-        .then(messages => {}, (e) => {
-          if (typeof (e) === 'string') {
-            throw new Error(e)
-          }
-          throw new Error('Unknown error. Please see the log console')
-        })
-        .catch(e => {
-          // clear token
-          $store.commit('updateToken', {})
-
-          $root.$swal('Oops!', e.message, 'error')
-          $root.$router.push('/settings')
-        })
-    } catch (e) {
-      $root.$swal('Oops!', e.message, 'error')
-      $root.$router.push('/settings')
-    }
+    $store
+      .dispatch('fetchMessages')
+      .catch(e => {
+        log('Error getting messages: ' + e)
+        clearToken($root, $store)
+      })
   }
 
   export default {
